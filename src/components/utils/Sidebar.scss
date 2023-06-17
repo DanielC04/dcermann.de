@@ -12,6 +12,19 @@
 	z-index: 10;
 	.logo{
 		font-size: 150%;
+		width: clamp(20px, 2em, 65px);
+		margin: 10px;
+		#rect1{
+			fill: red !important;
+		}
+		rect{
+			fill: red;
+			color: blue;
+		}
+		#path2{
+			color: purple !important;
+		}
+		// background-color: red;
 	}
 	div{
 		writing-mode: sideways-lr;

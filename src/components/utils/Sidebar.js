@@ -5,7 +5,9 @@ import { HashLink } from 'react-router-hash-link'
 function Sidebar(props) {
 	return (
 		<div className='sidebar'>
-			<span className='logo'>DANIEL</span>
+			<HashLink to='/#home'>
+				<img className='logo' src='dc-logo.svg' alt='DANIEL'/>
+			</HashLink>
 			<div>
 				{
 					props.sections.map((section, id) =>

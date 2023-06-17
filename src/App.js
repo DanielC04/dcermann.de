@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
 import $ from "jquery";
 import "./App.scss";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
-import About from "./components/About";
-import Experience from "./components/Experience";
-import Projects from "./components/Projects";
-import Skills from "./components/Skills";
+import Header from "./components/utils/Header";
+import Footer from "./components/utils/Footer";
+import About from "./components/sections/About";
+import Experience from "./components/sections/Experience";
+import Projects from "./components//sections/Projects";
+import Skills from "./components//sections/Skills";
+import Sidebar from "./components/utils/Sidebar";
 
 
 
 function App() {
   const [resumeData, setResumeData] = useState({});
   const [sharedData, setSharedData] = useState({});
-  const [currSectionId, setVisibleSectionId] = useState('about');
+  const [activeSection, setActiveSection] = useState('home');
 
   useEffect(() => {
     // load all the text
@@ -26,9 +27,9 @@ function App() {
     // set observer that checks what section is active
     window.addEventListener('scroll', (event) => {
       document.querySelectorAll("section").forEach(((e) => {
-        if (e.getBoundingClientRect().top < 75) {
+        if (e.getBoundingClientRect().top < window.innerHeight * 0.25) {
           let t = e.attributes.id.value;
-          setVisibleSectionId(t);
+          setActiveSection(t);
         }
       }))
     });
@@ -74,6 +75,7 @@ function App() {
           </div>
         </div>
       </div>
+      <Sidebar activeSection={activeSection} sections={['home', 'about', 'projects', 'skills', 'experience', 'contact']} />
       <About
         resumeBasicInfo={resumeData.basic_info}
         sharedBasicInfo={sharedData.basic_info}

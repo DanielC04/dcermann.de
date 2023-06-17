@@ -1,16 +1,87 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156.24 224.13">
-	<defs>
-		<style>
-			.cls-1 {
-				fill: white;
-			}
-		</style>
-	</defs>
-	<g id="Layer_2" data-name="Layer 2">
-		<g id="Layer_5" data-name="Layer 5">
-			<rect class="cls-1" x="10" y="40" width="9.9" height="115" rx="3.75" />
-			<path d="M 6 20 c 100 0 160 100 0 160" stroke="white"  stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="200 35"  stroke-dashoffset="26"/>
-			<path d="M 130 20 C 10 0 10 120 130 170" stroke="#00fcf9" fill="none" stroke-width="10" stroke-linecap="round" stroke-dasharray="200 40" stroke-dashoffset="146" />
-		</g>
-	</g>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   viewBox="0 0 162.18739 170.37927"
+   version="1.1"
+   id="svg14"
+   sodipodi:docname="dc-logo.svg"
+   width="162.18739"
+   height="170.37927"
+   inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)">
+  <metadata
+     id="metadata18">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1016"
+     id="namedview16"
+     showgrid="false"
+     inkscape:zoom="1.4891108"
+     inkscape:cx="-101.21526"
+     inkscape:cy="8.4946334"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg14"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+    <style>
+        path {
+            fill: #55E81F;
+        }
+        @media (prefers-color-scheme: dark) {
+            #path1{
+               stroke: var(--text-color, #e9eaec) !important;
+            }
+            #rect1{
+               fill: var(--text-color, #e9eaec) !important;
+            }
+        }
+    </style>
+  <rect
+     class="cls-1"
+     x="28.016338"
+     y="35.618122"
+     width="9.8999996"
+     height="83.184937"
+     rx="3.75"
+     id="rect1"
+     style="fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.8504982;stroke-opacity:1" />
+  <path
+     d="M 5.0711965,5.3540928 C 113.26958,3.0116951 169.98975,103.94879 5.0711965,165.35409"
+     id="path1"
+     inkscape:connector-curvature="0"
+     style="fill:none;fill-opacity:1;stroke:#050000;stroke-width:10;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:200, 35;stroke-dashoffset:20;stroke-opacity:1"
+     sodipodi:nodetypes="cc" />
+  <path
+     d="M 156.53857,124.31176 C 33.347951,207.12583 46.570104,-46.033061 150.51751,15.263838"
+     id="path2"
+     inkscape:connector-curvature="0"
+     style="fill:none;fill-opacity:1;stroke:#eb5f31;stroke-width:11.16533279;stroke-linecap:round;stroke-miterlimit:4;stroke-dasharray:223.30665588, 44.66133118;stroke-dashoffset:59.17626572;stroke-opacity:1"
+     sodipodi:nodetypes="cc" />
 </svg>
