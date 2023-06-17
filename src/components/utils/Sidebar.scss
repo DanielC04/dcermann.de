@@ -1,0 +1,33 @@
+.sidebar{
+	width: clamp(50px, 10%, 100px);
+	height: 100vh;
+	position: fixed;
+	left: 0px;
+	top: 0;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	font-size: medium;
+	color: var(--text-color);
+	z-index: 10;
+	.logo{
+		font-size: 150%;
+	}
+	div{
+		writing-mode: sideways-lr;
+		margin-top: clamp(10px, 50%, 500px);
+		display: flex;
+		flex-direction: row-reverse;
+	}
+	.section-label{
+		margin: 10px;
+		font-size: 120%;
+		text-decoration: none;
+		color: var(--text-color);
+	}
+	.section-label.active{
+		color: var(--contrast-color);
+		font-size: 125%;
+	}
+	
+}
