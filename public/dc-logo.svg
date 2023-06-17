@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156.24 224.13">
+	<defs>
+		<style>
+			.cls-1 {
+				fill: white;
+			}
+		</style>
+	</defs>
+	<g id="Layer_2" data-name="Layer 2">
+		<g id="Layer_5" data-name="Layer 5">
+			<rect class="cls-1" x="10" y="40" width="9.9" height="115" rx="3.75" />
+			<path d="M 6 20 c 100 0 160 100 0 160" stroke="white"  stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="200 35"  stroke-dashoffset="26"/>
+			<path d="M 130 20 C 10 0 10 120 130 170" stroke="#00fcf9" fill="none" stroke-width="10" stroke-linecap="round" stroke-dasharray="200 40" stroke-dashoffset="146" />
+		</g>
+	</g>
+</svg>
