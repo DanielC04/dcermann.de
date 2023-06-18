@@ -1,36 +1,46 @@
+$orientation-breakpoint: 600px;
+
 .sidebar{
 	width: clamp(50px, 10%, 100px);
 	height: 100vh;
 	position: fixed;
 	left: 0px;
-	top: 0;
+	top: 0px;
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+	// @media (max-width: $orientation-breakpoint) {
+	// 	height: clamp(50px, 10%, 100px);	
+	// 	width: 100vw;
+	// 	flex-direction: row;
+	// 	// background-color: color-mix(in srgb, var(--background-color) 80%, black);
+	// 	background-color: var(--background-color);
+	// }
 	font-size: medium;
 	color: var(--text-color);
 	z-index: 10;
 	.logo{
 		font-size: 150%;
 		width: clamp(20px, 2em, 65px);
-		margin: 10px;
-		#rect1{
-			fill: red !important;
+		margin-top: clamp(10px, 3vh, 50px);
+		@media (max-width: $orientation-breakpoint) {
+			width: clamp(20px, 1.5em, 65px);	
+			background-color: var(--background-color);
+			padding: 2px;
+			box-shadow: 0 0 10px var(--background-color);
 		}
-		rect{
-			fill: red;
-			color: blue;
-		}
-		#path2{
-			color: purple !important;
-		}
-		// background-color: red;
 	}
 	div{
-		writing-mode: sideways-lr;
-		margin-top: clamp(10px, 50%, 500px);
+		@media (min-width: $orientation-breakpoint) {
+			writing-mode: sideways-lr;
+			margin-top: clamp(10px, 50%, 500px);
+			flex-direction: row-reverse;
+		}
+		@media (max-width: $orientation-breakpoint) {
+			display: none;
+		}
 		display: flex;
-		flex-direction: row-reverse;
+		align-items: center;
 	}
 	.section-label{
 		margin: 10px;
@@ -42,5 +52,4 @@
 		color: var(--contrast-color);
 		font-size: 125%;
 	}
-	
 }

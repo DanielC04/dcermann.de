@@ -1,0 +1,25 @@
+footer {
+    background: #1f1f1f;
+    min-height: 100px;
+    width: 100%;
+    overflow: hidden;
+    font-size: 14px;
+    color: white;
+    position: relative;
+    text-align: center;
+
+    a,
+    a:visited {
+        color: #fff;
+    }
+
+    a:hover,
+    a:focus {
+        color: #fff;
+    }
+
+    .social-links {
+        margin-top: 20px;
+        font-size: 22px;
+    }
+}
