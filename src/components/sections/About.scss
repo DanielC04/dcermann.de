@@ -1,0 +1,36 @@
+#about {
+    background-color: var(--background-color-1);
+
+    h1 {
+        color: var(--text-color);
+    }
+
+    .wave {
+        font-size: 160%;
+    }
+    .introduction {
+        font-size: 120%;
+    }
+
+    .polaroid img {
+        display: block;
+        max-width: 200px;
+    }
+
+    .polaroid span {
+        background: #ffffff;
+        display: inline-block;
+        margin: 30px 75px;
+        padding: 15px 15px 30px;
+        text-align: center;
+        text-decoration: none;
+        -webkit-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        -moz-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        -webkit-transition: all 0.2s linear;
+        -moz-transition: all 0.2s linear;
+        transition: all 0.2s linear;
+        z-index: 0;
+        position: relative;
+    }
+}

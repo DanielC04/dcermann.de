@@ -1,11 +1,8 @@
 body[data-theme="light"] {
-    @import '../light-slider.scss';
-
-    --background-color: #e9d5a1;
-    --text-color: black;
+    --background-color: #a3dfff;
+    --text-color: #051923;
+    --background-color-1: color-mix(in srgb, var(--background-color) 90%, var(--text-color));
+    --background-color-2: color-mix(in srgb, var(--background-color) 80%, var(--text-color));
+    --background-color-3: color-mix(in srgb, var(--background-color) 70%, var(--text-color));
     --contrast-color: #eb5f31;
-
-    .slider-tab {
-       background-color: #D7CAAA;
-    }
 }

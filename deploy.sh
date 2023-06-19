@@ -1,0 +1,23 @@
+#!/usr/bin/expect
+spawn sftp -r deployment@dcermann.de 
+expect -exact "deployment@dcermann.de's password: \r"
+send -- "deploynow69!\r"
+expect -exact "sftp> \r"
+send -- "cd Personal_projects/test/\r"
+expect -exact "sftp> \r"
+send -- "rm index.html\r"
+expect -exact "sftp>\r"
+send -- "mput build/index.html\r"
+expect -exact "sftp> \r"
+send -- "cd static\r"
+expect -exact "sftp> \r"
+send -- "rm css/*\r"
+expect -exact "sftp> \r"
+send -- "rm js/*\r"
+expect -exact "sftp> \r"
+send -- "mput -r build/static/*\r"
+expect -exact "sftp> \r"
+send -- "mput -r build/static/js/*\r"
+expect -exact "sftp> \r"
+send -- "bye\r"
+

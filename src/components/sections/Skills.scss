@@ -1,0 +1,21 @@
+#skills {
+    background-color: var(--background-color-1);
+    min-height: 200px;
+    width: 100%;
+    overflow: hidden;
+    padding-bottom: 10%;
+
+    .skills-tile {
+        background-color: rgba(var(--background-color), 0.95);
+        padding: 10px 10px 5px 10px;
+        width: 100px;
+        margin: 5px 0 5px 0;
+        border-radius: 8px;
+    }
+    .skill-icon {
+        font-size: 180%;
+        // color: white;
+        text-align: center;
+        position: relative;
+    }
+}

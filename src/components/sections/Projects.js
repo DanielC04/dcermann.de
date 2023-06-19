@@ -1,70 +1,45 @@
-import React, { Component } from "react";
-import ProjectDetailsModal from "./ProjectDetailsModal";
+import React, { useState } from "react";
+import './Projects.scss';
 
-class Projects extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      deps: {},
-      detailsModalShow: false,
-    };
-  }
+function Projects(props) {
+  let sectionName, projects;
+  if (props.resumeProjects && props.resumeBasicInfo) {
+    sectionName = props.resumeBasicInfo.section_name.projects;
+    projects = props.resumeProjects.map((project, i) => <Project key={i} data={project} />);
+  };
 
-  render() {
-    let detailsModalShow = (data) => {
-      this.setState({ detailsModalShow: true, deps: data });
-    };
-
-    let detailsModalClose = () => this.setState({ detailsModalShow: false });
-    if (this.props.resumeProjects && this.props.resumeBasicInfo) {
-      var sectionName = this.props.resumeBasicInfo.section_name.projects;
-      var projects = this.props.resumeProjects.map(function (projects) {
-        return (
-          <div
-            className="col-sm-12 col-md-6 col-lg-4"
-            key={projects.title}
-            style={{ cursor: "pointer" }}
-          >
-            <span className="portfolio-item d-block">
-              <div className="foto" onClick={() => detailsModalShow(projects)}>
-                <div>
-                  <img
-                    src={projects.images[0]}
-                    alt="projectImages"
-                    height="230"
-                    style={{marginBottom: 0, paddingBottom: 0, position: 'relative'}}
-                  />
-                  <span className="project-date">{projects.startDate}</span>
-                  <br />
-                  <p className="project-title-settings mt-3">
-                    {projects.title}
-                  </p>
-                </div>
-              </div>
-            </span>
-          </div>
-        );
-      });
-    }
-
-    return (
-      <section id="projects">
-        <div className="col-md-12">
-          <h1 className="section-title" style={{ color: "black" }}>
-            <span>{sectionName}</span>
-          </h1>
-          <div className="col-md-12 mx-auto">
-            <div className="row mx-auto">{projects}</div>
-          </div>
-          <ProjectDetailsModal
-            show={this.state.detailsModalShow}
-            onHide={detailsModalClose}
-            data={this.state.deps}
-          />
+  return (
+    <section id="projects">
+      <div className="col-sm-12">
+        <h1 className="section-title">
+          <span>{sectionName}</span>
+        </h1>
+        <div className="col-sm-12 row projects-container">
+          {projects}
         </div>
-      </section>
-    );
-  }
+      </div>
+    </section>
+  );
 }
+
+
+function Project(props) {
+  return (
+    <div className="project col-sm-12 col-md-6 col-lg-5 mx-auto" key={props.data.title}>
+      <span className="fancy-title">
+        {props.data.title}
+      </span>
+      <div className="content center">
+        <div className='image-container'>
+          <img src="/images/laptop_blank.svg" alt={props.data.title} className='laptop' />
+          <img src={props.data.images[0]} alt={props.data.title} className='screen' />
+        </div>
+        <div className="description">
+          {props.data.description}
+        </div>
+      </div>
+    </div>);
+}
+
 
 export default Projects;

@@ -11,12 +11,11 @@
     },
     "projects": [
       {
-        "title": "Animal Shelter",
+        "title": "BeeSupervisor",
         "startDate": "2020",
-        "description": "The most expanded application I had opportunity to work with. I've learned many technologies and my code was reviewed by awesome curator. Application handles all adoption processess and allows to store all evidence on adopting animals from animal shelter.",
+        "description": "Varroamilben sind Parasiten, die sich auf den Rücken von Honigbienen festsaugen und diese schädigen. Durch am Bienestockeingang angebrachte Kameras werden hereinfliegende Bienen auf den Parasiten untersucht. Der Imker wird anschließend über den Befall eines Volkes informiert und kann die Bienen entsprechend behandeln.",
         "images": [
-          "images/portfolio/animal-shelter/p1.jpg",
-          "images/portfolio/animal-shelter/p2.jpg"
+          "images/beesupervisor.jpg"
         ],
         "url": "",
         "technologies": [
@@ -35,12 +34,34 @@
         ]
       },
       {
-        "title": "Photography",
-        "startDate": "2018",
-        "description": "Personal project for study subject. I was responsible for testing photography application that optimizes images with popular algorithms used by graphic editors like Pixlr or Adobe Photoshop. I've earned A grade :)",
+        "title": "GYPT - German Young Physicist Tournament",
+        "startDate": "2015",
+        "description": "Für die Aufgabe 4 des GYPT 2021, German Young Physicists Tournament, habe ich eine physikalische Simulation zum thermodynamischen Sachverhalt geschrieben.",
         "images": [
-          "images/portfolio/photography/p1.jpg",
-          "images/portfolio/photography/p2.jpg"
+          "images/gypt.jpg"
+        ],
+        "url": "https://github.com",
+        "technologies": [
+          {
+            "class": "devicon-angularjs-plain",
+            "name": "Angular"
+          },
+          {
+            "class": "devicon-typescript-plain",
+            "name": "TypeScript"
+          },
+          {
+            "class": "devicon-csharp-plain",
+            "name": "C#"
+          }
+        ]
+      },
+      {
+        "title": "Convex Hulls",
+        "startDate": "2018",
+        "description": "Im Rahmen eines Informatikprojekts habe ich eine Webapp programmiert, die die konvexe Hülle einer Punktmenge findet. Der Nutzer kann eine Punktmenge generieren lassen oder manuell eingeben. Mehrere Algorithmen, darunter Jarvis March, Graham Scan und Chan's Algorithm, werden dabei visualisiert.",
+        "images": [
+          "images/convexhulls.jpg"
         ],
         "url": "https://github.com",
         "technologies": [
@@ -55,12 +76,34 @@
         ]
       },
       {
-        "title": "3D Object Viewer",
+        "title": "Mega-Tic-Tac-Toe",
         "startDate": "2015",
-        "description": "One of the first apps I was working on my internship. I had to develop front-end implementation for app that shows 3D models of known buildings. This was also my first project in Angular framework. I've learned a lot!",
+        "description": "Coole Erweiterung von TicTacToe: In jedem der klassischen 3x3 Felder befindet sich ein TicTacToe-Feld, in denen jeweils ein separates Spiel abläuft.  ",
         "images": [
-          "images/portfolio/adventure/p1.jpg",
-          "images/portfolio/adventure/p2.jpg"
+          "images/tictactoe.jpg"
+        ],
+        "url": "https://github.com",
+        "technologies": [
+          {
+            "class": "devicon-angularjs-plain",
+            "name": "Angular"
+          },
+          {
+            "class": "devicon-typescript-plain",
+            "name": "TypeScript"
+          },
+          {
+            "class": "devicon-csharp-plain",
+            "name": "C#"
+          }
+        ]
+      },
+      {
+        "title": "Mensch ärgere dich nicht - Simulation",
+        "startDate": "2015",
+        "description": "Für die 4. Aufgabe des Bundeswettbewerbs Informatik 2021 habe ich eine Spielsimulation für Mensch ärgere dich nicht programmiert. Für jeden der vier Spieler können dabei Würfel mit beliebiger Seitenanzahl und beliebigen Augenzahlen erstellt werden. Durch mehrere Simulationen kann dadurch der beste Würfel ermittelt werden.",
+        "images": [
+          "images/gameSimulation.jpg"
         ],
         "url": "https://github.com",
         "technologies": [
@@ -78,6 +121,8 @@
           }
         ]
       }
+
+
     ],
     "experience": [
       {

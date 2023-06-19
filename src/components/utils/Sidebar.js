@@ -14,13 +14,16 @@ function Sidebar(props) {
 
 		// set observer that checks what section is active
 		window.addEventListener('scroll', event => {
-			sectionRefs.current.forEach(e => {
+			let minDist = Infinity
+			let currSection = 'home';
+			for (const e of sectionRefs.current) {
 				const dims = e.getBoundingClientRect()
-				if (Math.abs(dims.top) <= window.innerHeight * 0.5 || Math.abs(dims.bottom - window.innerHeight) <= window.innerHeight * 0.2) {
-					let t = e.attributes.id.value;
-					if (t !== activeSection) setActiveSection(t);
+				if (Math.abs(dims.top) < minDist) {
+					currSection = e.attributes.id.value;
+					minDist = Math.abs(dims.top);
 				}
-			})
+			}
+			setActiveSection(currSection);
 		});
 	}, [])
 

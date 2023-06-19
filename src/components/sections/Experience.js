@@ -5,6 +5,7 @@ import {
 } from "react-vertical-timeline-component";
 import "react-vertical-timeline-component/style.min.css";
 import Badge from "react-bootstrap/Badge";
+import './Experience.scss';
 
 class Experience extends Component {
   render() {
@@ -66,8 +67,8 @@ class Experience extends Component {
       <section id="experience" className="pb-5">
         <div className="col-md-12 mx-auto">
           <div className="col-md-12">
-            <h1 className="section-title" style={{ color: "black" }}>
-              <span className="text-black" style={{ textAlign: "center" }}>
+            <h1 className="section-title">
+              <span>
                 {sectionName}
               </span>
             </h1>

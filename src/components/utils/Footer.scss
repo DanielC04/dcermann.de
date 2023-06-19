@@ -1,21 +1,21 @@
 footer {
-    background: #1f1f1f;
+    background: var(--background-color);
     min-height: 100px;
     width: 100%;
     overflow: hidden;
     font-size: 14px;
-    color: white;
+    color: var(--text-color);
     position: relative;
     text-align: center;
 
     a,
     a:visited {
-        color: #fff;
+        color: var(--text-color);
     }
 
     a:hover,
     a:focus {
-        color: #fff;
+        color: var(--text-color);
     }
 
     .social-links {

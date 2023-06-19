@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 import $ from "jquery";
 import "./App.scss";
-import Header from "./components/utils/Header";
 import Footer from "./components/utils/Footer";
+import Home from "./components/sections/Home";
 import About from "./components/sections/About";
 import Experience from "./components/sections/Experience";
 import Projects from "./components//sections/Projects";
 import Skills from "./components//sections/Skills";
 import Sidebar from "./components/utils/Sidebar";
-
+// import BackgroundAnimation from "./THREEJS/BackgroundAnimation";
+import MatrixRain from "./Backgrounds/MatrixRain/MatrixRain";
 
 
 function App() {
   const [resumeData, setResumeData] = useState({});
   const [sharedData, setSharedData] = useState({});
-  const [activeSection, setActiveSection] = useState('home');
 
   useEffect(() => {
     // load all the text
@@ -24,58 +24,25 @@ function App() {
       window.$secondaryLanguageIconId,
       setResumeData
     );
-    // set observer that checks what section is active
-    window.addEventListener('scroll', (event) => {
-      document.querySelectorAll("section").forEach(((e) => {
-        if (e.getBoundingClientRect().top < window.innerHeight * 0.25) {
-          let t = e.attributes.id.value;
-          setActiveSection(t);
-        }
-      }))
-    });
   }, [])
 
+  const switchToPrimaryLang = () => applyPickedLanguage(
+    window.$primaryLanguage,
+    window.$secondaryLanguageIconId,
+    setResumeData
+  )
+
+  const switchToSecondaryLang = () => applyPickedLanguage(
+    window.$secondaryLanguage,
+    window.$primaryLanguageIconId,
+    setResumeData
+  )
+
   return (
-    <div>
-      <Header sharedData={sharedData.basic_info} />
-      <div className="language-container">
-        <div className="language">
-          <div
-            onClick={() =>
-              applyPickedLanguage(
-                window.$primaryLanguage,
-                window.$secondaryLanguageIconId
-              )
-            }
-            style={{ display: "inline" }}
-          >
-            <span
-              className="iconify language-icon mr-5"
-              data-icon="twemoji-flag-for-flag-united-kingdom"
-              data-inline="false"
-              id={window.$primaryLanguageIconId}
-            ></span>
-          </div>
-          <div
-            onClick={() =>
-              applyPickedLanguage(
-                window.$secondaryLanguage,
-                window.$primaryLanguageIconId,
-                setResumeData
-              )
-            }
-            style={{ display: "inline" }}
-          >
-            <span
-              className="iconify language-icon"
-              data-icon="twemoji-flag-for-flag-germany"
-              data-inline="false"
-              id={window.$secondaryLanguageIconId}
-            ></span>
-          </div>
-        </div>
-      </div>
-      <Sidebar activeSection={activeSection} sections={['home', 'about', 'projects', 'skills', 'experience', 'contact']} />
+    <div className="app">
+      {/* <BackgroundAnimation /> */}
+      <MatrixRain />
+      <Home sharedData={sharedData.basic_info} switchToPrimaryLang={switchToPrimaryLang} switchToSecondaryLang={switchToSecondaryLang} />
       <About
         resumeBasicInfo={resumeData.basic_info}
         sharedBasicInfo={sharedData.basic_info}
@@ -92,6 +59,7 @@ function App() {
         resumeExperience={resumeData.experience}
         resumeBasicInfo={resumeData.basic_info}
       />
+      <Sidebar sections={['home', 'about', 'projects', 'skills', 'experience', 'contact']} />
       <Footer sharedBasicInfo={sharedData.basic_info} />
     </div>
   );
@@ -129,7 +97,7 @@ function loadResumeFromPath(path, setResumeData) {
       setResumeData(data);
     },
     error: function (xhr, status, err) {
-      alert(err);
+      alert("connection to server failed :(", err);
     },
   });
 }

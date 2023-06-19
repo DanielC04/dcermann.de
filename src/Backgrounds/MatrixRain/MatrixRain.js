@@ -1,0 +1,88 @@
+import React, { useRef, useEffect } from 'react'
+import Effect from "./effect.js";
+import './MatrixRain.scss'
+
+
+
+function MatrixRain(props) {
+	const canvasRef = useRef(null);
+
+	useEffect(() => {
+		const canvas = canvasRef.current;
+		canvas.width = window.innerWidth;
+		canvas.height = window.innerHeight;
+		const context = canvas.getContext('2d');
+
+		//single color
+		const singleColor = "#0aff0a";
+
+		//gradient color
+		let gradientColor = makeGradientColor(context, window.innerWidth, window.innerHeight);
+
+		// creating effect object which initializes symbols array with Symbol objects
+		const effect = new Effect(canvas.width, canvas.height);
+
+		let lastTime = 0;
+		const fps = 30;
+		const nextframe = 1000 / fps; //for fps = 50, nextFrame = 20
+		let timer = 0;
+
+		function animate(timeStamp) {
+			// checking paint time difference
+			const deltaTime = timeStamp - lastTime;
+			//updating lastTime = current elapsed time to  paint the screen
+			lastTime = timeStamp;
+			// if time exceeds nextframe value then paint
+			// and reset timer to zero else add delta time
+			if (timer > nextframe) {
+				// drawing transparent rectangle over text to hide previous text
+				const backgroundColor = getComputedStyle(document.body).getPropertyValue('--background-color');
+				context.fillStyle = `${backgroundColor}20`;
+				context.fillRect(0, 0, canvas.width, canvas.height);
+				// text color
+				context.fillStyle = document.body.getAttribute('data-theme') === 'dark' ? singleColor : gradientColor;
+				//drawing text column
+				effect.symbols.forEach((symbol) => {
+					symbol.draw(context);
+					symbol.update();
+				});
+				timer = 0;
+			} else {
+				timer += deltaTime;
+			}
+
+			requestAnimationFrame(animate);
+		}
+		animate(0);
+
+		// resize event to handle columns adjustment on window resize
+		window.addEventListener("resize", () => {
+			gradientColor = makeGradientColor(context, window.innerWidth, window.innerHeight);
+			canvas.width = window.innerWidth;
+			canvas.height = window.innerHeight;
+			effect.resize(canvas.width, canvas.height);
+		});
+	}, [])
+
+
+	return (
+		<div id="matrix-rain">
+			<canvas ref={canvasRef}>
+			</canvas>
+		</div>
+	)
+}
+
+function makeGradientColor(context, width, height) {
+	const gradientColor = context.createLinearGradient(0, 0, width, height);
+	gradientColor.addColorStop(0, "darkred");
+	gradientColor.addColorStop(0.2, "violet");
+	gradientColor.addColorStop(0.4, "darkgreen");
+	gradientColor.addColorStop(0.6, "darkblue");
+	gradientColor.addColorStop(0.8, "blue");
+	gradientColor.addColorStop(0, "magenta");
+	return gradientColor;
+}
+
+
+export default MatrixRain

@@ -51,17 +51,15 @@
      fit-margin-right="0"
      fit-margin-bottom="0" />
     <style>
-        path {
-            fill: #55E81F;
-        }
-        @media (prefers-color-scheme: dark) {
-            #path1{
-               stroke: var(--text-color, #e9eaec) !important;
-            }
-            #rect1{
-               fill: var(--text-color, #e9eaec) !important;
-            }
-        }
+      path {
+         fill: #55E81F;
+      }
+      #path1{
+         stroke: #A5A7AC !important;
+      }
+      #rect1{
+         fill: #A5A7AC !important;
+      }
     </style>
   <rect
      class="cls-1"
