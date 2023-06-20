@@ -13,7 +13,7 @@ send -- "rm assets/*\r"
 expect -exact "sftp> \r"
 send -- "cd assets\r"
 expect -exact "sftp> \r"
-send -- "mput -r dist/assets/*\r"
+send -- "mput dist/assets/*\r"
 expect -exact "sftp> \r"
 send -- "bye\r"
 

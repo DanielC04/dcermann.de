@@ -1,6 +1,7 @@
 import React, { useRef, useEffect } from 'react'
 import Effect from "./Effect.js";
 import './MatrixRain.scss'
+import useIsInView, { isInViewport } from '../../customHooks/useIsInView.js';
 
 
 
@@ -30,14 +31,16 @@ function MatrixRain() {
 		let timer = 0;
 
 		function animate(timeStamp: number) {
+			if (context == null || canvas == null) return;
+			// check if box to animate is even in viewport -> pause if it isn't
+
 			// checking paint time difference
 			const deltaTime = timeStamp - lastTime;
 			//updating lastTime = current elapsed time to  paint the screen
 			lastTime = timeStamp;
 			// if time exceeds nextframe value then paint
 			// and reset timer to zero else add delta time
-			if (timer > nextframe) {
-				if (context == null || canvas == null) return;
+			if (timer > nextframe && isInViewport(canvas)) {
 				// drawing transparent rectangle over text to hide previous text
 				const backgroundColor = getComputedStyle(document.body).getPropertyValue('--background-color');
 				context.fillStyle = `${backgroundColor}20`;

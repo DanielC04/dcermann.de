@@ -7,7 +7,7 @@ import About from "./components/sections/About";
 import Projects from "./components/sections/Projects";
 import Skills from "./components/sections/Skills";
 import Sidebar from "./components/utils/Sidebar";
-import BackgroundAnimation from "./Backgrounds/BackgroundAnimation";
+// import BackgroundAnimation from "./Backgrounds/BackgroundAnimation";
 import { LangSpecificData, SharedData } from "./components/loaded_data_types";
 
 function App() {
@@ -40,7 +40,7 @@ function App() {
     
     return (
         <div className="app">
-            <BackgroundAnimation />
+            {/* <BackgroundAnimation /> */}
             <Home
                 sharedData={sharedData?.basic_info}
                 switchToPrimaryLang={switchToPrimaryLang}
