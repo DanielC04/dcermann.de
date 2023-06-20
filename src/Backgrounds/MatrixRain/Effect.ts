@@ -14,12 +14,11 @@ export default class Effect {
     this.fontSize = 17;
     this.columns = canvasWidth / this.fontSize;
     this.characterColumns = [];
-    console.log("new initialization")
     this.#initialize();
   }
 
   #initialize() {
-    let computeStartValue =  (x: number) => Infinity;
+    let computeStartValue =  (x: number) => x + Infinity;
     if (this.isFirstInitialization) {
       computeStartValue = (x: number) => Math.sin(x);
       this.isFirstInitialization = false;

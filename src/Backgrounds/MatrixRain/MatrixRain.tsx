@@ -31,6 +31,7 @@ function MatrixRain() {
 
 		function animate(timeStamp: number) {
 			if (context == null || canvas == null) return;
+			if (timeStamp == 0) drawBackgroundOverlay('ff', context, canvas);
 
 			// checking paint time difference
 			const deltaTime = timeStamp - lastTime;
@@ -40,9 +41,8 @@ function MatrixRain() {
 			// and reset timer to zero else add delta time
 			if (timer > nextframe && isInViewport(canvas)) {
 				// drawing transparent rectangle over text to hide previous text
-				const backgroundColor = getComputedStyle(document.body).getPropertyValue('--background-color');
-				context.fillStyle = `${backgroundColor}20`;
-				context.fillRect(0, 0, canvas.width, canvas.height);
+				drawBackgroundOverlay('20', context, canvas);
+
 				// text color
 				context.fillStyle = document.body.getAttribute('data-theme') === 'dark' ? singleColor : gradientColor;
 				//drawing text column
@@ -88,5 +88,11 @@ function makeGradientColor(context: CanvasRenderingContext2D, width: number, hei
 	return gradientColor;
 }
 
+function drawBackgroundOverlay(hexOpacity: string, context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
+	const backgroundColor = getComputedStyle(document.body).getPropertyValue('--background-color');
+	context.fillStyle = `${backgroundColor}${hexOpacity}`;
+	context.fillRect(0, 0, canvas.width, canvas.height);
+}
 
-export default MatrixRain
+
+export default MatrixRain;

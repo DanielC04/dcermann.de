@@ -10,17 +10,23 @@ import Sidebar from "./components/utils/Sidebar";
 // import BackgroundAnimation from "./Backgrounds/BackgroundAnimation";
 import { LangSpecificData, SharedData } from "./components/loaded_data_types";
 
+const RETRY_DELAY = 10_000;
+
 function App() {
-    const [resumeData, setResumeData] = useState<LangSpecificData  | undefined>();
-    const [sharedData, setSharedData] = useState<SharedData | undefined> ();
+    const [resumeData, setResumeData] = useState<
+        LangSpecificData | undefined
+    >();
+    const [sharedData, setSharedData] = useState<SharedData | undefined>();
+    const [errorMessage, setErrorMessage] = useState("");
 
     useEffect(() => {
         // load all the text
-        loadSharedData(setSharedData);
+        loadSharedData(setSharedData, setErrorMessage);
         applyPickedLanguage(
             (window as any).$primaryLanguage,
             (window as any).$secondaryLanguageIconId,
-            setResumeData
+            setResumeData,
+            setErrorMessage
         );
     }, []);
 
@@ -28,16 +34,18 @@ function App() {
         applyPickedLanguage(
             (window as any).$primaryLanguage,
             (window as any).$secondaryLanguageIconId,
-            setResumeData
+            setResumeData,
+            setErrorMessage
         );
 
     const switchToSecondaryLang = () =>
         applyPickedLanguage(
             (window as any).$secondaryLanguage,
             (window as any).$primaryLanguageIconId,
-            setResumeData
+            setResumeData,
+            setErrorMessage
         );
-    
+
     return (
         <div className="app">
             {/* <BackgroundAnimation /> */}
@@ -46,18 +54,26 @@ function App() {
                 switchToPrimaryLang={switchToPrimaryLang}
                 switchToSecondaryLang={switchToSecondaryLang}
             />
-            <About
-                resumeBasicInfo={resumeData?.basic_info}
-                sharedBasicInfo={sharedData?.basic_info}
-            />
-            <Projects
-                resumeProjects={resumeData?.projects}
-                resumeBasicInfo={resumeData?.basic_info}
-            />
-            <Skills
-                sharedSkills={sharedData?.skills}
-                resumeBasicInfo={resumeData?.basic_info}
-            />
+            {errorMessage !== "" ? (
+                <section id="error-message">
+                    <h1 className="error-message">{errorMessage}</h1>
+                </section>
+            ) : (
+                <>
+                    <About
+                        resumeBasicInfo={resumeData?.basic_info}
+                        sharedBasicInfo={sharedData?.basic_info}
+                    />
+                    <Projects
+                        projects={resumeData?.projects}
+                        basicInfo={resumeData?.basic_info}
+                    />
+                    <Skills
+                        sharedSkills={sharedData?.skills}
+                        resumeBasicInfo={resumeData?.basic_info}
+                    />
+                </>
+            )}
             <Sidebar
                 sections={[
                     "home",
@@ -76,7 +92,8 @@ function App() {
 function applyPickedLanguage(
     pickedLanguage: any,
     oppositeLangIconId: any,
-    setResumeData: any
+    setResumeData: any,
+    setErrorMessage: any
 ) {
     swapCurrentlyActiveLanguage(oppositeLangIconId);
     document.documentElement.lang = pickedLanguage;
@@ -84,19 +101,19 @@ function applyPickedLanguage(
         document.documentElement.lang === (window as any).$primaryLanguage
             ? `res_primaryLanguage.json`
             : `res_secondaryLanguage.json`;
-    loadResumeFromPath(resumePath, setResumeData);
+    loadResumeFromPath(resumePath, setResumeData, setErrorMessage);
 }
 
-function swapCurrentlyActiveLanguage(oppositeLangIconId:any) {
+function swapCurrentlyActiveLanguage(oppositeLangIconId: any) {
     const pickedLangIconId =
         oppositeLangIconId === (window as any).$primaryLanguageIconId
             ? (window as any).$secondaryLanguageIconId
             : (window as any).$primaryLanguageIconId;
-    document.getElementById(oppositeLangIconId)!.classList.remove("active");
-    document.getElementById(pickedLangIconId)!.classList.add("active");
+    document.getElementById(oppositeLangIconId)?.classList.remove("active");
+    document.getElementById(pickedLangIconId)?.classList.add("active");
 }
 
-function loadResumeFromPath(path: string, setResumeData:any) {
+function loadResumeFromPath(path: string, setResumeData: any, setErrorMessage: any) {
     $.ajax({
         url: path,
         dataType: "json",
@@ -105,12 +122,17 @@ function loadResumeFromPath(path: string, setResumeData:any) {
             setResumeData(data);
         },
         error: () => {
-            alert("connection to server failed :(");
+            console.error("connection to server failed :(");
+            setErrorMessage("connection to server failed :(");
+            setTimeout(
+                () => loadResumeFromPath(path, setResumeData, setErrorMessage),
+                RETRY_DELAY
+            );
         },
     });
 }
 
-function loadSharedData(setSharedData:any) {
+function loadSharedData(setSharedData: any, setErrorMessage: any) {
     $.ajax({
         url: `portfolio_shared_data.json`,
         dataType: "json",
@@ -120,7 +142,9 @@ function loadSharedData(setSharedData:any) {
             document.title = `${data.basic_info.name}`;
         },
         error: () => {
-            alert("connection to server failed :(");
+            console.error("connection to server failed :(");
+            setErrorMessage("connection to server failed :(");
+            setTimeout(() => loadSharedData(setSharedData, setErrorMessage), RETRY_DELAY);
         },
     });
 }

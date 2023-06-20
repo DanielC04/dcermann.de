@@ -1,76 +1,49 @@
 #projects {
     background-color: var(--background-color-2);
     padding-bottom: 5%;
+    // padding-left: var(--sidebar-width);
 
     .project {
-        display: flex;
-        justify-content: center;
-        flex-direction: column;
-        align-items: center;
         margin-bottom: 2em;
-
-        .content {
-            align-items: start;
-            .description {
-                margin-top: 20px;
-                width: 40%;
-                font-size: 1.7em;
-                overflow: scroll;
-            }
-        }
-
-        .fancy-title {
-            font-size: 20px;
-            font-weight: 500;
-            letter-spacing: 0;
-            line-height: 1.5em;
-            padding-bottom: 15px;
-            position: relative;
-            margin-bottom: 10px;
-        }
-        .fancy-title:before {
-            content: "";
-            position: absolute;
-            left: 0;
-            bottom: 0;
-            height: 5px;
-            width: 55px;
-            background-color: var(--text-color);
-        }
-        .fancy-title:after {
-            content: "";
-            position: absolute;
-            left: 0;
-            bottom: 2px;
-            height: 1px;
-            width: 95%;
-            max-width: 255px;
-            background-color: var(--background-color-3);
+        .description {
+            font-size: 1.6em;
+            // overflow: scroll;
+            text-align: justify;
         }
         .image-container {
             width: 60%;
-            position: relative;
+            // scale: 0.9;
+            // transform: translateY(-10%);
+            // width: 100%;
             .laptop {
+                float: left;
+                // position: relative;
                 width: 100%;
-                aspect-ratio: 25/14;
+                margin-top: -3px;
+                margin-right: 15px;
+                // bottom: 0;
+                // z-index: 2;
             }
             .screen {
-                position: absolute;
-                top: 4.5%;
-                left: 16.2%;
-                width: 67.2%;
-                height: 77.5%;
-                border-radius: 4px;
+                float: left;
+                aspect-ratio: 8/5;
+                width: calc(100% * 0.696);
+                margin-left: calc((100% - 69.6%) / 2 - 1px);
+                border: 10px solid #474747;
+                border-radius: 8px;
+                // z-index: 1;
+                margin-right: 15px;
             }
         }
     }
 
-    @media (min-width: 678px) {
+    // should be:
+    //      @media (min-width: var(--bs-breakpoint-md)) {
+    //      -> doesn't work because --bs-breakpoint-md attached to :root,
+    //      while media query isn't
+    @media (min-width: 768) {
         .project:nth-of-type(3) {
             margin: 15px 25% !important;
         }
-    }
-    .projects-container {
-        margin: 0 !important;
     }
 }

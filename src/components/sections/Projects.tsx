@@ -1,51 +1,30 @@
 import "./Projects.scss";
+import { Project as ProjectType, BasicInfo } from "../loaded_data_types";
+import Project from "./Project";
 
-function Projects(props: any) {
+interface Props {
+    projects: Array<ProjectType> | undefined;
+    basicInfo: BasicInfo | undefined;
+}
+
+function Projects(props: Props) {
     let sectionName, projects;
-    if (props.resumeProjects && props.resumeBasicInfo) {
-        sectionName = props.resumeBasicInfo.section_name.projects;
-        projects = props.resumeProjects.map((project: any, i: number) => (
-            <Project key={i} data={project} />
+    if (props.projects && props.basicInfo) {
+        sectionName = props.basicInfo.section_name.projects;
+        projects = props.projects.map((project: ProjectType, i: number) => (
+            <Project key={i} {...project} />
         ));
     }
 
     return (
         <section id="projects">
             <div className="col-sm-12">
-                <h1 className="section-title">
-                    <span>{sectionName}</span>
-                </h1>
-                <div className="col-sm-12 row projects-container">
-                    {projects}
+                <h1 className="section-title">{sectionName}</h1>
+                <div className="container">
+                    <div className="row g-6">{projects}</div>
                 </div>
             </div>
         </section>
-    );
-}
-
-function Project(props: any) {
-    return (
-        <div
-            className="project col-sm-12 col-md-6 col-lg-5 mx-auto"
-            key={props.data.title}
-        >
-            <span className="fancy-title">{props.data.title}</span>
-            <div className="content center">
-                <div className="image-container">
-                    <img
-                        src="/images/laptop_blank.svg"
-                        alt={props.data.title}
-                        className="laptop"
-                    />
-                    <img
-                        src={props.data.images[0]}
-                        alt={props.data.title}
-                        className="screen"
-                    />
-                </div>
-                <div className="description">{props.data.description}</div>
-            </div>
-        </div>
     );
 }
 

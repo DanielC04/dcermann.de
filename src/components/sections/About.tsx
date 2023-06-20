@@ -17,7 +17,7 @@ function About(props: any) {
         <h1>
           <span>{sectionName}</span>
         </h1>
-        <div className="row center mx-auto">
+        <div className="container row center mx-auto ">
           <div className="col-md-4 mb-5 center">
             <div className="polaroid">
               <span>
