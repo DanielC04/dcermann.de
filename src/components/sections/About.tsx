@@ -1,14 +1,14 @@
-import React from "react";
 import './About.scss';
 
-function About(props) {
+function About(props: any) {
+  let profilepic, sectionName, hello, about;
   if (props.sharedBasicInfo) {
-    var profilepic = "images/" + props.sharedBasicInfo.image;
+    profilepic = "images/" + props.sharedBasicInfo.image;
   }
   if (props.resumeBasicInfo) {
-    var sectionName = props.resumeBasicInfo.section_name.about;
-    var hello = props.resumeBasicInfo.description_header;
-    var about = props.resumeBasicInfo.description;
+    sectionName = props.resumeBasicInfo.section_name.about;
+    hello = props.resumeBasicInfo.description_header;
+    about = props.resumeBasicInfo.description;
   }
 
   return (

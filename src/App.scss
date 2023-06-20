@@ -8,8 +8,9 @@ html {
     margin: 0;
     padding: 0;
 }
-body{
+body, section{
     color: var(--text-color);
+    background-color: var(--background-color);
 }
 
 .font-trebuchet {
@@ -17,7 +18,7 @@ body{
 }
 
 section h1{
-    padding-top: 5%;
+    padding-top: 4%;
     padding-bottom: 3%;
     font: 24px/28px "opensans-bold", sans-serif;
     text-transform: uppercase;

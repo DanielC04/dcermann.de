@@ -1,6 +1,13 @@
-export default class Symbol {
-	constructor(x, y, fontSize, canvasHeight) {
-		this.chracters =
+export default class CharacterColumn{
+	private characters: string;
+	x: number;
+	y: number;
+	fontSize: number;
+	canvasHeight: number;
+	text: string;
+
+	constructor(x: number, y: number, fontSize: number, canvasHeight: number) {
+		this.characters =
 			"アァカサタナハマヤャラワガザダバパイィキシチニヒミリヰギジヂビピウゥクスツヌフムユュルグズブヅプエェケセテネヘメレヱゲゼデベペオォコソトノホモヨョロヲゴゾドボポヴッン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 		this.x = x;
 		this.y = y;
@@ -9,10 +16,10 @@ export default class Symbol {
 		this.text = "";
 	}
 
-	draw(context) {
+	draw(context: CanvasRenderingContext2D) {
 		// generating a random symbol from characters string
-		this.text = this.chracters.charAt(
-			Math.floor(Math.random() * this.chracters.length)
+		this.text = this.characters.charAt(
+			Math.floor(Math.random() * this.characters.length)
 		);
 		//drawing text
 		context.textAlign = "center";
@@ -22,7 +29,7 @@ export default class Symbol {
 	// resetting y-axis to 0 if it crosses the height of the window
 	// otherwise incerementing y-axis value by 1
 	update() {
-		if (this.y * this.fontSize > this.canvasHeight && Math.random() > 0.998) {
+		if (this.y * this.fontSize > this.canvasHeight && Math.random() > 0.99) {
 			this.y = 0;
 		} else {
 			this.y += 1;

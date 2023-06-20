@@ -1,10 +1,10 @@
-import React from "react";
 import './Skills.scss'
 
-function Skills(props) {
+function Skills(props: any) {
+  let sectionName, skills;
   if (props.sharedSkills && props.resumeBasicInfo) {
-    var sectionName = props.resumeBasicInfo.section_name.skills;
-    var skills = props.sharedSkills.icons.map((skills, i) =>
+    sectionName = props.resumeBasicInfo.section_name.skills;
+    skills = props.sharedSkills.icons.map((skills: any, i: number) =>
       <li className="list-inline-item mx-3" key={i}>
         <span>
           <div className="text-center skills-tile">

@@ -2,24 +2,25 @@ import React, { useEffect, useRef, useState } from 'react'
 import './Sidebar.scss'
 import { HashLink } from 'react-router-hash-link'
 
-function Sidebar(props) {
+function Sidebar(props: any) {
 	const [activeSection, setActiveSection] = useState('home');
-	const sectionRefs = useRef([]);
+	const sectionRefs: React.RefObject<Array<HTMLElement>> = useRef([]);
 
 	useEffect(() => {
 		document.querySelectorAll("section").forEach(e => {
-			sectionRefs.current.push(e);
+			sectionRefs.current?.push(e);
 		});
 
 
 		// set observer that checks what section is active
-		window.addEventListener('scroll', event => {
+		window.addEventListener('scroll', () => {
 			let minDist = Infinity
 			let currSection = 'home';
+			if (sectionRefs.current == null) return;
 			for (const e of sectionRefs.current) {
 				const dims = e.getBoundingClientRect()
 				if (Math.abs(dims.top) < minDist) {
-					currSection = e.attributes.id.value;
+					currSection = (e.attributes as any).id.value;
 					minDist = Math.abs(dims.top);
 				}
 			}
@@ -36,7 +37,7 @@ function Sidebar(props) {
 			</HashLink>
 			<div>
 				{
-					props.sections.map((section, id) =>
+					props.sections.map((section:string, id: number) =>
 						<HashLink to={`#${section}`} key={id} className={`section-label ${section === activeSection && 'active'}`}>
 							{section}
 						</HashLink>

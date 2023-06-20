@@ -1,17 +1,19 @@
 import React, { useRef, useEffect } from 'react'
-import Effect from "./effect.js";
+import Effect from "./Effect.js";
 import './MatrixRain.scss'
 
 
 
-function MatrixRain(props) {
-	const canvasRef = useRef(null);
+function MatrixRain() {
+	const canvasRef: React.RefObject<HTMLCanvasElement> = useRef(null);
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
+		if (canvas == null) return;
 		canvas.width = window.innerWidth;
 		canvas.height = window.innerHeight;
 		const context = canvas.getContext('2d');
+		if (context == null) return;
 
 		//single color
 		const singleColor = "#0aff0a";
@@ -27,7 +29,7 @@ function MatrixRain(props) {
 		const nextframe = 1000 / fps; //for fps = 50, nextFrame = 20
 		let timer = 0;
 
-		function animate(timeStamp) {
+		function animate(timeStamp: number) {
 			// checking paint time difference
 			const deltaTime = timeStamp - lastTime;
 			//updating lastTime = current elapsed time to  paint the screen
@@ -35,6 +37,7 @@ function MatrixRain(props) {
 			// if time exceeds nextframe value then paint
 			// and reset timer to zero else add delta time
 			if (timer > nextframe) {
+				if (context == null || canvas == null) return;
 				// drawing transparent rectangle over text to hide previous text
 				const backgroundColor = getComputedStyle(document.body).getPropertyValue('--background-color');
 				context.fillStyle = `${backgroundColor}20`;
@@ -42,7 +45,7 @@ function MatrixRain(props) {
 				// text color
 				context.fillStyle = document.body.getAttribute('data-theme') === 'dark' ? singleColor : gradientColor;
 				//drawing text column
-				effect.symbols.forEach((symbol) => {
+				effect.characterColumns.forEach((symbol) => {
 					symbol.draw(context);
 					symbol.update();
 				});
@@ -73,7 +76,7 @@ function MatrixRain(props) {
 	)
 }
 
-function makeGradientColor(context, width, height) {
+function makeGradientColor(context: CanvasRenderingContext2D, width: number, height: number) {
 	const gradientColor = context.createLinearGradient(0, 0, width, height);
 	gradientColor.addColorStop(0, "darkred");
 	gradientColor.addColorStop(0.2, "violet");

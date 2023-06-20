@@ -14,7 +14,7 @@
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-    padding-top: 150px;
+    padding-top: clamp(20px, 10vh, 150px);
     padding-bottom: 0;
 
     .aligner {
@@ -22,10 +22,6 @@
         align-items: center;
         justify-content: center;
         height: 100%;
-    }
-
-    .title-container {
-        height: 50px;
     }
 
     .title-styles {
@@ -42,6 +38,10 @@
         font-size: 50px;
         cursor: pointer;
         margin: auto 10px;
+        filter: brightness(40%);
+    }
+    .language-icon.active{
+        filter: none;
     }
 
     .language-container {
@@ -63,12 +63,10 @@
         font-weight: 600 !important;
         color: var(--text-color);
         font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
-        margin: 0 auto 18px auto;
+        // margin: 0 auto 18px auto;
+        padding-top: 2%;
+        padding-bottom: 1%;
         width: 100%;
-    }
-    .react-switch {
-        position: sticky;
-        top: 10px;
     }
     .react-switch-bg {
         background-color: var(--background-color-2);

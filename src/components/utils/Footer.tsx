@@ -1,10 +1,9 @@
-import React from "react";
 import './Footer.scss'
 
-function Footer(props) {
+export default function Footer(props: any) {
   let networks = []
   if (props.sharedBasicInfo) {
-    networks = props.sharedBasicInfo.social.map((network) =>
+    networks = props.sharedBasicInfo.social.map((network: any) =>
       <span key={network.name} className="m-4">
         <a href={network.url} target="_blank" rel="noopener noreferrer">
           <i className={network.class}></i>
@@ -31,5 +30,3 @@ function Footer(props) {
     </footer>
   );
 }
-
-export default Footer;
