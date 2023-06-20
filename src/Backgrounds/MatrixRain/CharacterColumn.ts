@@ -29,7 +29,7 @@ export default class CharacterColumn{
 	// resetting y-axis to 0 if it crosses the height of the window
 	// otherwise incerementing y-axis value by 1
 	update() {
-		if (this.y * this.fontSize > this.canvasHeight && Math.random() > 0.95) {
+		if (this.y * this.fontSize > this.canvasHeight && Math.random() > 0.998) {
 			this.y = 0;
 		} else {
 			this.y += 1;

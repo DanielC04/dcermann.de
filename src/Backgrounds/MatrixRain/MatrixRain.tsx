@@ -1,8 +1,7 @@
 import React, { useRef, useEffect } from 'react'
 import Effect from "./Effect.js";
 import './MatrixRain.scss'
-import useIsInView, { isInViewport } from '../../customHooks/useIsInView.js';
-
+import { isInViewport } from '../../customHooks/useIsInView.js';
 
 
 function MatrixRain() {
@@ -32,7 +31,6 @@ function MatrixRain() {
 
 		function animate(timeStamp: number) {
 			if (context == null || canvas == null) return;
-			// check if box to animate is even in viewport -> pause if it isn't
 
 			// checking paint time difference
 			const deltaTime = timeStamp - lastTime;

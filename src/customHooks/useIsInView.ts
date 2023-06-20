@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 export const isInViewport = (el: Element): boolean => {
 	const rect = el.getBoundingClientRect();
-	return rect.top < window.innerHeight && rect.bottom > 0;
+	return rect.top < window.innerHeight && rect.bottom > 0 && document.visibilityState == 'visible';
 }
 
 const useIsInView = (elementSelector: string) => {

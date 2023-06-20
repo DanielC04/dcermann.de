@@ -1,6 +1,6 @@
 #home {
-    background-color: var(--background-color);
-    // background-color: transparent;
+    // background-color: var(--background-color);
+    background-color: transparent;
 
     position: relative;
     height: 520px;
@@ -82,4 +82,16 @@
     .unchecked-icon {
         margin-left: 20px;
     }
+}
+
+// draw background of #home div to make sure it's not white when the animation is refreshing
+#home::before{
+    content: '';
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: var(--background-color);
+    z-index: -1;
 }
