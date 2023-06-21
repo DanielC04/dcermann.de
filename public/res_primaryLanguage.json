@@ -1,163 +1,309 @@
 {
-    "basic_info": {
-      "description_header": "Hi",
-      "description": "👋 I'm Daniel Cermann ️✴ 19 yo ✴ Programmer and DIY enthusiast from Germany :) </br> I like everything from React programming to 3D-Design and printing. Currently, I'm living in Argentina doing a volunteer year ✌️ Next year, I will start my studies of Computer Science in Germany 📖",
-      "section_name": {
-        "about": "About me",
-        "projects": "Projects",
-        "skills": "Skills",
-        "experience": "Experience"
-      }
+  "basic_info": {
+    "description_header": "Hi",
+    "description": "👋 I'm Daniel Cermann ️✴ 19 yo ✴ Programmer and DIY enthusiast from Germany :) </br> I like everything from React programming to 3D-Design and printing. Currently, I'm living in Argentina doing a volunteer year ✌️ Next year, I will start my studies of Computer Science in Germany 📖",
+    "section_name": {
+      "about": "About me",
+      "projects": "Projects",
+      "skills": "Skills",
+      "experience": "Experience"
+    }
+  },
+  "projects": [
+    {
+      "title": "BeeSupervisor",
+      "startDate": "2020",
+      "description": "Varroamilben sind Parasiten, die sich auf den Rücken von Honigbienen festsaugen und diese schädigen. Durch am Bienestockeingang angebrachte Kameras werden hereinfliegende Bienen auf den Parasiten untersucht. Der Imker wird anschließend über den Befall eines Volkes informiert und kann die Bienen entsprechend behandeln.",
+      "images": [
+        "images/beesupervisor.jpg"
+      ],
+      "url": "",
+      "technologies": [
+        {
+          "class": "devicon-angularjs-plain",
+          "name": "Angular"
+        },
+        {
+          "class": "devicon-typescript-plain",
+          "name": "TypeScript"
+        },
+        {
+          "class": "devicon-csharp-plain",
+          "name": "C#"
+        }
+      ]
     },
-    "projects": [
-      {
-        "title": "BeeSupervisor",
-        "startDate": "2020",
-        "description": "Varroamilben sind Parasiten, die sich auf den Rücken von Honigbienen festsaugen und diese schädigen. Durch am Bienestockeingang angebrachte Kameras werden hereinfliegende Bienen auf den Parasiten untersucht. Der Imker wird anschließend über den Befall eines Volkes informiert und kann die Bienen entsprechend behandeln.",
-        "images": [
-          "images/beesupervisor.jpg"
-        ],
-        "url": "",
-        "technologies": [
-          {
-            "class": "devicon-angularjs-plain",
-            "name": "Angular"
-          },
-          {
-            "class": "devicon-typescript-plain",
-            "name": "TypeScript"
-          },
-          {
-            "class": "devicon-csharp-plain",
-            "name": "C#"
-          }
-        ]
-      },
-      {
-        "title": "GYPT - German Young Physicist Tournament",
-        "startDate": "2015",
-        "description": "Für die Aufgabe 4 des GYPT 2021, German Young Physicists Tournament, habe ich eine physikalische Simulation zum thermodynamischen Sachverhalt geschrieben.",
-        "images": [
-          "images/gypt.jpg"
-        ],
-        "url": "https://github.com",
-        "technologies": [
-          {
-            "class": "devicon-angularjs-plain",
-            "name": "Angular"
-          },
-          {
-            "class": "devicon-typescript-plain",
-            "name": "TypeScript"
-          },
-          {
-            "class": "devicon-csharp-plain",
-            "name": "C#"
-          }
-        ]
-      },
-      {
-        "title": "Convex Hulls",
-        "startDate": "2018",
-        "description": "Im Rahmen eines Informatikprojekts habe ich eine Webapp programmiert, die die konvexe Hülle einer Punktmenge findet. Der Nutzer kann eine Punktmenge generieren lassen oder manuell eingeben. Mehrere Algorithmen, darunter Jarvis March, Graham Scan und Chan's Algorithm, werden dabei visualisiert.",
-        "images": [
-          "images/convexhulls.jpg"
-        ],
-        "url": "https://github.com",
-        "technologies": [
-          {
-            "class": "devicon-react-original",
-            "name": "React"
-          },
-          {
-            "class": "devicon-javascript-plain",
-            "name": "JavaScript"
-          }
-        ]
-      },
-      {
-        "title": "Mega-Tic-Tac-Toe",
-        "startDate": "2015",
-        "description": "Coole Erweiterung von TicTacToe: In jedem der klassischen 3x3 Felder befindet sich ein TicTacToe-Feld, in denen jeweils ein separates Spiel abläuft.  ",
-        "images": [
-          "images/tictactoe.jpg"
-        ],
-        "url": "https://github.com",
-        "technologies": [
-          {
-            "class": "devicon-angularjs-plain",
-            "name": "Angular"
-          },
-          {
-            "class": "devicon-typescript-plain",
-            "name": "TypeScript"
-          },
-          {
-            "class": "devicon-csharp-plain",
-            "name": "C#"
-          }
-        ]
-      },
-      {
-        "title": "Mensch ärgere dich nicht - Simulation",
-        "startDate": "2015",
-        "description": "Für die 4. Aufgabe des Bundeswettbewerbs Informatik 2021 habe ich eine Spielsimulation für Mensch ärgere dich nicht programmiert. Für jeden der vier Spieler können dabei Würfel mit beliebiger Seitenanzahl und beliebigen Augenzahlen erstellt werden. Durch mehrere Simulationen kann dadurch der beste Würfel ermittelt werden.",
-        "images": [
-          "images/gameSimulation.jpg"
-        ],
-        "url": "https://github.com",
-        "technologies": [
-          {
-            "class": "devicon-angularjs-plain",
-            "name": "Angular"
-          },
-          {
-            "class": "devicon-typescript-plain",
-            "name": "TypeScript"
-          },
-          {
-            "class": "devicon-csharp-plain",
-            "name": "C#"
-          }
-        ]
-      }
-
-
-    ],
-    "experience": [
-      {
-        "company": "DefOpenSource",
-        "title": "Front-End Developer",
-        "years": "10.2019 - present",
-        "mainTech": [
-          "Angular 8/9/10"
-        ],
-        "technologies": [
-          "REST API",
-          "RxJS",
-          "JavaScript",
-          "Bootstrap",
-          "MDBootstrap",
-          "EF Core",
-          ".NET Core",
-          "SignalR",
-          "Angular Material"
-        ]
-      },
-      {
-        "company": "Serros Solutions",
-        "title": "Intern",
-        "years": "01.2018 - 09.2019",
-        "mainTech": [
-          "Angular 7/8"
-        ],
-        "technologies": [
-          "RxJS",
-          "Django",
-          "PHP",
-          "JavaScript",
-          "DHTMLX Gantt"
-        ]
-      }
-    ]
-  }
+    {
+      "title": "GYPT - German Young Physicist Tournament",
+      "startDate": "2015",
+      "description": "Für die Aufgabe 4 des GYPT 2021, German Young Physicists Tournament, habe ich eine physikalische Simulation zum thermodynamischen Sachverhalt geschrieben.",
+      "images": [
+        "images/gypt.jpg"
+      ],
+      "url": "https://github.com",
+      "technologies": [
+        {
+          "class": "devicon-angularjs-plain",
+          "name": "Angular"
+        },
+        {
+          "class": "devicon-typescript-plain",
+          "name": "TypeScript"
+        },
+        {
+          "class": "devicon-csharp-plain",
+          "name": "C#"
+        }
+      ]
+    },
+    {
+      "title": "Convex Hulls",
+      "startDate": "2018",
+      "description": "Im Rahmen eines Informatikprojekts habe ich eine Webapp programmiert, die die konvexe Hülle einer Punktmenge findet. Der Nutzer kann eine Punktmenge generieren lassen oder manuell eingeben. Mehrere Algorithmen, darunter Jarvis March, Graham Scan und Chan's Algorithm, werden dabei visualisiert.",
+      "images": [
+        "images/convexhulls.jpg"
+      ],
+      "url": "https://github.com",
+      "technologies": [
+        {
+          "class": "devicon-react-original",
+          "name": "React"
+        },
+        {
+          "class": "devicon-javascript-plain",
+          "name": "JavaScript"
+        }
+      ]
+    },
+    {
+      "title": "Mega-Tic-Tac-Toe",
+      "startDate": "2015",
+      "description": "Coole Erweiterung von TicTacToe: In jedem der klassischen 3x3 Felder befindet sich ein TicTacToe-Feld, in denen jeweils ein separates Spiel abläuft.  ",
+      "images": [
+        "images/tictactoe.jpg"
+      ],
+      "url": "https://github.com",
+      "technologies": [
+        {
+          "class": "devicon-angularjs-plain",
+          "name": "Angular"
+        },
+        {
+          "class": "devicon-typescript-plain",
+          "name": "TypeScript"
+        },
+        {
+          "class": "devicon-csharp-plain",
+          "name": "C#"
+        }
+      ]
+    },
+    {
+      "title": "Mensch ärgere dich nicht - Simulation",
+      "startDate": "2015",
+      "description": "Für die 4. Aufgabe des Bundeswettbewerbs Informatik 2021 habe ich eine Spielsimulation für Mensch ärgere dich nicht programmiert. Für jeden der vier Spieler können dabei Würfel mit beliebiger Seitenanzahl und beliebigen Augenzahlen erstellt werden. Durch mehrere Simulationen kann dadurch der beste Würfel ermittelt werden.",
+      "images": [
+        "images/gameSimulation.jpg"
+      ],
+      "url": "https://github.com",
+      "technologies": [
+        {
+          "class": "devicon-angularjs-plain",
+          "name": "Angular"
+        },
+        {
+          "class": "devicon-typescript-plain",
+          "name": "TypeScript"
+        },
+        {
+          "class": "devicon-csharp-plain",
+          "name": "C#"
+        }
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "name": "Languages I speak",
+      "data": [
+        {
+          "name": "German",
+          "icon": "flag-germany",
+          "description": "Native Language...",
+          "proficiency": 100
+        },
+        {
+          "name": "English",
+          "icon": "flag-name-to-be-looked-for",
+          "description": "C2 Level according to Certificate of Advance English (CAE)",
+          "proficiency": 90
+        },
+        {
+          "name": "Spanish",
+          "icon": "flag-name-to-be-looked-for",
+          "description": "I spent one year learning spanish in Argentina",
+          "proficiency": 85
+        }
+      ]
+    },
+    {
+      "name": "Programming languages",
+      "data": [
+        {
+          "name": "Python",
+          "icon": "devicon-python-plain",
+          "description": "",
+          "proficiency": 80
+        },
+        {
+          "name": "JavaScript",
+          "icon": "devicon-javascript-plain",
+          "description": "",
+          "proficiency": 80
+        },
+        {
+          "name": "TypeScript",
+          "icon": "devicon-typescript-plain",
+          "description": "",
+          "proficiency": 40
+        },
+        {
+          "name": "C++",
+          "icon": "devicon-cplusplus-plain",
+          "description": "",
+          "proficiency": 50
+        },
+        {
+          "name": "Golang",
+          "icon": "devicon-go-plain",
+          "description": "",
+          "proficiency": 30
+        },
+        {
+          "name": "HTML/CSS/JS",
+          "icon": "devicon-html5-plain",
+          "description": "",
+          "proficiency": 80
+        },
+        {
+          "name": "Sass",
+          "icon": "devicon-sass-original",
+          "description": "",
+          "proficiency": 50
+        }
+      ]
+    },
+    {
+      "name": "Frameworks I like",
+      "data": [
+        {
+          "name": "React",
+          "icon": "devicon-react-plain",
+          "description": "",
+          "proficiency": 80
+        },
+        {
+          "name": "THREE JS",
+          "icon": "devicon-threejs-plain",
+          "description": "",
+          "proficiency": 40
+        }
+      ]
+    },
+    {
+      "name": "Random tools and programming basics",
+      "data": [
+        {
+          "name": "vim",
+          "icon": "devicon-vim-plain",
+          "description": "",
+          "proficiency": 50
+        },
+        {
+          "name": "LaTeX",
+          "icon": "devicon-latex-plain",
+          "description": "",
+          "proficiency": 70
+        },
+        {
+          "name": "3D-Design",
+          "icon": "devicon-cubes-plain",
+          "description": "with Fusion 360",
+          "proficiency": 60
+        },
+        {
+          "name": "bash",
+          "icon": "devicon-bash-plain",
+          "description": "",
+          "proficiency": 40
+        },
+        {
+          "name": "git",
+          "icon": "devicon-github-plain",
+          "description": "",
+          "proficiency": 60
+        }
+      ]
+      
+    },
+    {
+      "name": "Things I wanna learn",
+      "data": [
+        {
+          "name": "Svelte",
+          "icon": "devicon-svelte-plain",
+          "description": "It's sooo cool",
+          "proficiency": 100
+        },
+        {
+          "name": "Tailwind CSS",
+          "icon": "devicon-tailwindcss-plain",
+          "description": "",
+          "proficiency": 100
+        },
+        {
+          "name": "Cyber Security",
+          "icon": "devicon-kali-linux-plain",
+          "description": "whitehat hacking only 😏",
+          "proficiency": 100
+        }
+      ]
+    }
+  ],
+  "experience": [
+    {
+      "company": "DefOpenSource",
+      "title": "Front-End Developer",
+      "years": "10.2019 - present",
+      "mainTech": [
+        "Angular 8/9/10"
+      ],
+      "technologies": [
+        "REST API",
+        "RxJS",
+        "JavaScript",
+        "Bootstrap",
+        "MDBootstrap",
+        "EF Core",
+        ".NET Core",
+        "SignalR",
+        "Angular Material"
+      ]
+    },
+    {
+      "company": "Serros Solutions",
+      "title": "Intern",
+      "years": "01.2018 - 09.2019",
+      "mainTech": [
+        "Angular 7/8"
+      ],
+      "technologies": [
+        "RxJS",
+        "Django",
+        "PHP",
+        "JavaScript",
+        "DHTMLX Gantt"
+      ]
+    }
+  ]
+}

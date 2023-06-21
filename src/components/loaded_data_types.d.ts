@@ -16,19 +16,24 @@ export interface Social {
     class: string;
 }
 
-export interface Skills {
-    icons: Icon[];
+export type Skills = Array<SkillCategory>
+
+export interface SkillCategory{
+    name: string;
+    data: Skill[];
 }
 
-export interface Icon {
+export interface Skill {
     name:  string;
-    class: string;
-    level: string;
+    icon: string;
+    description: string;
+    proficiency: string;
 }
 
 export interface LangSpecificData {
     basic_info: BasicInfo;
-    projects:   Project[];
+    projects: Project[];
+    skills: Skills;
     experience: Experience[];
 }
 

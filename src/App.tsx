@@ -39,8 +39,8 @@ function App() {
                         basicInfo={resumeData?.basic_info}
                     />
                     <Skills
-                        sharedSkills={sharedData?.skills}
-                        resumeBasicInfo={resumeData?.basic_info}
+                        skills={resumeData?.skills}
+                        basicInfo={resumeData?.basic_info}
                     />
                 </>
             )}

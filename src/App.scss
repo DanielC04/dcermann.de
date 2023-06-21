@@ -8,11 +8,11 @@ html {
     margin: 0;
     padding: 0;
 }
-body,
 section {
     color: var(--text-color);
     background-color: var(--background-color);
     padding-bottom: 4%;
+    overflow: hidden;
 }
 
 .font-trebuchet {
@@ -44,7 +44,7 @@ section h1 {
     line-height: 1.5em;
     padding-bottom: 15px;
     position: relative;
-    margin-bottom: 20px;
+    margin: 20px 0;
     display: inline-block;
 }
 .fancy-title:before {
