@@ -1,0 +1,20 @@
+.color-theme-switch {
+    position: sticky;
+    top: 20px;
+    z-index: 10;
+
+    .react-switch-bg {
+        background-color: var(--background-color-2);
+    }
+    .checked-icon,
+    .unchecked-icon {
+        display: block;
+        height: 100%;
+        font-size: 25px;
+        text-align: end;
+        margin-left: 10px;
+    }
+    .unchecked-icon {
+        margin-left: 20px;
+    }
+}
