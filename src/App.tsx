@@ -8,6 +8,7 @@ import Skills from "./components/sections/Skills";
 import Sidebar from "./components/utils/Sidebar";
 import { LangSpecificData, SharedData } from "./components/loaded_data_types";
 import LanguageSwitch from "./components/utils/LanguageSwitch";
+import Contact from "./components/sections/Contact";
 
 function App() {
     const [resumeData, setResumeData] = useState<
@@ -42,15 +43,15 @@ function App() {
                         skills={resumeData?.skills}
                         basicInfo={resumeData?.basic_info}
                     />
+                    <Contact basicInfo={resumeData?.basic_info} />
                 </>
             )}
             <Sidebar
-                sections={[
+                sectionNames={[
                     "home",
                     "about",
                     "projects",
                     "skills",
-                    "experience",
                     "contact",
                 ]}
             />

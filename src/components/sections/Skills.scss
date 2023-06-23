@@ -2,6 +2,7 @@
     background-color: var(--background-color-1);
 
     .skill {
+        // cursor: pointer;
         font-size: large;
         .skill-icon {
             font-size: 180%;
@@ -12,10 +13,10 @@
         .proficiency-indicator {
             width: 100%;
             height: 2em;
-            background-color: var(--background-color-3);
+            background-color: var(--background-color-2);
             border-radius: 0.5em;
             position: relative;
-            margin: 10px 0;
+            margin-top: 10px;
             .bar {
                 height: 100%;
                 position: absolute;
@@ -27,8 +28,13 @@
                 align-items: center;
                 justify-content: center;
                 color: var(--background-color);
-                span{
+                .name{
                     padding: 4px;
+                }
+                .percentage{
+                    position: absolute;
+                    right: 0;
+                    transform: translateX(calc(100% + 10px));
                 }
             }
         }

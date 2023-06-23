@@ -5,7 +5,6 @@ import {
 import Skill from "./Skill";
 
 function SkillCategory(props: SkillCategoryType) {
-    console.log(props);
     return (
         <div className="skill-category col-lg-4 col-md-6 col-sm-12">
             <span className="fancy-title">{props.name}</span>

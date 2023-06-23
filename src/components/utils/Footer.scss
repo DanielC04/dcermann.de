@@ -23,3 +23,12 @@ footer {
         font-size: 22px;
     }
 }
+footer::after   {
+    content: '';
+    background: linear-gradient(to right, transparent 10%, var(--text-color), transparent);
+    height: 2px;
+    width: 100vw;
+    position: absolute;
+    top: 0;
+    left: 0;
+}

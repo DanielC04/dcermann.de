@@ -1,9 +1,12 @@
 body[data-theme="dark"] {  
    --background-color: #061438;
    --text-color: #eef4ed;
-    --background-color-1: color-mix(in srgb, var(--background-color) 90%, var(--text-color));
-    --background-color-2: color-mix(in srgb, var(--background-color) 80%, var(--text-color));
-    --background-color-3: color-mix(in srgb, var(--background-color) 70%, var(--text-color));
+   // --background-color-1: color-mix(in srgb, var(--background-color) 90%, var(--text-color));
+   --background-color-1: #19243f;
+   // --background-color-2: color-mix(in srgb, var(--background-color) 80%, var(--text-color));
+   --background-color-2: #2c374e;
+   // --background-color-3: color-mix(in srgb, var(--background-color) 70%, var(--text-color));
+   // --contrast-color: #eb5f31;
    --contrast-color: #eb5f31;
    section{
       filter: brightness(85%);

@@ -6,7 +6,8 @@
       "about": "About me",
       "projects": "Projects",
       "skills": "Skills",
-      "experience": "Experience"
+      "experience": "Experience",
+      "contact": "Contact"
     }
   },
   "projects": [
@@ -40,7 +41,7 @@
       "images": [
         "images/gypt.jpg"
       ],
-      "url": "https://github.com",
+      "url": "https://gypt.dcermann.de",
       "technologies": [
         {
           "class": "devicon-angularjs-plain",
@@ -63,7 +64,7 @@
       "images": [
         "images/convexhulls.jpg"
       ],
-      "url": "https://github.com",
+      "url": "https://convexhulls.dcermann.de",
       "technologies": [
         {
           "class": "devicon-react-original",
@@ -82,7 +83,7 @@
       "images": [
         "images/tictactoe.jpg"
       ],
-      "url": "https://github.com",
+      "url": "https://tictactoe.dcermann.de",
       "technologies": [
         {
           "class": "devicon-angularjs-plain",
@@ -105,7 +106,7 @@
       "images": [
         "images/gameSimulation.jpg"
       ],
-      "url": "https://github.com",
+      "url": "https://bwinf.dcermann.de",
       "technologies": [
         {
           "class": "devicon-angularjs-plain",
@@ -204,7 +205,7 @@
         },
         {
           "name": "THREE JS",
-          "icon": "devicon-threejs-plain",
+          "icon": "devicon-threejs-original",
           "description": "",
           "proficiency": 40
         }
@@ -264,7 +265,7 @@
         {
           "name": "Cyber Security",
           "icon": "devicon-kali-linux-plain",
-          "description": "whitehat hacking only 😏",
+          "description": "whitehat hacking only 😉",
           "proficiency": 100
         }
       ]

@@ -48,6 +48,7 @@ export interface SectionName {
     projects:   string;
     skills:     string;
     experience: string;
+    contact:    string;
 }
 
 export interface Experience {

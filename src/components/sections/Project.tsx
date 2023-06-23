@@ -1,4 +1,6 @@
 import { Project as ProjectData } from "../loaded_data_types";
+import { Link } from "react-router-dom";
+
 function Project(props: ProjectData) {
     return (
         <div
@@ -8,7 +10,7 @@ function Project(props: ProjectData) {
             <span className="fancy-title">{props.title}</span>
             {/* <div className="row"> */}
             <div>
-                <div className="image-container">
+                <Link className="image-container" to={props.url} target="_blank">
                     <img
                         src={props.images[0]}
                         alt={props.title}
@@ -19,7 +21,7 @@ function Project(props: ProjectData) {
                         alt={props.title}
                         className="laptop"
                     />
-                </div>
+                </Link>
                 <p className="description">{props.description}</p>
                 {/* </div> */}
             </div>
