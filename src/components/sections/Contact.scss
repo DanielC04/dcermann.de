@@ -19,6 +19,7 @@ $contrast_color: var(--contrast-color);
     }
 
     .say-hello{
+        text-transform: none;
         font-size: clamp(3em, 4vw, 5em);
         font-weight: 900;
         // font-family: "Raleway", sans-serif;
@@ -80,8 +81,10 @@ $contrast_color: var(--contrast-color);
         font-size: 12px;
     }
 
-    .login-box form a {
+    .login-box form button {
         position: relative;
+        background-color: transparent;
+        border: none;
         display: inline-block;
         padding: 10px 20px;
         color: var(--text-color);
@@ -96,7 +99,7 @@ $contrast_color: var(--contrast-color);
         font-weight: 700;
     }
 
-    .login-box a:hover {
+    .login-box button:hover {
         background: $contrast_color;
         color: var(--text-color);
         border-radius: 5px;
@@ -128,12 +131,9 @@ $contrast_color: var(--contrast-color);
         }
     }
 
-    .login-box a .animation{
+    .login-box .animation{
         position: absolute;
         display: block;
-      }
-
-    .login-box a .animation{
         bottom: 2px;
         left: -100%;
         width: 100%;

@@ -15,12 +15,6 @@ function Sidebar(props: Props) {
             if (sectionRefs.current == null) return;
             sectionRefs.current[i] = document.querySelector(`#${name}`);
         });
-        // document.querySelectorAll("section").forEach((e, i) => {
-        // 	console.log(e)
-        //     if (sectionRefs.current != null) sectionRefs.current[i] = e;
-        // });
-
-        console.log(sectionRefs.current);
 
         // set observer that checks what section is active
         window.addEventListener("scroll", () => {

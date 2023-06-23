@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import "./LanguageSwitch.scss";
 import { LangSpecificData, SharedData } from "../loaded_data_types";
-import $ from "jquery";
+// import $ from "jquery";
 
 const RETRY_DELAY = 10_000;
 
@@ -14,13 +14,13 @@ interface Props {
 function LanguageSwitch(props: Props) {
     useEffect(() => {
         // load all the text
-        loadSharedData(props.setSharedData, props.setErrorMessage);
-        applyPickedLanguage(
-            (window as any).$primaryLanguage,
-            (window as any).$secondaryLanguageIconId,
-            props.setResumeData,
-            props.setErrorMessage
-        );
+        // loadSharedData(props.setSharedData, props.setErrorMessage);
+        // applyPickedLanguage(
+        //     (window as any).$primaryLanguage,
+        //     (window as any).$secondaryLanguageIconId,
+        //     props.setResumeData,
+        //     props.setErrorMessage
+        // );
     }, []);
 
     const switchToPrimaryLang = () =>
@@ -93,47 +93,47 @@ function swapCurrentlyActiveLanguage(oppositeLangIconId: any) {
     document.getElementById(pickedLangIconId)?.classList.add("active");
 }
 
-function loadResumeFromPath(
-    path: string,
-    setResumeData: any,
-    setErrorMessage: any
-) {
-    $.ajax({
-        url: path,
-        dataType: "json",
-        cache: false,
-        success: (data: LangSpecificData) => {
-            setResumeData(data);
-        },
-        error: () => {
-            console.error("connection to server failed :(");
-            setErrorMessage("connection to server failed :(");
-            setTimeout(
-                () => loadResumeFromPath(path, setResumeData, setErrorMessage),
-                RETRY_DELAY
-            );
-        },
-    });
-}
+// function loadResumeFromPath(
+//     path: string,
+//     setResumeData: any,
+//     setErrorMessage: any
+// ) {
+//     $.ajax({
+//         url: path,
+//         dataType: "json",
+//         cache: false,
+//         success: (data: LangSpecificData) => {
+//             setResumeData(data);
+//         },
+//         error: () => {
+//             console.error("connection to server failed :(");
+//             setErrorMessage("connection to server failed :(");
+//             setTimeout(
+//                 () => loadResumeFromPath(path, setResumeData, setErrorMessage),
+//                 RETRY_DELAY
+//             );
+//         },
+//     });
+// }
 
-function loadSharedData(setSharedData: any, setErrorMessage: any) {
-    $.ajax({
-        url: `portfolio_shared_data.json`,
-        dataType: "json",
-        cache: false,
-        success: function (data: SharedData) {
-            setSharedData(data);
-            document.title = `${data.basic_info.name}`;
-        },
-        error: () => {
-            console.error("connection to server failed :(");
-            setErrorMessage("connection to server failed :(");
-            setTimeout(
-                () => loadSharedData(setSharedData, setErrorMessage),
-                RETRY_DELAY
-            );
-        },
-    });
-}
+// function loadSharedData(setSharedData: any, setErrorMessage: any) {
+//     $.ajax({
+//         url: `portfolio_shared_data.json`,
+//         dataType: "json",
+//         cache: false,
+//         success: function (data: SharedData) {
+//             setSharedData(data);
+//             document.title = `${data.basic_info.name}`;
+//         },
+//         error: () => {
+//             console.error("connection to server failed :(");
+//             setErrorMessage("connection to server failed :(");
+//             setTimeout(
+//                 () => loadSharedData(setSharedData, setErrorMessage),
+//                 RETRY_DELAY
+//             );
+//         },
+//     });
+// }
 
 export default LanguageSwitch;

@@ -1,68 +1,67 @@
 import { useEffect, useState } from "react";
 import "./ColorThemeSwitch.scss";
-import Switch from "react-switch";
+
+type ThemeType = "light" | "dark";
 
 function ColorThemeSwitch() {
     const [checked, setChecked] = useState(false);
 
     useEffect(() => {
-        const newTheme = setTheme(true);
-        if (newTheme == "light") setChecked(true);
+        const startTheme = getStartTheme();
+        setTheme(startTheme);
     }, []);
+
+    const toggleTheme = () => {
+        const newTheme: ThemeType = checked ? "light" : "dark";
+        setChecked(!checked);
+        setTheme(newTheme);
+    };
 
     return (
         <div className="color-theme-switch">
-            <Switch
-                checked={checked}
-                onChange={() => {
-                    setChecked(!checked);
-                    setTheme();
-                }}
-                offColor="blue"
-                onColor="red"
-                className="react-switch mx-auto"
-                width={90}
-                height={40}
-                uncheckedIcon={
-                    <span
-                        className="iconify unchecked-icon"
-                        data-icon="twemoji:owl"
-                        data-inline="false"
-                    ></span>
-                }
-                checkedIcon={
-                    <span
-                        className="iconify checked-icon"
-                        data-icon="noto-v1:sun-with-face"
-                        data-inline="false"
-                    ></span>
-                }
-                id="icon-switch"
+            <input
+                type="checkbox"
+                className="dn"
+                id="dn"
+                defaultChecked={checked}
+                onChange={toggleTheme}
             />
+            <label htmlFor="dn" className="toggle">
+                <span className="toggle__handler">
+                    <span className="crater crater--1"></span>
+                    <span className="crater crater--2"></span>
+                    <span className="crater crater--3"></span>
+                </span>
+                <span className="star star--1"></span>
+                <span className="star star--2"></span>
+                <span className="star star--3"></span>
+                <span className="star star--4"></span>
+                <span className="star star--5"></span>
+                <span className="star star--6"></span>
+            </label>
         </div>
     );
 }
 
-function setTheme(forFirstTime = false) {
-    const dataThemeAttribute = "data-theme";
-    const body = document.body;
-    let newTheme: string | null =
-        body.getAttribute(dataThemeAttribute) === "dark" ? "light" : "dark";
-    if (forFirstTime) {
-        // try loading previous theme from local storage
-        newTheme = window.localStorage.getItem("data-theme");
-        if (!newTheme) {
-            // load according to prefered color scheme
-            newTheme =
-                window.matchMedia &&
-                window.matchMedia("(prefers-color-scheme: dark)").matches
-                    ? "dark"
-                    : "light";
-        }
+function getStartTheme(): ThemeType {
+    // try loading previous theme from local storage
+    let newTheme = window.localStorage.getItem("data-theme") as ThemeType;
+    if (!newTheme) {
+        // load according to prefered color scheme
+        newTheme =
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+                ? "dark"
+                : "light";
     }
-    body.setAttribute(dataThemeAttribute, newTheme);
-    window.localStorage.setItem("data-theme", newTheme);
+
     return newTheme;
+}
+
+function setTheme(newTheme: ThemeType) {
+    const dataThemeAttribute = "data-theme";
+    document.body.setAttribute(dataThemeAttribute, newTheme);
+    window.localStorage.setItem("data-theme", newTheme);
 }
 
 export default ColorThemeSwitch;
