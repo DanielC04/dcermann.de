@@ -41,7 +41,7 @@ function MatrixRain() {
 			// and reset timer to zero else add delta time
 			if (timer > nextframe && isInViewport(canvas)) {
 				// drawing transparent rectangle over text to hide previous text
-				drawBackgroundOverlay('20', context, canvas);
+				drawBackgroundOverlay('14', context, canvas);
 
 				// text color
 				context.fillStyle = document.body.getAttribute('data-theme') === 'dark' ? singleColor : gradientColor;

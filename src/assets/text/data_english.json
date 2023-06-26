@@ -154,7 +154,7 @@
           "name": "Python",
           "icon": "devicon-python-plain",
           "description": "",
-          "proficiency": 80
+          "proficiency": 90
         },
         {
           "name": "JavaScript",
@@ -166,25 +166,37 @@
           "name": "TypeScript",
           "icon": "devicon-typescript-plain",
           "description": "",
-          "proficiency": 40
+          "proficiency": 80
         },
         {
           "name": "C++",
           "icon": "devicon-cplusplus-plain",
           "description": "",
-          "proficiency": 50
+          "proficiency": 70
+        },
+        {
+          "name": "PHP",
+          "icon": "devicon-php-plain",
+          "description": "",
+          "proficiency": 70
+        },
+        {
+          "name": "Java",
+          "icon": "devicon-java-plain",
+          "description": "",
+          "proficiency": 70
         },
         {
           "name": "Golang",
           "icon": "devicon-go-plain",
           "description": "",
-          "proficiency": 30
+          "proficiency": 40
         },
         {
           "name": "HTML/CSS/JS",
           "icon": "devicon-html5-plain",
           "description": "",
-          "proficiency": 80
+          "proficiency": 90
         },
         {
           "name": "Sass",
@@ -257,8 +269,20 @@
           "proficiency": 100
         },
         {
+          "name": "Rust",
+          "icon": "devicon-rust-plain",
+          "description": "It sounds sooo cool",
+          "proficiency": 100
+        },
+        {
           "name": "Tailwind CSS",
           "icon": "devicon-tailwindcss-plain",
+          "description": "",
+          "proficiency": 100
+        },
+        {
+          "name": "Test Driven Development",
+          "icon": "devicon-scrum-plain",
           "description": "",
           "proficiency": 100
         },

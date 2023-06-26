@@ -1,4 +1,5 @@
 import './About.scss';
+import Notebook from './About/Notebook';
 
 function About(props: any) {
   let profilepic, sectionName, hello, about;
@@ -12,12 +13,19 @@ function About(props: any) {
   }
 
   return (
-    <section id="about">
+    <section id="about" className='grid-overlay'>
       <div className="col-md-12">
         <h1>
           <span>{sectionName}</span>
         </h1>
         <div className="container row center mx-auto ">
+
+          <div className="col-sm12 col-md-9 mx-auto">
+            <Notebook />
+          </div>
+
+
+
           <div className="col-md-4 mb-5 center">
             <div className="polaroid">
               <span>

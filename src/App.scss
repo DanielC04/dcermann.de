@@ -16,7 +16,8 @@ section {
 }
 
 .font-trebuchet {
-    font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
+    font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+        "Lucida Sans", Arial, sans-serif;
 }
 
 section h1 {
@@ -65,4 +66,8 @@ section h1 {
     width: 95%;
     max-width: 255px;
     background-color: var(--text-color);
+}
+
+#error-message {
+    background-color: var(--background-color);
 }

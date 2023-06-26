@@ -4,16 +4,17 @@ import "./ColorThemeSwitch.scss";
 type ThemeType = "light" | "dark";
 
 function ColorThemeSwitch() {
-    const [checked, setChecked] = useState(false);
+    const [theme, setThemeState] = useState(getStartTheme());
 
     useEffect(() => {
         const startTheme = getStartTheme();
         setTheme(startTheme);
+        setThemeState(startTheme)
     }, []);
 
     const toggleTheme = () => {
-        const newTheme: ThemeType = checked ? "light" : "dark";
-        setChecked(!checked);
+        const newTheme: ThemeType = theme == 'dark' ? "light" : "dark";
+        setThemeState(newTheme);
         setTheme(newTheme);
     };
 
@@ -23,7 +24,7 @@ function ColorThemeSwitch() {
                 type="checkbox"
                 className="dn"
                 id="dn"
-                defaultChecked={checked}
+                defaultChecked={theme == 'dark'}
                 onChange={toggleTheme}
             />
             <label htmlFor="dn" className="toggle">
