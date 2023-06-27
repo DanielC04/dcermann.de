@@ -28,7 +28,7 @@ function Contact(props: Props) {
 
     return (
         <section id="contact">
-            <h1>{title}</h1>
+            <h2>{title}</h2>
             <div className="container">
                 <div className="row">
                     <div className="col-sm-12 col-md-7 col-lg-5 justify-content-center">
@@ -60,7 +60,7 @@ function Contact(props: Props) {
                         </div>
                     </div>
                     <div className="d-sm-none d-xs-none d-md-flex col-md-4 col-lg-7 justify-content-center align-items-center">
-                        <h1 className="say-hello">Say hello.</h1>
+                        <h2 className="say-hello">Say hello.</h2>
                     </div>
                 </div>
             </div>

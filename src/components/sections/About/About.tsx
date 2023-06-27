@@ -1,5 +1,5 @@
 import './About.scss';
-import Notebook from './About/Notebook';
+import Notebook from './Notebook';
 
 function About(props: any) {
   let profilepic, sectionName, hello, about;
@@ -15,9 +15,9 @@ function About(props: any) {
   return (
     <section id="about" className='grid-overlay'>
       <div className="col-md-12">
-        <h1>
+        <h2>
           <span>{sectionName}</span>
-        </h1>
+        </h2>
         <div className="container row center mx-auto ">
 
           <div className="col-sm12 col-md-9 mx-auto">
@@ -68,9 +68,7 @@ function About(props: any) {
                     lineHeight: "200%",
                   }}
                 >
-                  <br />
                   <span className="wave">{hello} :) </span>
-                  <br />
                   <br />
                   <span className="introduction" dangerouslySetInnerHTML={{ __html: about }}>
                   </span>

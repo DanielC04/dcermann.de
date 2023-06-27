@@ -36,31 +36,29 @@ function Home(props: any) {
     );
 
     return (
-        <>
-            <section id="home" style={{ height: pageHeight }}>
-                <MatrixRain />
-                <div className="row aligner">
-                    <div>
-                        <span
-                            className="iconify header-icon"
-                            data-icon="la:laptop-code"
-                            data-inline="false"
-                        ></span>
-                        <br />
-                        <h1 className="mb-0">
-                            <TypeAnimation
-                                sequence={["Daniel Cermann"]}
-                                wrapper="span"
-                            />
-                        </h1>
-                        <div className="title-container">
-                            <HeaderTitleTypeAnimation />
-                        </div>
-                        <ColorThemeSwitch />
+        <section id="home" style={{ height: pageHeight }}>
+            <MatrixRain />
+            <div className="row aligner">
+                <div>
+                    <span
+                        className="iconify header-icon"
+                        data-icon="la:laptop-code"
+                        data-inline="false"
+                    ></span>
+                    <br />
+                    <h2 className="mb-0">
+                        <TypeAnimation
+                            sequence={["Daniel Cermann"]}
+                            wrapper="span"
+                        />
+                    </h2>
+                    <div className="title-container">
+                        <HeaderTitleTypeAnimation />
                     </div>
+                    <ColorThemeSwitch />
                 </div>
-            </section>
-        </>
+            </div>
+        </section>
     );
 }
 

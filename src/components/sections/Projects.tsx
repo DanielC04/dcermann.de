@@ -19,7 +19,7 @@ function Projects(props: Props) {
     return (
         <section id="projects">
             <div className="col-sm-12">
-                <h1 className="section-title">{sectionName}</h1>
+                <h2 className="section-title">{sectionName}</h2>
                 <div className="container">
                     <div className="row g-6">{projects}</div>
                 </div>

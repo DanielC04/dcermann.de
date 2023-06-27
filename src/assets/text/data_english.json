@@ -106,7 +106,7 @@
       "images": [
         "images/gameSimulation.jpg"
       ],
-      "url": "https://bwinf.dcermann.de",
+      "url": "https://bwinf2021.dcermann.de",
       "technologies": [
         {
           "class": "devicon-angularjs-plain",
@@ -288,7 +288,7 @@
         },
         {
           "name": "Cyber Security",
-          "icon": "devicon-kali-linux-plain",
+          "icon": "",
           "description": "whitehat hacking only 😉",
           "proficiency": 100
         }

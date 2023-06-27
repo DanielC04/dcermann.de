@@ -4,9 +4,10 @@ import { LangSpecificData, SharedData } from "./components/loaded_data_types";
 import Loader from "./components/utils/Loader";
 
 const Home = lazy(() => import("./components/sections/Home"));
-const About = lazy(() => import("./components/sections/About"));
+const About = lazy(() => import("./components/sections/About/About"));
 const Projects = lazy(() => import("./components/sections/Projects"));
 const Skills = lazy(() => import("./components/sections/Skills"));
+const Experience = lazy(() => import("./components/sections/Experience"));
 const Contact = lazy(() => import("./components/sections/Contact"));
 const Sidebar = lazy(() => import("./components/utils/Sidebar"));
 const Footer = lazy(() => import("./components/utils/Footer"));
@@ -30,7 +31,7 @@ function App() {
                 <Home sharedData={sharedData?.basic_info} />
                 {errorMessage !== "" ? (
                     <section id="error-message">
-                        <h1 className="error-message">{errorMessage}</h1>
+                        <h2 className="error-message">{errorMessage}</h2>
                     </section>
                 ) : (
                     <>
@@ -46,6 +47,7 @@ function App() {
                             skills={resumeData?.skills}
                             basicInfo={resumeData?.basic_info}
                         />
+                        <Experience basicInfo={resumeData?.basic_info} />
                         <Contact basicInfo={resumeData?.basic_info} />
                     </>
                 )}
@@ -55,6 +57,7 @@ function App() {
                         "about",
                         "projects",
                         "skills",
+                        "experience",
                         "contact",
                     ]}
                 />

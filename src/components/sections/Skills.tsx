@@ -23,12 +23,12 @@ function Skills(props: Props) {
     }
     return (
         <section id="skills">
+            <h2>{sectionName}</h2>
             <div className="col-md-12">
-                <h1 className="section-title">
-                    <span>{sectionName}</span>
-                </h1>
                 <div className="container text-center">
-                    <div className="row justify-content-center">{skillCategories}</div>
+                    <div className="row justify-content-center">
+                        {skillCategories}
+                    </div>
                 </div>
             </div>
         </section>
