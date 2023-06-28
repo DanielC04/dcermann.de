@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./Sidebar.scss";
 import { HashLink } from "react-router-hash-link";
+import { SectionName as SectionNameType } from "../loaded_data_types";
 
 interface Props {
-    sectionNames: string[];
+    sectionNames: SectionNameType | undefined;
 }
 
 function Sidebar(props: Props) {
@@ -11,7 +12,7 @@ function Sidebar(props: Props) {
     const sectionRefs: React.RefObject<Array<HTMLElement | null>> = useRef([]);
 
     useEffect(() => {
-        props.sectionNames.forEach((name: string, i: number) => {
+        Object.keys(props.sectionNames || {}).forEach((name: string, i: number) => {
             if (sectionRefs.current == null) return;
             sectionRefs.current[i] = document.querySelector(`#${name}`);
         });
@@ -33,21 +34,24 @@ function Sidebar(props: Props) {
         });
     }, []);
 
+    console.log(props.sectionNames)
+
     return (
         <div className="sidebar">
             <HashLink to="/#home">
                 <img className="logo" src="dc-logo.svg" alt="DANIEL" />
             </HashLink>
             <div>
-                {props.sectionNames.map((section: string, id: number) => (
+                {Object.keys(props.sectionNames || {}).map((section_id: string, id: number) => (
                     <HashLink
-                        to={`#${section}`}
+                        to={`#${section_id}`}
                         key={id}
                         className={`section-label ${
-                            section === activeSection && "active"
+                            section_id === activeSection && "active"
                         }`}
                     >
-                        {section}
+                        {(props.sectionNames as any)[section_id].toLowerCase()}
+                        {/* {section_id} */}
                     </HashLink>
                 ))}
             </div>

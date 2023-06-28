@@ -5,7 +5,12 @@ function TimelineBox(props: Experience) {
         <>
             <div className="experience-item">
                 <div className="content-box">
-                    <h3>{props.title}</h3>
+                    <h3>
+                        {props.title}{" "}
+                        {props.logo_path !== "" && (
+                            <img src={props.logo_path} />
+                        )}{" "}
+                    </h3>
                     <div>{props.description}</div>
                 </div>
             </div>

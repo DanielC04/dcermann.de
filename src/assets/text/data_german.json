@@ -6,7 +6,8 @@
       "about": "Über mich",
       "projects": "Projekte",
       "skills": "Skills",
-      "experience": "Erfahrungen"
+      "experience": "Erfahrungen",
+      "contact": "Kontakt"
     }
   },
   "projects": [
@@ -40,7 +41,7 @@
       "images": [
         "images/gypt.jpg"
       ],
-      "url": "https://github.com",
+      "url": "https://gypt.dcermann.de",
       "technologies": [
         {
           "class": "devicon-angularjs-plain",
@@ -63,7 +64,7 @@
       "images": [
         "images/convexhulls.jpg"
       ],
-      "url": "https://github.com",
+      "url": "https://convexhulls.dcermann.de",
       "technologies": [
         {
           "class": "devicon-react-original",
@@ -82,7 +83,7 @@
       "images": [
         "images/tictactoe.jpg"
       ],
-      "url": "https://github.com",
+      "url": "https://tictactoe.dcermann.de",
       "technologies": [
         {
           "class": "devicon-angularjs-plain",
@@ -105,7 +106,7 @@
       "images": [
         "images/gameSimulation.jpg"
       ],
-      "url": "https://github.com",
+      "url": "https://bwinf2021.dcermann.de",
       "technologies": [
         {
           "class": "devicon-angularjs-plain",
@@ -120,6 +121,209 @@
           "name": "C#"
         }
       ]
+    }
+  ],
+  "skills": [
+    {
+      "name": "Languages I speak",
+      "data": [
+        {
+          "name": "German",
+          "icon": "flag-germany",
+          "description": "Native Language...",
+          "proficiency": 100
+        },
+        {
+          "name": "English",
+          "icon": "flag-name-to-be-looked-for",
+          "description": "C2 Level according to Certificate of Advance English (CAE)",
+          "proficiency": 90
+        },
+        {
+          "name": "Spanish",
+          "icon": "flag-name-to-be-looked-for",
+          "description": "I spent one year learning spanish in Argentina",
+          "proficiency": 85
+        }
+      ]
+    },
+    {
+      "name": "Programming languages",
+      "data": [
+        {
+          "name": "Python",
+          "icon": "devicon-python-plain",
+          "description": "",
+          "proficiency": 90
+        },
+        {
+          "name": "JavaScript",
+          "icon": "devicon-javascript-plain",
+          "description": "",
+          "proficiency": 80
+        },
+        {
+          "name": "TypeScript",
+          "icon": "devicon-typescript-plain",
+          "description": "",
+          "proficiency": 80
+        },
+        {
+          "name": "C++",
+          "icon": "devicon-cplusplus-plain",
+          "description": "",
+          "proficiency": 70
+        },
+        {
+          "name": "PHP",
+          "icon": "devicon-php-plain",
+          "description": "",
+          "proficiency": 70
+        },
+        {
+          "name": "Java",
+          "icon": "devicon-java-plain",
+          "description": "",
+          "proficiency": 70
+        },
+        {
+          "name": "Golang",
+          "icon": "devicon-go-plain",
+          "description": "",
+          "proficiency": 40
+        },
+        {
+          "name": "HTML/CSS/JS",
+          "icon": "devicon-html5-plain",
+          "description": "",
+          "proficiency": 90
+        },
+        {
+          "name": "Sass",
+          "icon": "devicon-sass-original",
+          "description": "",
+          "proficiency": 50
+        }
+      ]
+    },
+    {
+      "name": "Frameworks I like",
+      "data": [
+        {
+          "name": "React",
+          "icon": "devicon-react-plain",
+          "description": "",
+          "proficiency": 80
+        },
+        {
+          "name": "THREE JS",
+          "icon": "devicon-threejs-original",
+          "description": "",
+          "proficiency": 40
+        }
+      ]
+    },
+    {
+      "name": "Random tools and programming basics",
+      "data": [
+        {
+          "name": "vim",
+          "icon": "devicon-vim-plain",
+          "description": "",
+          "proficiency": 50
+        },
+        {
+          "name": "LaTeX",
+          "icon": "devicon-latex-plain",
+          "description": "",
+          "proficiency": 70
+        },
+        {
+          "name": "3D-Design",
+          "icon": "devicon-cubes-plain",
+          "description": "with Fusion 360",
+          "proficiency": 60
+        },
+        {
+          "name": "bash",
+          "icon": "devicon-bash-plain",
+          "description": "",
+          "proficiency": 40
+        },
+        {
+          "name": "git",
+          "icon": "devicon-github-plain",
+          "description": "",
+          "proficiency": 60
+        }
+      ]
+      
+    },
+    {
+      "name": "Things I wanna learn",
+      "data": [
+        {
+          "name": "Svelte",
+          "icon": "devicon-svelte-plain",
+          "description": "It's sooo cool",
+          "proficiency": 100
+        },
+        {
+          "name": "Rust",
+          "icon": "devicon-rust-plain",
+          "description": "It sounds sooo cool",
+          "proficiency": 100
+        },
+        {
+          "name": "Tailwind CSS",
+          "icon": "devicon-tailwindcss-plain",
+          "description": "",
+          "proficiency": 100
+        },
+        {
+          "name": "Test Driven Development",
+          "icon": "devicon-scrum-plain",
+          "description": "",
+          "proficiency": 100
+        },
+        {
+          "name": "Cyber Security",
+          "icon": "",
+          "description": "whitehat hacking only 😉",
+          "proficiency": 100
+        }
+      ]
+    }
+  ],
+  "experience": [
+    {
+      "title": "Student Albert-Schweitzer-Gymnasium",
+      "logo_path": "/images/spezi_logo.jpg",
+      "years": "September 2018 - July 2022",
+      "description": "This School is STEM-oriented and offers a lot of special programs and individual classes to promote young talents. I learned a lot about Mathematics, Physics and Informatics, built a lot of cool projects in teams, I competed in a a lot of competitions and, most importantly, I made a lot of really good friends.",
+      "technologies": [
+]
+    },
+    {
+      "title": "Volunteer Year - Argentina 🇦🇷",
+      "logo_path": "",
+      "years": "September 2022 - August 2023",
+      "description": "I spent one year in a projects for children and teenagers. I learned a lot about life, difficult social situations and a lot of spanish swear words 😉",
+      "technologies": []
+    },
+    {
+      "title": "ISEF ",
+      "logo_path": "/images/isef_logo.jpg",
+      "years": "May 2023",
+      "description": "With two close friends I flew to Dallas to present our highschool project ''BeeSupervisor'' at the International Science and Engineering Fair (ISEF).   ",
+      "technologies": []
+    },
+    {
+      "title": "University (will start soon)",
+      "logo_path": "/images/logo_hpi.png",
+      "years": "October 2023 - present",
+      "description": "I will study Computer Science. I've applied to the Hasso-Plattner-Institute and hope being able to start my studies in October of this year",
+      "technologies": []
     }
   ]
 }

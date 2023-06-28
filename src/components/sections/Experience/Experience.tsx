@@ -11,12 +11,12 @@ interface Props {
 }
 
 function Experience(props: Props) {
-    let sectionName = "",
-        experiences;
+    let sectionName = "";
+    let experiences;
     if (props.basicInfo) {
         sectionName = props.basicInfo.section_name.experience;
-        experiences = props.experiences?.map((experience_data) => (
-            <TimelineBox {...experience_data} />
+        experiences = props.experiences?.map((experience_data, i: number) => (
+            <TimelineBox {...experience_data} key={i} />
         ));
     }
 

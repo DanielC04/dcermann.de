@@ -297,15 +297,32 @@
   ],
   "experience": [
     {
-      "title": "Front-End Developer",
-      "years": "10.2019 - present",
-      "description": "I did a lot of coding 🫠",
+      "title": "Student Albert-Schweitzer-Gymnasium",
+      "logo_path": "/images/spezi_logo.jpg",
+      "years": "September 2018 - July 2022",
+      "description": "This School is STEM-oriented and offers a lot of special programs and individual classes to promote young talents. I learned a lot about Mathematics, Physics and Informatics, built a lot of cool projects in teams, I competed in a a lot of competitions and, most importantly, I made a lot of really good friends.",
+      "technologies": [
+]
+    },
+    {
+      "title": "Volunteer Year - Argentina 🇦🇷",
+      "logo_path": "",
+      "years": "September 2022 - August 2023",
+      "description": "I spent one year in a projects for children and teenagers. I learned a lot about life, difficult social situations and a lot of spanish swear words 😉",
       "technologies": []
     },
     {
-      "title": "Intern",
-      "years": "01.2018 - 09.2019",
-      "description": "Yupp, what else should i have done in my summer break. I really don't know what I should write, I just wnanna fill more space to see, how the styling looks with a full box. Wow, that was a long sentence uiuiuiui.",
+      "title": "ISEF ",
+      "logo_path": "/images/isef_logo.jpg",
+      "years": "May 2023",
+      "description": "With two close friends I flew to Dallas to present our highschool project ''BeeSupervisor'' at the International Science and Engineering Fair (ISEF).   ",
+      "technologies": []
+    },
+    {
+      "title": "University (will start soon)",
+      "logo_path": "/images/logo_hpi.png",
+      "years": "October 2023 - present",
+      "description": "I will study Computer Science. I've applied to the Hasso-Plattner-Institute and hope being able to start my studies in October of this year",
       "technologies": []
     }
   ]

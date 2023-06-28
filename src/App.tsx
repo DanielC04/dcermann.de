@@ -52,14 +52,7 @@ function App() {
                     </>
                 )}
                 <Sidebar
-                    sectionNames={[
-                        "home",
-                        "about",
-                        "projects",
-                        "skills",
-                        "experience",
-                        "contact",
-                    ]}
+                    sectionNames={resumeData?.basic_info.section_name}
                 />
                 <Footer sharedBasicInfo={sharedData?.basic_info} />
             </Suspense>

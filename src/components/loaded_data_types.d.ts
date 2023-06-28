@@ -53,6 +53,7 @@ export interface SectionName {
 
 export interface Experience {
     title:        string;
+    logo_path:    string;
     years:        string;
     description:  string;
     technologies: string[];
