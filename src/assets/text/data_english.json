@@ -297,38 +297,16 @@
   ],
   "experience": [
     {
-      "company": "DefOpenSource",
       "title": "Front-End Developer",
       "years": "10.2019 - present",
-      "mainTech": [
-        "Angular 8/9/10"
-      ],
-      "technologies": [
-        "REST API",
-        "RxJS",
-        "JavaScript",
-        "Bootstrap",
-        "MDBootstrap",
-        "EF Core",
-        ".NET Core",
-        "SignalR",
-        "Angular Material"
-      ]
+      "description": "I did a lot of coding 🫠",
+      "technologies": []
     },
     {
-      "company": "Serros Solutions",
       "title": "Intern",
       "years": "01.2018 - 09.2019",
-      "mainTech": [
-        "Angular 7/8"
-      ],
-      "technologies": [
-        "RxJS",
-        "Django",
-        "PHP",
-        "JavaScript",
-        "DHTMLX Gantt"
-      ]
+      "description": "Yupp, what else should i have done in my summer break. I really don't know what I should write, I just wnanna fill more space to see, how the styling looks with a full box. Wow, that was a long sentence uiuiuiui.",
+      "technologies": []
     }
   ]
 }

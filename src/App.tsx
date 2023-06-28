@@ -7,7 +7,7 @@ const Home = lazy(() => import("./components/sections/Home"));
 const About = lazy(() => import("./components/sections/About/About"));
 const Projects = lazy(() => import("./components/sections/Projects"));
 const Skills = lazy(() => import("./components/sections/Skills"));
-const Experience = lazy(() => import("./components/sections/Experience"));
+const Experience = lazy(() => import("./components/sections/Experience/Experience"));
 const Contact = lazy(() => import("./components/sections/Contact"));
 const Sidebar = lazy(() => import("./components/utils/Sidebar"));
 const Footer = lazy(() => import("./components/utils/Footer"));
@@ -47,7 +47,7 @@ function App() {
                             skills={resumeData?.skills}
                             basicInfo={resumeData?.basic_info}
                         />
-                        <Experience basicInfo={resumeData?.basic_info} />
+                        <Experience experiences={resumeData?.experience} basicInfo={resumeData?.basic_info} />
                         <Contact basicInfo={resumeData?.basic_info} />
                     </>
                 )}

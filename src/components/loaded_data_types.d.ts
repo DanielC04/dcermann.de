@@ -52,10 +52,9 @@ export interface SectionName {
 }
 
 export interface Experience {
-    company:      string;
     title:        string;
     years:        string;
-    mainTech:     string[];
+    description:  string;
     technologies: string[];
 }
 
