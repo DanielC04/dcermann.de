@@ -1,3 +1,4 @@
+$timeline-breakpoint: 992px;
 #experience {
     background-color: var(--background-color-2);
     $timeline-padding-top-bottom: 20px;
@@ -6,7 +7,7 @@
     $content-padding: 20px;
 
     .timeline {
-        width: 50%;
+        width: 100%;
         border-right: $timeline-line-width solid var(--text-color);
         padding-top: $timeline-padding-top-bottom;
         padding-bottom: $timeline-padding-top-bottom;
@@ -61,10 +62,13 @@
                 border-radius: 3px;
             }
         }
-        .experience-item:nth-of-type(2n) {
-            transform: scaleX(-1) translateX(calc(-100% - $box-to-box-distance));
-            & > .content-box{
-                transform: scaleX(-1);
+        @media (min-width: $timeline-breakpoint) {
+            width: 50%;
+            .experience-item:nth-of-type(2n) {
+                transform: scaleX(-1) translateX(calc(-100% - $box-to-box-distance));
+                & > .content-box{
+                    transform: scaleX(-1);
+                }
             }
         }
 

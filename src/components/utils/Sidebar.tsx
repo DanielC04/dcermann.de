@@ -12,10 +12,13 @@ function Sidebar(props: Props) {
     const sectionRefs: React.RefObject<Array<HTMLElement | null>> = useRef([]);
 
     useEffect(() => {
-        Object.keys(props.sectionNames || {}).forEach((name: string, i: number) => {
+        if (!props.sectionNames) return;
+        Object.keys(props.sectionNames).forEach((name: string, i: number) => {
             if (sectionRefs.current == null) return;
             sectionRefs.current[i] = document.querySelector(`#${name}`);
         });
+
+        console.log(sectionRefs)
 
         // set observer that checks what section is active
         window.addEventListener("scroll", () => {
@@ -32,7 +35,7 @@ function Sidebar(props: Props) {
             }
             setActiveSection(currSection);
         });
-    }, []);
+    }, [props.sectionNames]);
 
     console.log(props.sectionNames)
 

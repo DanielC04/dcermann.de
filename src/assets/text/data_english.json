@@ -3,7 +3,8 @@
     "description_header": "Hi",
     "description": "👋 I'm Daniel Cermann ️✴ 19 yo ✴ Programmer and DIY enthusiast from Germany :) </br> I like everything from React programming to 3D-Design and printing. Currently, I'm living in Argentina doing a volunteer year ✌️ Next year, I will start my studies of Computer Science in Germany 📖",
     "section_name": {
-      "about": "About me",
+      "home": "Home",
+      "about": "About",
       "projects": "Projects",
       "skills": "Skills",
       "experience": "Experience",
@@ -299,10 +300,16 @@
     {
       "title": "Student Albert-Schweitzer-Gymnasium",
       "logo_path": "/images/spezi_logo.jpg",
-      "years": "September 2018 - July 2022",
+      "years": "Sep 2018 - July 2022",
       "description": "This School is STEM-oriented and offers a lot of special programs and individual classes to promote young talents. I learned a lot about Mathematics, Physics and Informatics, built a lot of cool projects in teams, I competed in a a lot of competitions and, most importantly, I made a lot of really good friends.",
-      "technologies": [
-]
+      "technologies": []
+    },
+    {
+      "title": "Side job at Logodata Erfurt",
+      "logo_path": "/images/logodata.jpeg",
+      "years": "Oct 2021 - Feb 2022",
+      "description": "I was developing an internal tool of my company. I spent two weeks in their office, getting to know my colleagues and the workplace. After that, I worked home-office for a couple of months until I decided to concentrate on finishing highschool well.",
+      "technologies": []
     },
     {
       "title": "Volunteer Year - Argentina 🇦🇷",
@@ -321,7 +328,7 @@
     {
       "title": "University (will start soon)",
       "logo_path": "/images/logo_hpi.png",
-      "years": "October 2023 - present",
+      "years": "Oct 2023 - present",
       "description": "I will study Computer Science. I've applied to the Hasso-Plattner-Institute and hope being able to start my studies in October of this year",
       "technologies": []
     }

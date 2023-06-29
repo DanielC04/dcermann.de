@@ -1,7 +1,7 @@
 import { useState, lazy, Suspense } from "react";
 import "./App.scss";
 import { LangSpecificData, SharedData } from "./components/loaded_data_types";
-import Loader from "./components/utils/Loader";
+import LoaderPage from "./components/utils/LoaderPage";
 
 const Home = lazy(() => import("./components/sections/Home"));
 const About = lazy(() => import("./components/sections/About/About"));
@@ -22,7 +22,7 @@ function App() {
 
     return (
         <div className="app">
-            <Suspense fallback={<Loader />}>
+            <Suspense fallback={<LoaderPage />}>
                 <LanguageSwitch
                     setErrorMessage={setErrorMessage}
                     setResumeData={setResumeData}

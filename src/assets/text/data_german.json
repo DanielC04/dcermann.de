@@ -3,6 +3,7 @@
     "description_header": "Hi",
     "description": "👋 Ich bin Daniel Cermann ✴️ 19 Jahre alt ✴️ Programmer and DIY enthusiast from Germany :) </br> I like everything from React programming to 3D-Design and printing. Currently, I'm living in Argentina doing a volunteer year ✌️ Next year, I will start my studies of Computer Science in Germany 📖",
     "section_name": {
+      "home": "Home",
       "about": "Über mich",
       "projects": "Projekte",
       "skills": "Skills",

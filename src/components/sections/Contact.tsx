@@ -1,9 +1,10 @@
 import "./Contact.scss";
 import { BasicInfo } from "../loaded_data_types";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import emailjs from "@emailjs/browser";
 import { PUBLIC_KEY, SERVICE_ID, TEMPLATE_ID } from "./EmailjsLogin";
 import { Alert } from "react-bootstrap";
+import Loader from "../utils/LoaderPage";
 
 interface Props {
     basicInfo: BasicInfo | undefined;
@@ -13,6 +14,7 @@ const ALERT_FADE_TIME_OUT = 5_000;
 
 function Contact(props: Props) {
     const [alert, setAlert]: any = useState(undefined);
+    const [isSending, setSending] = useState(false);
 
     const title = props.basicInfo?.section_name.contact;
     const form: any = useRef();
@@ -21,18 +23,22 @@ function Contact(props: Props) {
         console.log(e);
         e.preventDefault();
 
+        setSending(true);
+
         emailjs
             .sendForm(SERVICE_ID, TEMPLATE_ID, form.current, PUBLIC_KEY)
             .then(
-                (result) => {
+                () => {
                     const successAlert = <CustomAlert isError={false} />;
                     setAlert(successAlert);
                     setTimeout(() => setAlert(undefined), ALERT_FADE_TIME_OUT);
+                    setSending(false);
                 },
-                (error) => {
+                () => {
                     const errorAlert = <CustomAlert isError={false} />;
                     setAlert(errorAlert);
                     setTimeout(() => setAlert(undefined), ALERT_FADE_TIME_OUT);
+                    setSending(false);
                 }
             );
     };
@@ -71,17 +77,21 @@ function Contact(props: Props) {
                                     <label>Message</label>
                                 </div>
                                 <center>
-                                    <button type="submit">
-                                        <i
-                                            className={`devicon-line-plain icon`}
-                                        ></i>
-                                        &gt;{" "}
-                                        <span style={{ marginLeft: "-12px" }}>
-                                            _
-                                        </span>{" "}
-                                        SEND
-                                        <span className="animation"></span>
-                                    </button>
+                                    {
+                                        isSending ?
+                                            <Loader /> :
+                                            <button type="submit">
+                                                <i
+                                                    className={`devicon-line-plain icon`}
+                                                ></i>
+                                                &gt;{" "}
+                                                <span style={{ marginLeft: "-12px" }}>
+                                                    _
+                                                </span>{" "}
+                                                SEND
+                                                <span className="animation"></span>
+                                            </button>
+                                    }
                                 </center>
                             </form>
                             <div className="mt-4">{alert}</div>
