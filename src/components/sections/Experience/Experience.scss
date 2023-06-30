@@ -61,6 +61,9 @@ $timeline-breakpoint: 992px;
                 height: 1.5em;
                 border-radius: 3px;
             }
+            div{
+                color: var(--text-color-dim);
+            }
         }
         @media (min-width: $timeline-breakpoint) {
             width: 50%;

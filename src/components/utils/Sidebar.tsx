@@ -18,8 +18,6 @@ function Sidebar(props: Props) {
             sectionRefs.current[i] = document.querySelector(`#${name}`);
         });
 
-        console.log(sectionRefs)
-
         // set observer that checks what section is active
         window.addEventListener("scroll", () => {
             let minDist = Infinity;
@@ -36,8 +34,6 @@ function Sidebar(props: Props) {
             setActiveSection(currSection);
         });
     }, [props.sectionNames]);
-
-    console.log(props.sectionNames)
 
     return (
         <div className="sidebar">

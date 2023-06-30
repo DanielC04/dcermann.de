@@ -17,7 +17,7 @@
       "startDate": "2020",
       "description": "Varroamilben sind Parasiten, die sich auf den Rücken von Honigbienen festsaugen und diese schädigen. Durch am Bienestockeingang angebrachte Kameras werden hereinfliegende Bienen auf den Parasiten untersucht. Der Imker wird anschließend über den Befall eines Volkes informiert und kann die Bienen entsprechend behandeln.",
       "images": [
-        "images/beesupervisor.jpg"
+        "images/projects/beesupervisor.jpg"
       ],
       "url": "",
       "technologies": [
@@ -40,7 +40,7 @@
       "startDate": "2015",
       "description": "Für die Aufgabe 4 des GYPT 2021, German Young Physicists Tournament, habe ich eine physikalische Simulation zum thermodynamischen Sachverhalt geschrieben.",
       "images": [
-        "images/gypt.jpg"
+        "images/projects/gypt.jpg"
       ],
       "url": "https://gypt.dcermann.de",
       "technologies": [
@@ -63,7 +63,7 @@
       "startDate": "2018",
       "description": "Im Rahmen eines Informatikprojekts habe ich eine Webapp programmiert, die die konvexe Hülle einer Punktmenge findet. Der Nutzer kann eine Punktmenge generieren lassen oder manuell eingeben. Mehrere Algorithmen, darunter Jarvis March, Graham Scan und Chan's Algorithm, werden dabei visualisiert.",
       "images": [
-        "images/convexhulls.jpg"
+        "images/projects/convexhulls.jpg"
       ],
       "url": "https://convexhulls.dcermann.de",
       "technologies": [
@@ -82,7 +82,7 @@
       "startDate": "2015",
       "description": "Coole Erweiterung von TicTacToe: In jedem der klassischen 3x3 Felder befindet sich ein TicTacToe-Feld, in denen jeweils ein separates Spiel abläuft.  ",
       "images": [
-        "images/tictactoe.jpg"
+        "images/projects/tictactoe.jpg"
       ],
       "url": "https://tictactoe.dcermann.de",
       "technologies": [
@@ -105,7 +105,7 @@
       "startDate": "2015",
       "description": "Für die 4. Aufgabe des Bundeswettbewerbs Informatik 2021 habe ich eine Spielsimulation für Mensch ärgere dich nicht programmiert. Für jeden der vier Spieler können dabei Würfel mit beliebiger Seitenanzahl und beliebigen Augenzahlen erstellt werden. Durch mehrere Simulationen kann dadurch der beste Würfel ermittelt werden.",
       "images": [
-        "images/gameSimulation.jpg"
+        "images/projects/gameSimulation.jpg"
       ],
       "url": "https://bwinf2021.dcermann.de",
       "technologies": [
@@ -258,7 +258,6 @@
           "proficiency": 60
         }
       ]
-      
     },
     {
       "name": "Things I wanna learn",
@@ -299,11 +298,17 @@
   "experience": [
     {
       "title": "Student Albert-Schweitzer-Gymnasium",
-      "logo_path": "/images/spezi_logo.jpg",
-      "years": "September 2018 - July 2022",
+      "logo_path": "/images/logos/spezi_logo.jpg",
+      "years": "Sep 2018 - July 2022",
       "description": "This School is STEM-oriented and offers a lot of special programs and individual classes to promote young talents. I learned a lot about Mathematics, Physics and Informatics, built a lot of cool projects in teams, I competed in a a lot of competitions and, most importantly, I made a lot of really good friends.",
-      "technologies": [
-]
+      "technologies": []
+    },
+    {
+      "title": "Side hustle at Logodata Erfurt",
+      "logo_path": "/images/logos/logodata.jpeg",
+      "years": "Oct 2021 - Feb 2022",
+      "description": "I was developing an internal tool of my company. I spent two weeks in their office, getting to know my colleagues and the workplace. After that, I worked home-office for a couple of months until I decided to concentrate on finishing highschool well.",
+      "technologies": []
     },
     {
       "title": "Volunteer Year - Argentina 🇦🇷",
@@ -314,15 +319,15 @@
     },
     {
       "title": "ISEF ",
-      "logo_path": "/images/isef_logo.jpg",
+      "logo_path": "/images/logos/isef_logo.jpg",
       "years": "May 2023",
       "description": "With two close friends I flew to Dallas to present our highschool project ''BeeSupervisor'' at the International Science and Engineering Fair (ISEF).   ",
       "technologies": []
     },
     {
       "title": "University (will start soon)",
-      "logo_path": "/images/logo_hpi.png",
-      "years": "October 2023 - present",
+      "logo_path": "/images/logos/logo_hpi.png",
+      "years": "Oct 2023 - present",
       "description": "I will study Computer Science. I've applied to the Hasso-Plattner-Institute and hope being able to start my studies in October of this year",
       "technologies": []
     }

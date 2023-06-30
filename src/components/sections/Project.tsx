@@ -17,8 +17,8 @@ function Project(props: ProjectData) {
                         className="screen"
                     />
                     <img
-                        src="/images/laptop_blank_bottom.svg"
-                        alt={props.title}
+                        src="/images/projects/laptop_blank_bottom.svg"
+                        alt=''
                         className="laptop"
                     />
                 </Link>

@@ -1,3 +1,4 @@
+// import BackgroundGrid from '../../../Backgrounds/svg/BackgroundGrid';
 import './About.scss';
 import Notebook from './Notebook';
 
@@ -14,6 +15,7 @@ function About(props: any) {
 
   return (
     <section id="about" className='grid-overlay'>
+      {/* <BackgroundGrid /> */}
       <div className="col-md-12">
         <h2>
           <span>{sectionName}</span>
