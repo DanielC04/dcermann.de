@@ -1,7 +1,7 @@
 {
   "basic_info": {
     "description_header": "Hi",
-    "description": "👋 Ich bin Daniel Cermann ✴️ 19 Jahre alt ✴️ Programmer and DIY enthusiast from Germany :) </br> I like everything from React programming to 3D-Design and printing. Currently, I'm living in Argentina doing a volunteer year ✌️ Next year, I will start my studies of Computer Science in Germany 📖",
+    "description": "👋 I'm Daniel Cermann ✴️ 19 yo ✴️ Software Engineer und Maker </br> Zur Zeit mache ich ein Weltwärts-Freiwilligenjahr in Argentinien, nahe Buenos Aires ✌️ Nächstes Jahr möchte ich Informatik in Potsdam studieren 📖",
     "section_name": {
       "home": "Home",
       "about": "Über mich",
@@ -15,48 +15,20 @@
     {
       "title": "BeeSupervisor",
       "startDate": "2020",
-      "description": "Varroamilben sind Parasiten, die sich auf den Rücken von Honigbienen festsaugen und diese schädigen. Durch am Bienestockeingang angebrachte Kameras werden hereinfliegende Bienen auf den Parasiten untersucht. Der Imker wird anschließend über den Befall eines Volkes informiert und kann die Bienen entsprechend behandeln.",
+      "description": "Varroamilben sind Parasiten, die sich an Honigbienen festsaugen und diese ähnlich wie Zecken schädigen. Jährlich sterben etwa 20% aller Bienenstöcke. Durch am Bienestockeingang angebrachte Kameras werden hereinfliegende Bienen auf den Parasiten untersucht. Der Imker wird anschließend über den Befall eines Volkes informiert und kann die Bienen entsprechend behandeln.",
       "images": [
         "images/projects/beesupervisor.jpg"
       ],
-      "url": "",
-      "technologies": [
-        {
-          "class": "devicon-angularjs-plain",
-          "name": "Angular"
-        },
-        {
-          "class": "devicon-typescript-plain",
-          "name": "TypeScript"
-        },
-        {
-          "class": "devicon-csharp-plain",
-          "name": "C#"
-        }
-      ]
+      "url": ""
     },
     {
       "title": "GYPT - German Young Physicist Tournament",
       "startDate": "2015",
-      "description": "Für die Aufgabe 4 des GYPT 2021, German Young Physicists Tournament, habe ich eine physikalische Simulation zum thermodynamischen Sachverhalt geschrieben.",
+      "description": "Beim GYPT, German Young Physicists Tournament, 2021 habe ich eine physikalische Simulation geschrieben. Die Erstellte Website diente der Veranschaulichung der praktischen Experimente, die ich außerdem durchgeführt habe.",
       "images": [
         "images/projects/gypt.jpg"
       ],
-      "url": "https://gypt.dcermann.de",
-      "technologies": [
-        {
-          "class": "devicon-angularjs-plain",
-          "name": "Angular"
-        },
-        {
-          "class": "devicon-typescript-plain",
-          "name": "TypeScript"
-        },
-        {
-          "class": "devicon-csharp-plain",
-          "name": "C#"
-        }
-      ]
+      "url": "https://gypt.dcermann.de"
     },
     {
       "title": "Convex Hulls",
@@ -65,40 +37,16 @@
       "images": [
         "images/projects/convexhulls.jpg"
       ],
-      "url": "https://convexhulls.dcermann.de",
-      "technologies": [
-        {
-          "class": "devicon-react-original",
-          "name": "React"
-        },
-        {
-          "class": "devicon-javascript-plain",
-          "name": "JavaScript"
-        }
-      ]
+      "url": "https://convexhulls.dcermann.de"
     },
     {
       "title": "Mega-Tic-Tac-Toe",
       "startDate": "2015",
-      "description": "Coole Erweiterung von TicTacToe: In jedem der klassischen 3x3 Felder befindet sich ein TicTacToe-Feld, in denen jeweils ein separates Spiel abläuft.  ",
+      "description": "Coole Erweiterung von TicTacToe: In jedem der klassischen 3x3 Felder befindet sich ein TicTacToe-Feld, in denen jeweils ein separates Spiel abläuft 🤯",
       "images": [
         "images/projects/tictactoe.jpg"
       ],
-      "url": "https://tictactoe.dcermann.de",
-      "technologies": [
-        {
-          "class": "devicon-angularjs-plain",
-          "name": "Angular"
-        },
-        {
-          "class": "devicon-typescript-plain",
-          "name": "TypeScript"
-        },
-        {
-          "class": "devicon-csharp-plain",
-          "name": "C#"
-        }
-      ]
+      "url": "https://tictactoe.dcermann.de"
     },
     {
       "title": "Mensch ärgere dich nicht - Simulation",
@@ -107,21 +55,7 @@
       "images": [
         "images/projects/gameSimulation.jpg"
       ],
-      "url": "https://bwinf2021.dcermann.de",
-      "technologies": [
-        {
-          "class": "devicon-angularjs-plain",
-          "name": "Angular"
-        },
-        {
-          "class": "devicon-typescript-plain",
-          "name": "TypeScript"
-        },
-        {
-          "class": "devicon-csharp-plain",
-          "name": "C#"
-        }
-      ]
+      "url": "https://bwinf2021.dcermann.de"
     }
   ],
   "skills": [
@@ -297,38 +231,38 @@
   ],
   "experience": [
     {
-      "title": "Student Albert-Schweitzer-Gymnasium",
+      "title": "Albert-Schweitzer-Gymnasium",
       "logo_path": "/images/logos/spezi_logo.jpg",
       "years": "Sep 2018 - July 2022",
-      "description": "This School is STEM-oriented and offers a lot of special programs and individual classes to promote young talents. I learned a lot about Mathematics, Physics and Informatics, built a lot of cool projects in teams, I competed in a a lot of competitions and, most importantly, I made a lot of really good friends.",
+      "description": "Der Spezialschulteil des ASGs ist auf die MINT-Fächer, Mathe und Informatik spezialisiert. Ich habe dort viele theoretische Grundlagen erlernt, als auch praktische Projekte in Teams umgesetzt. Außerdem habe ich viele sehr gute Freunde kennengelernt und durfte an zahlreichen Wettbewerben und Vorbereitungscamps teilnehmen.",
       "technologies": []
     },
     {
-      "title": "Side hustle at Logodata Erfurt",
+      "title": "Nebenjob bei LogoData Erfurt",
       "logo_path": "/images/logos/logodata.jpeg",
       "years": "Oct 2021 - Feb 2022",
-      "description": "I was developing an internal tool of my company. I spent two weeks in their office, getting to know my colleagues and the workplace. After that, I worked home-office for a couple of months until I decided to concentrate on finishing highschool well.",
+      "description": "Ich habe einige Monate bei LogoData an einem internen Tool gearbeitet. Ich habe dort mit einem Ferienjob beginnen und später im Home-office parallel zum Abitur etwas weiter gearbeitet. Ich hatte einen super netten Chef und coole Kollegen und habe meine Zeit mit LogoData sehr genossen :) ",
       "technologies": []
     },
     {
       "title": "Volunteer Year - Argentina 🇦🇷",
       "logo_path": "",
       "years": "September 2022 - August 2023",
-      "description": "I spent one year in a projects for children and teenagers. I learned a lot about life, difficult social situations and a lot of spanish swear words 😉",
+      "description": "Nach der Schule habe ich ein Jahr in einem Jugendprojekt in der Nähe von Buenos Aires verbracht. Im ''Refugio San Eugenio'' habe ich mich vielen Herausforderungen, besonders im Bezug auf soziale Probleme, gestellt und viele Menschen ins Herz geschlossen.",
       "technologies": []
     },
     {
       "title": "ISEF ",
       "logo_path": "/images/logos/isef_logo.jpg",
       "years": "May 2023",
-      "description": "With two close friends I flew to Dallas to present our highschool project ''BeeSupervisor'' at the International Science and Engineering Fair (ISEF).   ",
+      "description": "Im Mai 2023 bin ich mit zwei guten Freunden nach Dallas geflogen, um Deutschland auf der ISEF (Internatinoal Sciene and Engineering Fair) mit unserem Projekt ,,BeeSupervisor'' zu vertreten. Dort wurden wir mit einem 3. Platz Grand award und zwei Sonderpreisen ausgezeichnet 🥳🎊🥂",
       "technologies": []
     },
     {
       "title": "University (will start soon)",
       "logo_path": "/images/logos/logo_hpi.png",
       "years": "Oct 2023 - present",
-      "description": "I will study Computer Science. I've applied to the Hasso-Plattner-Institute and hope being able to start my studies in October of this year",
+      "description": "Ich werde bald mein Informatikstudium beginnnen. Dafür habe ich mich beim Hasso-Plattner-Institut beworben und hoffe, dort Oktober mein Studium beginnen zu können :)",
       "technologies": []
     }
   ]

@@ -1,13 +1,13 @@
 {
   "basic_info": {
     "description_header": "Hi",
-    "description": "👋 I'm Daniel Cermann ️✴ 19 yo ✴ Programmer and DIY enthusiast from Germany :) </br> I like everything from React programming to 3D-Design and printing. Currently, I'm living in Argentina doing a volunteer year ✌️ Next year, I will start my studies of Computer Science in Germany 📖",
+    "description": "👋 I'm Daniel Cermann ️✴ 19 yo ✴ Software Engineer and maker from Germany </br> Life is too short to write bad code </br> I like everything from React programming to 3D-Design and printing. Currently, I'm living in Argentina doing a volunteer year ✌️ Next year, I will start my studies of Computer Science in Germany 📖",
     "section_name": {
       "home": "Home",
       "about": "About",
       "projects": "Projects",
       "skills": "Skills",
-      "experience": "Experience",
+      "experience": "Experience", 
       "contact": "Contact"
     }
   },
@@ -15,30 +15,16 @@
     {
       "title": "BeeSupervisor",
       "startDate": "2020",
-      "description": "Varroamilben sind Parasiten, die sich auf den Rücken von Honigbienen festsaugen und diese schädigen. Durch am Bienestockeingang angebrachte Kameras werden hereinfliegende Bienen auf den Parasiten untersucht. Der Imker wird anschließend über den Befall eines Volkes informiert und kann die Bienen entsprechend behandeln.",
+      "description": "Varroa mites are Parasites, that live in bee colonies on the back of the bees. Every year about 20% of the colonies die due to Varroa infection. With two friends I built a monitoring solution that detects the current infection rate. Two cameras film the incoming bees at the hive entrance and an artificial intelligence determines the infected bees. According to the infection rate the beekeeper can initiate the needed treatment.",
       "images": [
         "images/projects/beesupervisor.jpg"
       ],
-      "url": "",
-      "technologies": [
-        {
-          "class": "devicon-angularjs-plain",
-          "name": "Angular"
-        },
-        {
-          "class": "devicon-typescript-plain",
-          "name": "TypeScript"
-        },
-        {
-          "class": "devicon-csharp-plain",
-          "name": "C#"
-        }
-      ]
+      "url": ""
     },
     {
       "title": "GYPT - German Young Physicist Tournament",
       "startDate": "2015",
-      "description": "Für die Aufgabe 4 des GYPT 2021, German Young Physicists Tournament, habe ich eine physikalische Simulation zum thermodynamischen Sachverhalt geschrieben.",
+      "description": "At the GYPT, German Young Physicists Tournament, 2021 I wrote a phsical simulation. I used this website to visualize the practical experiments I conducted.",
       "images": [
         "images/projects/gypt.jpg"
       ],
@@ -61,7 +47,7 @@
     {
       "title": "Convex Hulls",
       "startDate": "2018",
-      "description": "Im Rahmen eines Informatikprojekts habe ich eine Webapp programmiert, die die konvexe Hülle einer Punktmenge findet. Der Nutzer kann eine Punktmenge generieren lassen oder manuell eingeben. Mehrere Algorithmen, darunter Jarvis March, Graham Scan und Chan's Algorithm, werden dabei visualisiert.",
+      "description": "I built a webapp for a school project, that finds the convex hull of a given set of points. It visualizes multiple algorithms including Jarvis March, Graham Scan and Chan's Algorithm.",
       "images": [
         "images/projects/convexhulls.jpg"
       ],
@@ -80,7 +66,7 @@
     {
       "title": "Mega-Tic-Tac-Toe",
       "startDate": "2015",
-      "description": "Coole Erweiterung von TicTacToe: In jedem der klassischen 3x3 Felder befindet sich ein TicTacToe-Feld, in denen jeweils ein separates Spiel abläuft.  ",
+      "description": "Cool extension of the classical TicTacToe: In all of the nine fields there is a smaller TicTacToe-Field. In those smaller fields you play a separate games to conquer one of the bigger fields. It's a bit hard to explain but very mind-blowing 🤯",
       "images": [
         "images/projects/tictactoe.jpg"
       ],
@@ -103,7 +89,7 @@
     {
       "title": "Mensch ärgere dich nicht - Simulation",
       "startDate": "2015",
-      "description": "Für die 4. Aufgabe des Bundeswettbewerbs Informatik 2021 habe ich eine Spielsimulation für Mensch ärgere dich nicht programmiert. Für jeden der vier Spieler können dabei Würfel mit beliebiger Seitenanzahl und beliebigen Augenzahlen erstellt werden. Durch mehrere Simulationen kann dadurch der beste Würfel ermittelt werden.",
+      "description": "For the 4th task of the Bundeswettbewerb Informatik 2021 I coded and visualized a game simulation of ''Mensch ärgere dich nicht''. Every one of the players can create a dice with a given number of faces and certain numbers points on the faces. By simulating hundreds of games the best of the created dice is determined :)",
       "images": [
         "images/projects/gameSimulation.jpg"
       ],
@@ -308,28 +294,28 @@
       "title": "Side hustle at Logodata Erfurt",
       "logo_path": "/images/logos/logodata.jpeg",
       "years": "Oct 2021 - Feb 2022",
-      "description": "I was developing an internal tool of my company. I spent two weeks in their office, getting to know my colleagues and the workplace. After that, I worked home-office for a couple of months until I decided to concentrate on finishing highschool well.",
+      "description": "I was developing an internal tool of my company. I spent two weeks in their office, getting to know my colleagues and the workplace. After that, I worked home-office for a couple of months until I decided to concentrate on finishing highschool.",
       "technologies": []
     },
     {
       "title": "Volunteer Year - Argentina 🇦🇷",
       "logo_path": "",
       "years": "September 2022 - August 2023",
-      "description": "I spent one year in a projects for children and teenagers. I learned a lot about life, difficult social situations and a lot of spanish swear words 😉",
+      "description": "I spent one year helping in a projects for children and teenagers in Buenos Aires. In the ''Refugio San Eugenio'' I learned a lot about life, difficult social situations and a lot of spanish swear words 😉",
       "technologies": []
     },
     {
       "title": "ISEF ",
       "logo_path": "/images/logos/isef_logo.jpg",
       "years": "May 2023",
-      "description": "With two close friends I flew to Dallas to present our highschool project ''BeeSupervisor'' at the International Science and Engineering Fair (ISEF).   ",
+      "description": "With two close friends I flew to Dallas to present our highschool project ''BeeSupervisor'' at the International Science and Engineering Fair (ISEF). We got a third place grand award in the category ''Robotics and Intelligent Mashines'' and two special awards 🥳🎊🥂",
       "technologies": []
     },
     {
       "title": "University (will start soon)",
       "logo_path": "/images/logos/logo_hpi.png",
       "years": "Oct 2023 - present",
-      "description": "I will study Computer Science. I've applied to the Hasso-Plattner-Institute and hope being able to start my studies in October of this year",
+      "description": "I will study Computer Science in a bit. I've applied to the Hasso-Plattner-Institute and hope being able to start my studies in October of this year",
       "technologies": []
     }
   ]
