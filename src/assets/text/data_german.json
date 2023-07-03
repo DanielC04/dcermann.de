@@ -60,24 +60,24 @@
   ],
   "skills": [
     {
-      "name": "Languages I speak",
+      "name": "Sprachen, die ich spreche",
       "data": [
         {
-          "name": "German",
+          "name": "Deutsch",
           "icon": "flag-germany",
-          "description": "Native Language...",
+          "description": "Muttersprache...",
           "proficiency": 100
         },
         {
-          "name": "English",
+          "name": "Englisch",
           "icon": "flag-name-to-be-looked-for",
-          "description": "C2 Level according to Certificate of Advance English (CAE)",
+          "description": "C2 Level beim ,,Certificate of Advanced English'' (CAE)",
           "proficiency": 90
         },
         {
-          "name": "Spanish",
+          "name": "Spanisch",
           "icon": "flag-name-to-be-looked-for",
-          "description": "I spent one year learning spanish in Argentina",
+          "description": "Habe ich ein Jahr lang bei Freiwilligendienst in Argentinien gelernt",
           "proficiency": 85
         }
       ]
@@ -176,7 +176,7 @@
         {
           "name": "3D-Design",
           "icon": "devicon-cubes-plain",
-          "description": "with Fusion 360",
+          "description": "Mit Fusion 360",
           "proficiency": 60
         },
         {
@@ -199,13 +199,13 @@
         {
           "name": "Svelte",
           "icon": "devicon-svelte-plain",
-          "description": "It's sooo cool",
+          "description": "Es ist sooo cool",
           "proficiency": 100
         },
         {
           "name": "Rust",
           "icon": "devicon-rust-plain",
-          "description": "It sounds sooo cool",
+          "description": "Klingt seeehr cool",
           "proficiency": 100
         },
         {
@@ -223,7 +223,7 @@
         {
           "name": "Cyber Security",
           "icon": "",
-          "description": "whitehat hacking only 😉",
+          "description": "Nur Whitehat-Hacking 😉",
           "proficiency": 100
         }
       ]

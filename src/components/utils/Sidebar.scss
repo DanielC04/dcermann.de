@@ -1,21 +1,14 @@
 $orientation-breakpoint: 687px;
+$sidebar-dim: clamp(50px, 10%, 100px);
 
-.sidebar-clean{
+.sidebar-clean {
 	position: fixed;
 	left: 0px;
 	top: 0px;
 }
 
-body{
-	--sidebar-width: clamp(50px, 10%, 100px);
-	@media (max-width: $orientation-breakpoint) {
-		--sidebar-width: 0;
-	}
-
-}
-
-.sidebar{
-	width: clamp(50px, 10%, 100px);
+.sidebar {
+	width: $sidebar-dim;
 	height: 100vh;
 	position: fixed;
 
@@ -24,48 +17,62 @@ body{
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	// @media (max-width: $orientation-breakpoint) {
-	// 	height: clamp(50px, 10%, 100px);	
-	// 	width: 100vw;
-	// 	flex-direction: row;
-	// 	// background-color: color-mix(in srgb, var(--background-color) 80%, black);
-	// 	background-color: var(--background-color);
-	// }
 	font-size: medium;
 	color: var(--text-color);
 	z-index: 10;
-	.logo{
+	.logo img {
 		font-size: 150%;
 		width: clamp(20px, 2em, 65px);
 		margin-top: clamp(10px, 3vh, 50px);
-		@media (max-width: $orientation-breakpoint) {
-			width: clamp(20px, 1.5em, 65px);	
-			background-color: var(--background-color);
-			padding: 2px;
-			box-shadow: 0 0 10px var(--background-color);
-		}
 	}
-	div{
-		@media (min-width: $orientation-breakpoint) {
-			writing-mode: sideways-lr;
-			margin-top: clamp(10px, 50%, 500px);
-			flex-direction: row-reverse;
-		}
-		@media (max-width: $orientation-breakpoint) {
-			display: none;
-		}
+	.link-container {
 		display: flex;
-		align-items: center;
-		flex-wrap: nowrap;
+		flex-direction: row-reverse;
+		writing-mode: sideways-lr;
+		margin-top: clamp(10px, 50%, 500px);
 	}
-	.section-label{
+	.section-label {
 		margin: 10px;
 		font-size: 120%;
 		text-decoration: none;
 		color: var(--text-color);
 	}
-	.section-label.active{
+	.section-label.active {
 		color: var(--contrast-color);
 		font-size: 125%;
+	}
+	@media (max-width: $orientation-breakpoint) {
+		width: 100vw;
+		max-height: $sidebar-dim;
+		flex-direction: row;
+		align-items: center;
+		// background-color: var(--background-color);
+		max-height: $sidebar-dim;
+		.link-container {
+			writing-mode: horizontal-tb;
+			margin-top: 0;
+			flex-direction: column;
+			margin-left: auto;
+			margin-right: auto;
+			opacity: 0;
+			margin-top: $sidebar-dim;
+			// 
+			// for now: make it disappear
+			// 
+			display: none;
+		}
+		.link-container.active {
+			opacity: 1;
+		}
+
+		.logo {
+			position: fixed;
+			top: 10px;
+			left: 10px;
+			img {
+				margin-top: 0;
+				height: 100%;
+			}
+		}
 	}
 }

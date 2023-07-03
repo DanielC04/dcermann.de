@@ -37,10 +37,10 @@ function Sidebar(props: Props) {
 
     return (
         <div className="sidebar">
-            <HashLink to="/#home">
-                <img className="logo" src="dc-logo.svg" alt="DANIEL" />
+            <HashLink to="/#home" className="logo">
+                <img src="dc-logo.svg" alt="DANIEL" />
             </HashLink>
-            <div>
+            <div className="link-container active">
                 {Object.keys(props.sectionNames || {}).map((section_id: string, id: number) => (
                     <HashLink
                         to={`#${section_id}`}
