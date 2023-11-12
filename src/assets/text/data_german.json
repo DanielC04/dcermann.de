@@ -19,7 +19,7 @@
       "images": [
         "images/projects/beesupervisor.jpg"
       ],
-      "url": ""
+      "url": "https://beesupervisor.com/"
     },
     {
       "title": "GYPT - German Young Physicist Tournament",
@@ -119,7 +119,7 @@
           "name": "Java",
           "icon": "devicon-java-plain",
           "description": "",
-          "proficiency": 70
+          "proficiency": 50
         },
         {
           "name": "Golang",
@@ -165,7 +165,7 @@
           "name": "vim",
           "icon": "devicon-vim-plain",
           "description": "",
-          "proficiency": 50
+          "proficiency": 70
         },
         {
           "name": "LaTeX",
@@ -183,13 +183,13 @@
           "name": "bash",
           "icon": "devicon-bash-plain",
           "description": "",
-          "proficiency": 40
+          "proficiency": 60
         },
         {
           "name": "git",
           "icon": "devicon-github-plain",
           "description": "",
-          "proficiency": 60
+          "proficiency": 50
         }
       ]
     },
@@ -259,10 +259,10 @@
       "technologies": []
     },
     {
-      "title": "University (will start soon)",
+      "title": "Bachelor @Hasso-Plattner-Institut",
       "logo_path": "/images/logos/logo_hpi.png",
       "years": "Oct 2023 - present",
-      "description": "Ich werde bald mein Informatikstudium beginnnen. Dafür habe ich mich beim Hasso-Plattner-Institut beworben und hoffe, dort Oktober mein Studium beginnen zu können :)",
+      "description": "Ich studiere zur Zeit IT Systems Engineering am Hasso-Plattner-Institut. Dabei lerne ich viele Grundlangen der Mathematik, theoretischen Informatik, gleichzeitig erlerne ich auch praktische Poblemlösefähigkeiten. ",
       "technologies": []
     }
   ]

@@ -7,7 +7,7 @@
       "about": "About",
       "projects": "Projects",
       "skills": "Skills",
-      "experience": "Experience", 
+      "experience": "Experience",
       "contact": "Contact"
     }
   },
@@ -19,7 +19,7 @@
       "images": [
         "images/projects/beesupervisor.jpg"
       ],
-      "url": ""
+      "url": "https://beesupervisor.com/"
     },
     {
       "title": "GYPT - German Young Physicist Tournament",
@@ -171,7 +171,7 @@
           "name": "Java",
           "icon": "devicon-java-plain",
           "description": "",
-          "proficiency": 70
+          "proficiency": 50
         },
         {
           "name": "Golang",
@@ -214,10 +214,10 @@
       "name": "Random tools and programming basics",
       "data": [
         {
-          "name": "vim",
+          "name": "vim/neovim",
           "icon": "devicon-vim-plain",
           "description": "",
-          "proficiency": 50
+          "proficiency": 70
         },
         {
           "name": "LaTeX",
@@ -235,16 +235,15 @@
           "name": "bash",
           "icon": "devicon-bash-plain",
           "description": "",
-          "proficiency": 40
+          "proficiency": 60
         },
         {
           "name": "git",
           "icon": "devicon-github-plain",
           "description": "",
-          "proficiency": 60
+          "proficiency": 50
         }
       ]
-      
     },
     {
       "name": "Things I wanna learn",
@@ -312,10 +311,10 @@
       "technologies": []
     },
     {
-      "title": "University (will start soon)",
+      "title": "Bachelor's Degree @ Hasso-Plattner-Institute",
       "logo_path": "/images/logos/logo_hpi.png",
       "years": "Oct 2023 - present",
-      "description": "I will study Computer Science in a bit. I've applied to the Hasso-Plattner-Institute and hope being able to start my studies in October of this year",
+      "description": "I am currently studying IT Systems Engineering at the Hasso-Plattner-Institute. There I am learning a lot of fundamentals in math, theory of cumputation, ... as well as hands-on problem solving skills.",
       "technologies": []
     }
   ]
