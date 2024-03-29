@@ -23,10 +23,10 @@ jobs:
           node-version: ${{ matrix.node-version }}
       
       - name: Install dependencies
-        run: npm install
+        run: npm install && npm install vite
 
       - name: build the app
-        run: npm run build
+        run: tsc && vite build
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
       - name: Zip artifact for deployment
