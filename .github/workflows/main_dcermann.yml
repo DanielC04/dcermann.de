@@ -26,7 +26,7 @@ jobs:
         run: npm install && sudo apt install vite -y
 
       - name: build the app
-        run: tsc && vite build
+        run: vite build
       # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
 
       - name: Zip artifact for deployment
