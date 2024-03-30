@@ -23,7 +23,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       
       - name: Install dependencies
-        run: npm install && sudo apt install vite -y
+        run: npm install && sudo apt install vite -y && sudo apt-get install libxcb-randr0-dev libxcb-xtest0-dev libxcb-xinerama0-dev libxcb-shape0-dev libxcb-xkb-dev
 
       - name: build the app
         run: vite build
