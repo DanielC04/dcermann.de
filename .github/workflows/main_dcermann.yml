@@ -23,7 +23,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       
       - name: Install dependencies
-        run: npm install && apt install vite
+        run: npm install && sudo apt install vite -y
 
       - name: build the app
         run: tsc && vite build
