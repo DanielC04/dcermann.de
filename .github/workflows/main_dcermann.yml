@@ -1,74 +1,68 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
-# More info on Python, GitHub Actions, and Azure App Service: https://aka.ms/python-webapps-actions
 
-name: Build and deploy Python app to Azure Web App - dcermann
+name: Build and deploy Node.js app to Azure Web App - {name_of_your_app}
 
+# Run the workflow whenever change is pushed into the main branch
 on:
   push:
     branches:
       - main
   workflow_dispatch:
 
+# Optional: environment variables can be injected here
+# You can add these variables in your repository Settings - Secrets and variables - Actions - variables
+env:
+  VITE_ENV_VAR1: ${{ env.VITE_ENV_VAR1 }}
+  VITE_ENV_VAR2: ${{ env.VITE_ENV_VAR2 }}
+
+# There are two jobs in this workflow - build and deploy
 jobs:
+ # Builds the application for production. 
+ # You should configure this environment as close as possible to the production environment, e.g. using Ubuntu for Linux apps, using the same Node version
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Set up Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v3
+
+      - name: Set up Node.js version
+        uses: actions/setup-node@v3
         with:
-          node-version: 20
-          cache: 'npm'
-      - name: Install dependencies
-        run: npm ci
-      - name: build the app
-        run: vite build
-      # Optional: Add step to run tests here (PyTest, Django test suites, etc.)
+          node-version: '18.x'
 
-      - name: Zip artifact for deployment
-        run: zip release.zip ./public/* -r
+      - name: Install dependencies, build, and test
+        run: |
+          npm install
+          npm run build --if-present
+          npm run test --if-present
+         # Other scripts if configured should be added here, such as linting, formating
 
-      - name: Upload artifact for deployment jobs
+      - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
         with:
-          name: python-app
-          path: |
-            release.zip
-            !venv/
-
+          name: node-app
+          path: dist # This should be your distribution path, not the root path
+ 
+ # Deploy the application to Azure
   deploy:
     runs-on: ubuntu-latest
     needs: build
     environment:
       name: 'Production'
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-    permissions:
-      id-token: write #This is required for requesting the JWT
 
     steps:
       - name: Download artifact from build job
         uses: actions/download-artifact@v3
         with:
-          name: python-app
-
-      - name: Unzip artifact for deployment
-        run: unzip release.zip
-
-      
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_2262BD618A9E4A929AC3706F6C28326E }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_B253C7FFE8F34DB49359FC4D5C1B9387 }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_F25414DC106B42F3BFE46F8D949135F0 }}
+          name: node-app
 
       - name: 'Deploy to Azure Web App'
-        uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
+        uses: azure/webapps-deploy@v2
         with:
-          app-name: 'dcermann'
+          app-name: {name_of_your_app}
           slot-name: 'Production'
-          
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE }} # Publish profile should always be stored as secrets in your repository Settings - Secrets and variables - Actions - secrets
+          package: .
