@@ -1,7 +1,7 @@
 {
   "basic_info": {
     "description_header": "Hi",
-    "description": "👋 I'm Daniel Cermann ✴️ 19 yo ✴️ Software Engineer und Maker </br> Zur Zeit mache ich ein Weltwärts-Freiwilligenjahr in Argentinien, nahe Buenos Aires ✌️ Nächstes Jahr möchte ich Informatik in Potsdam studieren 📖",
+    "description": "👋 Hi, ich bin Daniel Cermann ✴ {{AGE}} Jahre alt ✴ Softwareentwickler und Maker aus Deutschland. <br>Ich interessiere mich für alles von Webentwicklung bis hin zu spannenden Problemlösungen. <br>Aktuell studiere ich IT-Systemtechnik am Hasso-Plattner-Institut und arbeite außerdem als Werkstudent bei Engie, wo wir den Markt für grüne Energie modernisieren.",
     "section_name": {
       "home": "Home",
       "about": "Über mich",
@@ -15,11 +15,11 @@
     {
       "title": "BeeSupervisor",
       "startDate": "2020",
-      "description": "Varroamilben sind Parasiten, die sich an Honigbienen festsaugen und diese ähnlich wie Zecken schädigen. Jährlich sterben etwa 20% aller Bienenstöcke. Durch am Bienestockeingang angebrachte Kameras werden hereinfliegende Bienen auf den Parasiten untersucht. Der Imker wird anschließend über den Befall eines Volkes informiert und kann die Bienen entsprechend behandeln.",
+      "description": "Varroamilben sind Parasiten, die sich an Honigbienen festsaugen und diese ähnlich wie Zecken schädigen. Jährlich sterben etwa 20% aller Bienenstöcke. Durch am Bienenstockeingang angebrachte Kameras werden hereinfliegende Bienen auf den Parasiten untersucht. Der Imker wird anschließend über den Befall eines Volkes informiert und kann die Bienen entsprechend behandeln.",
       "images": [
         "images/projects/beesupervisor.jpg"
       ],
-      "url": "https://beesupervisor.com/"
+      "url": "https://www.snexplores.org/article/device-count-honeybees-varroa-mite-parasite"
     },
     {
       "title": "GYPT - German Young Physicist Tournament",
@@ -70,20 +70,20 @@
         },
         {
           "name": "Englisch",
-          "icon": "flag-name-to-be-looked-for",
+          "icon": "flag-united-kingdom",
           "description": "C2 Level beim ,,Certificate of Advanced English'' (CAE)",
           "proficiency": 90
         },
         {
           "name": "Spanisch",
-          "icon": "flag-name-to-be-looked-for",
+          "icon": "flag-spain",
           "description": "Habe ich ein Jahr lang bei Freiwilligendienst in Argentinien gelernt",
           "proficiency": 85
         }
       ]
     },
     {
-      "name": "Programming languages",
+      "name": "Programmiersprachen",
       "data": [
         {
           "name": "Python",
@@ -92,28 +92,28 @@
           "proficiency": 90
         },
         {
-          "name": "JavaScript",
-          "icon": "devicon-javascript-plain",
-          "description": "",
-          "proficiency": 80
-        },
-        {
           "name": "TypeScript",
           "icon": "devicon-typescript-plain",
           "description": "",
           "proficiency": 80
         },
         {
+          "name": "Golang",
+          "icon": "devicon-go-plain",
+          "description": "",
+          "proficiency": 70
+        },
+        {
           "name": "C++",
           "icon": "devicon-cplusplus-plain",
           "description": "",
-          "proficiency": 70
+          "proficiency": 60
         },
         {
           "name": "PHP",
           "icon": "devicon-php-plain",
           "description": "",
-          "proficiency": 70
+          "proficiency": 60
         },
         {
           "name": "Java",
@@ -122,33 +122,27 @@
           "proficiency": 50
         },
         {
-          "name": "Golang",
-          "icon": "devicon-go-plain",
-          "description": "",
-          "proficiency": 40
-        },
-        {
           "name": "HTML/CSS/JS",
           "icon": "devicon-html5-plain",
           "description": "",
           "proficiency": 90
-        },
-        {
-          "name": "Sass",
-          "icon": "devicon-sass-original",
-          "description": "",
-          "proficiency": 50
         }
       ]
     },
     {
-      "name": "Frameworks I like",
+      "name": "Frameworks und Bibliotheken",
       "data": [
         {
           "name": "React",
           "icon": "devicon-react-plain",
           "description": "",
           "proficiency": 80
+        },
+        {
+          "name": "Tailwind CSS",
+          "icon": "devicon-tailwindcss-plain",
+          "description": "",
+          "proficiency": 70
         },
         {
           "name": "THREE JS",
@@ -159,7 +153,7 @@
       ]
     },
     {
-      "name": "Random tools and programming basics",
+      "name": "Nützliche Tools und Grundlagen",
       "data": [
         {
           "name": "vim",
@@ -175,7 +169,7 @@
         },
         {
           "name": "3D-Design",
-          "icon": "devicon-cubes-plain",
+          "icon": "fas fa-cube",
           "description": "Mit Fusion 360",
           "proficiency": 60
         },
@@ -187,56 +181,43 @@
         },
         {
           "name": "git",
-          "icon": "devicon-github-plain",
+          "icon": "devicon-git-plain",
           "description": "",
           "proficiency": 50
         }
       ]
     },
     {
-      "name": "Things I wanna learn",
+      "name": "Dinge, die ich lernen möchte",
       "data": [
         {
           "name": "Svelte",
           "icon": "devicon-svelte-plain",
           "description": "Es ist sooo cool",
-          "proficiency": 100
+          "proficiency": 15
         },
         {
           "name": "Rust",
           "icon": "devicon-rust-plain",
           "description": "Klingt seeehr cool",
-          "proficiency": 100
-        },
-        {
-          "name": "Tailwind CSS",
-          "icon": "devicon-tailwindcss-plain",
-          "description": "",
-          "proficiency": 100
+          "proficiency": 15
         },
         {
           "name": "Test Driven Development",
           "icon": "devicon-scrum-plain",
           "description": "",
-          "proficiency": 100
+          "proficiency": 15
         },
         {
           "name": "Cyber Security",
-          "icon": "",
+          "icon": "fas fa-shield-alt",
           "description": "Nur Whitehat-Hacking 😉",
-          "proficiency": 100
+          "proficiency": 15
         }
       ]
     }
   ],
   "experience": [
-    {
-      "title": "Albert-Schweitzer-Gymnasium",
-      "logo_path": "/images/logos/spezi_logo.jpg",
-      "years": "Sep 2018 - July 2022",
-      "description": "Der Spezialschulteil des ASGs ist auf die MINT-Fächer, Mathe und Informatik spezialisiert. Ich habe dort viele theoretische Grundlagen erlernt, als auch praktische Projekte in Teams umgesetzt. Außerdem habe ich viele sehr gute Freunde kennengelernt und durfte an zahlreichen Wettbewerben und Vorbereitungscamps teilnehmen.",
-      "technologies": []
-    },
     {
       "title": "Nebenjob bei LogoData Erfurt",
       "logo_path": "/images/logos/logodata.jpeg",
@@ -255,14 +236,21 @@
       "title": "ISEF ",
       "logo_path": "/images/logos/isef_logo.jpg",
       "years": "May 2023",
-      "description": "Im Mai 2023 bin ich mit zwei guten Freunden nach Dallas geflogen, um Deutschland auf der ISEF (Internatinoal Sciene and Engineering Fair) mit unserem Projekt ,,BeeSupervisor'' zu vertreten. Dort wurden wir mit einem 3. Platz Grand award und zwei Sonderpreisen ausgezeichnet 🥳🎊🥂",
+      "description": "Im Mai 2023 bin ich mit zwei guten Freunden nach Dallas geflogen, um Deutschland auf der ISEF (International Science and Engineering Fair) mit unserem Projekt ,,BeeSupervisor'' zu vertreten. Dort wurden wir mit einem 3. Platz Grand award und zwei Sonderpreisen ausgezeichnet 🥳🎊🥂",
+      "technologies": []
+    },
+    {
+      "title": "Werkstudent @Engie",
+      "logo_path": "/images/logos/engie_logo.jpg",
+      "years": "März 2024 - Dezember 2025",
+      "description": "Bei Engie GEMS habe ich an zwei großen Projekten als Lead-Engineer gearbeitet: ein 7/7 Tool zur Strombuchung in internen Systemen, das täglich mehrere Gigawattstunden Strom bucht und ein Tool zur automatisierten Generierung von PPA Verträgen für unser Legal-Team.",
       "technologies": []
     },
     {
       "title": "Bachelor @Hasso-Plattner-Institut",
       "logo_path": "/images/logos/logo_hpi.png",
       "years": "Oct 2023 - present",
-      "description": "Ich studiere zur Zeit IT Systems Engineering am Hasso-Plattner-Institut. Dabei lerne ich viele Grundlangen der Mathematik, theoretischen Informatik, gleichzeitig erlerne ich auch praktische Poblemlösefähigkeiten. ",
+      "description": "Ich studiere zur Zeit IT Systems Engineering am Hasso-Plattner-Institut. Dabei lerne ich viele Grundlangen der Mathematik, theoretischen Informatik, gleichzeitig erlerne ich auch praktische Problemlösefähigkeiten. ",
       "technologies": []
     }
   ]

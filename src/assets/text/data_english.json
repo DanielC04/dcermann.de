@@ -1,7 +1,7 @@
 {
   "basic_info": {
     "description_header": "Hi",
-    "description": "👋 I'm Daniel Cermann ️✴ 19 yo ✴ Software Engineer and maker from Germany </br> Life is too short to write bad code </br> I like everything from React programming to 3D-Design and printing. Currently, I'm living in Argentina doing a volunteer year ✌️ Next year, I will start my studies of Computer Science in Germany 📖",
+    "description": "👋 I'm Daniel Cermann ✴ {{AGE}} yo ✴ Software Engineer and maker from Germany. <br>I enjoy everything from web development to solving challenging problems. <br>Currently, I am studying IT-Systems Engineering at the Hasso Plattner Institute and also work as a student at Engie, where we help modernize the green energy market.",
     "section_name": {
       "home": "Home",
       "about": "About",
@@ -19,12 +19,12 @@
       "images": [
         "images/projects/beesupervisor.jpg"
       ],
-      "url": "https://beesupervisor.com/"
+      "url": "https://www.snexplores.org/article/device-count-honeybees-varroa-mite-parasite"
     },
     {
       "title": "GYPT - German Young Physicist Tournament",
-      "startDate": "2015",
-      "description": "At the GYPT, German Young Physicists Tournament, 2021 I wrote a phsical simulation. I used this website to visualize the practical experiments I conducted.",
+      "startDate": "2021",
+      "description": "At the GYPT, German Young Physicists Tournament, 2021 I wrote a physical simulation. I used this website to visualize the practical experiments I conducted.",
       "images": [
         "images/projects/gypt.jpg"
       ],
@@ -88,7 +88,7 @@
     },
     {
       "title": "Mensch ärgere dich nicht - Simulation",
-      "startDate": "2015",
+      "startDate": "2021",
       "description": "For the 4th task of the Bundeswettbewerb Informatik 2021 I coded and visualized a game simulation of ''Mensch ärgere dich nicht''. Every one of the players can create a dice with a given number of faces and certain numbers points on the faces. By simulating hundreds of games the best of the created dice is determined :)",
       "images": [
         "images/projects/gameSimulation.jpg"
@@ -122,13 +122,13 @@
         },
         {
           "name": "English",
-          "icon": "flag-name-to-be-looked-for",
+          "icon": "flag-united-kingdom",
           "description": "C2 Level according to ''Certificate of Advanced English'' (CAE)",
           "proficiency": 90
         },
         {
           "name": "Spanish",
-          "icon": "flag-name-to-be-looked-for",
+          "icon": "flag-spain",
           "description": "I spent one year learning spanish in Argentina",
           "proficiency": 85
         }
@@ -144,28 +144,29 @@
           "proficiency": 90
         },
         {
-          "name": "JavaScript",
-          "icon": "devicon-javascript-plain",
-          "description": "",
-          "proficiency": 80
-        },
-        {
           "name": "TypeScript",
           "icon": "devicon-typescript-plain",
           "description": "",
           "proficiency": 80
         },
         {
+          "name": "Golang",
+          "icon": "devicon-go-plain",
+          "description": "",
+          "proficiency": 70
+        },
+
+        {
           "name": "C++",
           "icon": "devicon-cplusplus-plain",
           "description": "",
-          "proficiency": 70
+          "proficiency": 60
         },
         {
           "name": "PHP",
           "icon": "devicon-php-plain",
           "description": "",
-          "proficiency": 70
+          "proficiency": 60
         },
         {
           "name": "Java",
@@ -174,33 +175,27 @@
           "proficiency": 50
         },
         {
-          "name": "Golang",
-          "icon": "devicon-go-plain",
-          "description": "",
-          "proficiency": 40
-        },
-        {
           "name": "HTML/CSS/JS",
           "icon": "devicon-html5-plain",
           "description": "",
           "proficiency": 90
-        },
-        {
-          "name": "Sass",
-          "icon": "devicon-sass-original",
-          "description": "",
-          "proficiency": 50
         }
       ]
     },
     {
-      "name": "Frameworks I like",
+      "name": "Frameworks and libraries I like",
       "data": [
         {
           "name": "React",
           "icon": "devicon-react-plain",
           "description": "",
           "proficiency": 80
+        },
+        {
+          "name": "Tailwind CSS",
+          "icon": "devicon-tailwindcss-plain",
+          "description": "",
+          "proficiency": 70
         },
         {
           "name": "THREE JS",
@@ -227,7 +222,7 @@
         },
         {
           "name": "3D-Design",
-          "icon": "devicon-cubes-plain",
+          "icon": "fas fa-cube",
           "description": "with Fusion 360",
           "proficiency": 60
         },
@@ -239,7 +234,7 @@
         },
         {
           "name": "git",
-          "icon": "devicon-github-plain",
+          "icon": "devicon-git-plain",
           "description": "",
           "proficiency": 50
         }
@@ -261,12 +256,6 @@
           "proficiency": 100
         },
         {
-          "name": "Tailwind CSS",
-          "icon": "devicon-tailwindcss-plain",
-          "description": "",
-          "proficiency": 100
-        },
-        {
           "name": "Test Driven Development",
           "icon": "devicon-scrum-plain",
           "description": "",
@@ -274,7 +263,7 @@
         },
         {
           "name": "Cyber Security",
-          "icon": "",
+          "icon": "fas fa-shield-alt",
           "description": "whitehat hacking only 😉",
           "proficiency": 100
         }
@@ -282,13 +271,6 @@
     }
   ],
   "experience": [
-    {
-      "title": "Student Albert-Schweitzer-Gymnasium",
-      "logo_path": "/images/logos/spezi_logo.jpg",
-      "years": "Sep 2018 - July 2022",
-      "description": "This School is STEM-oriented and offers a lot of special programs and individual classes to promote young talents. I learned a lot about Mathematics, Physics and Informatics, built a lot of cool projects in teams, I competed in a a lot of competitions and, most importantly, I made a lot of really good friends.",
-      "technologies": []
-    },
     {
       "title": "Side hustle at Logodata Erfurt",
       "logo_path": "/images/logos/logodata.jpeg",
@@ -307,14 +289,21 @@
       "title": "ISEF ",
       "logo_path": "/images/logos/isef_logo.jpg",
       "years": "May 2023",
-      "description": "With two close friends I flew to Dallas to present our highschool project ''BeeSupervisor'' at the International Science and Engineering Fair (ISEF). We got a third place grand award in the category ''Robotics and Intelligent Mashines'' and two special awards 🥳🎊🥂",
+      "description": "With two close friends I flew to Dallas to present our highschool project ''BeeSupervisor'' at the International Science and Engineering Fair (ISEF). We got a third place grand award in the category ''Robotics and Intelligent Machines'' and two special awards 🥳🎊🥂",
+      "technologies": []
+    },
+    {
+      "title": "Werkstudent @Engie",
+      "logo_path": "/images/logos/engie_logo.jpg",
+      "years": "March 2024 - December 2025",
+      "description": "At Engie GEMS I worked on two large projects as a Lead-Engineer: a 7/7 tool for electricity booking in internal systems, that books several gigawatt-hours of electricity daily, and a tool for automated generation of PPA contracts for our Legal team.",
       "technologies": []
     },
     {
       "title": "Bachelor's Degree @ Hasso-Plattner-Institute",
       "logo_path": "/images/logos/logo_hpi.png",
       "years": "Oct 2023 - present",
-      "description": "I am currently studying IT Systems Engineering at the Hasso-Plattner-Institute. There I am learning a lot of fundamentals in math, theory of cumputation, ... as well as hands-on problem solving skills.",
+      "description": "I am currently studying IT Systems Engineering at the Hasso-Plattner-Institute. There I am learning a lot of fundamentals in math, theory of computation, ... as well as hands-on problem solving skills.",
       "technologies": []
     }
   ]

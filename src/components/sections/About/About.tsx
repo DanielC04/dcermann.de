@@ -1,6 +1,7 @@
 // import BackgroundGrid from '../../../Backgrounds/svg/BackgroundGrid';
 import './About.scss';
 import Notebook from './Notebook';
+import { calculateAge } from '../../utils/utils';
 
 function About(props: any) {
   let profilepic, sectionName, hello, about;
@@ -10,7 +11,8 @@ function About(props: any) {
   if (props.resumeBasicInfo) {
     sectionName = props.resumeBasicInfo.section_name.about;
     hello = props.resumeBasicInfo.description_header;
-    about = props.resumeBasicInfo.description;
+    const currentAge = calculateAge("2004-06-06");
+    about = props.resumeBasicInfo.description.replace("{{AGE}}", currentAge.toString());
   }
 
   return (

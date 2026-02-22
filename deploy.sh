@@ -1,5 +1,5 @@
 #!/usr/bin/expect
-spawn sftp -r deployment@dcermann.de 
+spawn sftp -r deployment@dcermann.de
 expect -exact "deployment@dcermann.de's password: \r"
 send -- "deploynow69!\r"
 expect -exact "sftp> \r"
@@ -16,4 +16,3 @@ expect -exact "sftp> \r"
 send -- "mput dist/assets/*\r"
 expect -exact "sftp> \r"
 send -- "bye\r"
-
