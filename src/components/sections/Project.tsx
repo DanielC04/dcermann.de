@@ -1,19 +1,18 @@
 import { Project as ProjectData } from "../loaded_data_types";
-import { Link } from "react-router-dom";
 
 function Project(props: ProjectData) {
 	return (
-		<div
-			className="project col-sm-12 col-md-6 mx-auto p-3"
-			key={props.title}
-		>
-			<span className="fancy-title">{props.title}</span>
-			{/* <div className="row"> */}
+		<div className="project col-sm-12 col-md-6 mx-auto p-3">
+			<div className="project-header">
+				<span className="fancy-title">{props.title}</span>
+				<span className="project-year">{props.startDate}</span>
+			</div>
 			<div>
-				<Link
+				<a
 					className="image-container"
-					to={props.url}
+					href={props.url}
 					target="_blank"
+					rel="noopener noreferrer"
 				>
 					<img
 						src={props.images[0]}
@@ -25,8 +24,25 @@ function Project(props: ProjectData) {
 						alt=""
 						className="laptop"
 					/>
-				</Link>
+				</a>
 				<p className="description">{props.description}</p>
+				{props.technologies && props.technologies.length > 0 && (
+					<div className="tech-badges">
+						{props.technologies.map((tech, i) => (
+							<span key={i} className="tech-badge" title={tech.name}>
+								<i className={tech.class}></i>
+							</span>
+						))}
+					</div>
+				)}
+				<a
+					href={props.url}
+					target="_blank"
+					rel="noopener noreferrer"
+					className="project-link"
+				>
+					View Project →
+				</a>
 			</div>
 		</div>
 	);

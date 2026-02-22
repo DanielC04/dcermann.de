@@ -1,48 +1,29 @@
-import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import "./LanguageSwitch.scss";
 
-import sharedData from '../../assets/text/shared_data.json';
-import resumeDataEnglish from '../../assets/text/data_english.json';
-import resumeDataGerman from '../../assets/text/data_german.json';
-
-type LanguageType = "german" | "english" | "spanish";
-
-interface Props {
-    setResumeData: any;
-    setSharedData: any;
-    setErrorMessage: any;
-}
-
-function LanguageSwitch(props: Props) {
-    const [language, setLanguageVar] = useState("english");
-
-    const setLanguage = (language: LanguageType) => {
-        setLanguageVar(language);
-        storeLanguageSetting(language);
-        const newData = language == 'english' ? resumeDataEnglish : resumeDataGerman;
-        props.setResumeData(newData);
-    };
-
-    useEffect(() => {
-        // load all the text
-        props.setSharedData(sharedData);
-        const defaultLanguage = getDefaultLanguage();
-        setLanguage(defaultLanguage);
-    }, []);
+function LanguageSwitch() {
+    const { i18n } = useTranslation();
+    const language = i18n.resolvedLanguage;
 
     return (
         <div className="language-container">
             <div className="language">
-                <div onClick={() => setLanguage("english")} className={`flag-container ${language == 'english' ? 'active': ''}`}>
+                <div
+                    onClick={() => i18n.changeLanguage("en")}
+                    className={`flag-container ${language === "en" ? "active" : ""}`}
+                >
                     <span
-                        className={'iconify language-icon'}
+                        className={"iconify language-icon"}
                         data-icon="twemoji-flag-for-flag-united-kingdom"
                         data-inline="false"
                     ></span>
                 </div>
-                <div onClick={() => setLanguage("german")} className={`flag-container ${language == 'german' ? 'active': ''}`}>
+                <div
+                    onClick={() => i18n.changeLanguage("de")}
+                    className={`flag-container ${language === "de" ? "active" : ""}`}
+                >
                     <span
-                        className={'iconify language-icon'}
+                        className={"iconify language-icon"}
                         data-icon="twemoji-flag-for-flag-germany"
                         data-inline="false"
                     ></span>
@@ -50,16 +31,6 @@ function LanguageSwitch(props: Props) {
             </div>
         </div>
     );
-}
-
-function storeLanguageSetting(language: LanguageType) {
-    window.localStorage.setItem("language", language);
-}
-
-function getDefaultLanguage(): LanguageType {
-    const lang = window.localStorage.getItem("language") as LanguageType;
-    if (lang) return lang;
-    return "english";
 }
 
 export default LanguageSwitch;

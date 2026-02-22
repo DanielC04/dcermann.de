@@ -6,7 +6,6 @@
       "I build cool websites",
       "I solve real-world problems with hard- and software"
     ],
-    
     "social": [
       {
         "name": "github",
@@ -25,5 +24,123 @@
       }
     ],
     "image": "myProfile.jpg"
-  }
-} 
+  },
+  "projects": [
+    {
+      "startDate": "2020",
+      "images": ["images/projects/beesupervisor.jpg"],
+      "url": "https://www.snexplores.org/article/device-count-honeybees-varroa-mite-parasite",
+      "technologies": []
+    },
+    {
+      "startDate": "2021",
+      "images": ["images/projects/gypt.jpg"],
+      "url": "https://gypt.dcermann.de",
+      "technologies": [
+        { "class": "devicon-angularjs-plain", "name": "Angular" },
+        { "class": "devicon-typescript-plain", "name": "TypeScript" },
+        { "class": "devicon-csharp-plain", "name": "C#" }
+      ]
+    },
+    {
+      "startDate": "2018",
+      "images": ["images/projects/convexhulls.jpg"],
+      "url": "https://convexhulls.dcermann.de",
+      "technologies": [
+        { "class": "devicon-react-original", "name": "React" },
+        { "class": "devicon-javascript-plain", "name": "JavaScript" }
+      ]
+    },
+    {
+      "startDate": "2015",
+      "images": ["images/projects/tictactoe.jpg"],
+      "url": "https://tictactoe.dcermann.de",
+      "technologies": [
+        { "class": "devicon-angularjs-plain", "name": "Angular" },
+        { "class": "devicon-typescript-plain", "name": "TypeScript" },
+        { "class": "devicon-csharp-plain", "name": "C#" }
+      ]
+    },
+    {
+      "startDate": "2021",
+      "images": ["images/projects/gameSimulation.jpg"],
+      "url": "https://bwinf2021.dcermann.de",
+      "technologies": [
+        { "class": "devicon-angularjs-plain", "name": "Angular" },
+        { "class": "devicon-typescript-plain", "name": "TypeScript" },
+        { "class": "devicon-csharp-plain", "name": "C#" }
+      ]
+    }
+  ],
+  "skills": [
+    {
+      "data": [
+        { "icon": "flag-germany",       "proficiency": 100 },
+        { "icon": "flag-united-kingdom","proficiency": 90  },
+        { "icon": "flag-spain",         "proficiency": 85  }
+      ]
+    },
+    {
+      "data": [
+        { "icon": "devicon-python-plain",     "proficiency": 90 },
+        { "icon": "devicon-typescript-plain", "proficiency": 80 },
+        { "icon": "devicon-go-plain",         "proficiency": 70 },
+        { "icon": "devicon-cplusplus-plain",  "proficiency": 60 },
+        { "icon": "devicon-php-plain",        "proficiency": 60 },
+        { "icon": "devicon-java-plain",       "proficiency": 50 },
+        { "icon": "devicon-html5-plain",      "proficiency": 90 }
+      ]
+    },
+    {
+      "data": [
+        { "icon": "devicon-react-plain",       "proficiency": 80 },
+        { "icon": "devicon-tailwindcss-plain", "proficiency": 70 },
+        { "icon": "devicon-threejs-original",  "proficiency": 40 }
+      ]
+    },
+    {
+      "data": [
+        { "icon": "devicon-vim-plain",   "proficiency": 70 },
+        { "icon": "devicon-latex-plain", "proficiency": 70 },
+        { "icon": "fas fa-cube",         "proficiency": 60 },
+        { "icon": "devicon-bash-plain",  "proficiency": 60 },
+        { "icon": "devicon-git-plain",   "proficiency": 50 }
+      ]
+    },
+    {
+      "data": [
+        { "icon": "devicon-svelte-plain", "proficiency": 100 },
+        { "icon": "devicon-rust-plain",   "proficiency": 100 },
+        { "icon": "devicon-scrum-plain",  "proficiency": 100 },
+        { "icon": "fas fa-shield-alt",    "proficiency": 100 }
+      ]
+    }
+  ],
+  "experience": [
+    {
+      "logo_path": "/images/logos/logodata.jpeg",
+      "years": "Oct 2021 - Feb 2022",
+      "technologies": []
+    },
+    {
+      "logo_path": "",
+      "years": "Sep 2022 - Aug 2023",
+      "technologies": []
+    },
+    {
+      "logo_path": "/images/logos/isef_logo.jpg",
+      "years": "May 2023",
+      "technologies": []
+    },
+    {
+      "logo_path": "/images/logos/engie_logo.jpg",
+      "years": "Mar 2024 - Dec 2025",
+      "technologies": []
+    },
+    {
+      "logo_path": "/images/logos/logo_hpi.png",
+      "years": "Oct 2023 - present",
+      "technologies": []
+    }
+  ]
+}

@@ -1,6 +1,4 @@
-// import BackgroundGrid from '../../../Backgrounds/svg/BackgroundGrid';
 import './About.scss';
-import Notebook from './Notebook';
 import { calculateAge } from '../../utils/utils';
 
 function About(props: any) {
@@ -17,19 +15,11 @@ function About(props: any) {
 
   return (
     <section id="about" className='grid-overlay'>
-      {/* <BackgroundGrid /> */}
       <div className="col-md-12">
         <h2>
           <span>{sectionName}</span>
         </h2>
-        <div className="container row center mx-auto ">
-
-          <div className="col-sm12 col-md-9 mx-auto">
-            <Notebook />
-          </div>
-
-
-
+        <div className="container row center mx-auto">
           <div className="col-md-4 mb-5 center">
             <div className="polaroid">
               <span>

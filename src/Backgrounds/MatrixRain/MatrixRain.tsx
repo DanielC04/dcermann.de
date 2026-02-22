@@ -1,11 +1,11 @@
-import React, { useRef, useEffect } from 'react'
+import { useRef, useEffect } from 'react'
 import Effect from "./Effect.js";
 import './MatrixRain.scss'
 import { isInViewport } from '../../customHooks/useIsInView.js';
 
 
 function MatrixRain() {
-	const canvasRef: React.RefObject<HTMLCanvasElement> = useRef(null);
+	const canvasRef = useRef<HTMLCanvasElement>(null);
 
 	useEffect(() => {
 		const canvas = canvasRef.current;

@@ -14,297 +14,94 @@
   "projects": [
     {
       "title": "BeeSupervisor",
-      "startDate": "2020",
-      "description": "Varroa mites are Parasites, that live in bee colonies on the back of the bees. Every year about 20% of the colonies die due to Varroa infection. With two friends I built a monitoring solution that detects the current infection rate. Two cameras film the incoming bees at the hive entrance and an artificial intelligence determines the infected bees. According to the infection rate the beekeeper can initiate the needed treatment.",
-      "images": [
-        "images/projects/beesupervisor.jpg"
-      ],
-      "url": "https://www.snexplores.org/article/device-count-honeybees-varroa-mite-parasite"
+      "description": "Varroa mites are Parasites, that live in bee colonies on the back of the bees. Every year about 20% of the colonies die due to Varroa infection. With two friends I built a monitoring solution that detects the current infection rate. Two cameras film the incoming bees at the hive entrance and an artificial intelligence determines the infected bees. According to the infection rate the beekeeper can initiate the needed treatment."
     },
     {
       "title": "GYPT - German Young Physicist Tournament",
-      "startDate": "2021",
-      "description": "At the GYPT, German Young Physicists Tournament, 2021 I wrote a physical simulation. I used this website to visualize the practical experiments I conducted.",
-      "images": [
-        "images/projects/gypt.jpg"
-      ],
-      "url": "https://gypt.dcermann.de",
-      "technologies": [
-        {
-          "class": "devicon-angularjs-plain",
-          "name": "Angular"
-        },
-        {
-          "class": "devicon-typescript-plain",
-          "name": "TypeScript"
-        },
-        {
-          "class": "devicon-csharp-plain",
-          "name": "C#"
-        }
-      ]
+      "description": "At the GYPT, German Young Physicists Tournament, 2021 I wrote a physical simulation. I used this website to visualize the practical experiments I conducted."
     },
     {
       "title": "Convex Hulls",
-      "startDate": "2018",
-      "description": "I built a webapp for a school project, that finds the convex hull of a given set of points. It visualizes multiple algorithms including Jarvis March, Graham Scan and Chan's Algorithm.",
-      "images": [
-        "images/projects/convexhulls.jpg"
-      ],
-      "url": "https://convexhulls.dcermann.de",
-      "technologies": [
-        {
-          "class": "devicon-react-original",
-          "name": "React"
-        },
-        {
-          "class": "devicon-javascript-plain",
-          "name": "JavaScript"
-        }
-      ]
+      "description": "I built a webapp for a school project, that finds the convex hull of a given set of points. It visualizes multiple algorithms including Jarvis March, Graham Scan and Chan's Algorithm."
     },
     {
       "title": "Mega-Tic-Tac-Toe",
-      "startDate": "2015",
-      "description": "Cool extension of the classical TicTacToe: In all of the nine fields there is a smaller TicTacToe-Field. In those smaller fields you play a separate games to conquer one of the bigger fields. It's a bit hard to explain but very mind-blowing 🤯",
-      "images": [
-        "images/projects/tictactoe.jpg"
-      ],
-      "url": "https://tictactoe.dcermann.de",
-      "technologies": [
-        {
-          "class": "devicon-angularjs-plain",
-          "name": "Angular"
-        },
-        {
-          "class": "devicon-typescript-plain",
-          "name": "TypeScript"
-        },
-        {
-          "class": "devicon-csharp-plain",
-          "name": "C#"
-        }
-      ]
+      "description": "Cool extension of the classical TicTacToe: In all of the nine fields there is a smaller TicTacToe-Field. In those smaller fields you play a separate games to conquer one of the bigger fields. It's a bit hard to explain but very mind-blowing 🤯"
     },
     {
       "title": "Mensch ärgere dich nicht - Simulation",
-      "startDate": "2021",
-      "description": "For the 4th task of the Bundeswettbewerb Informatik 2021 I coded and visualized a game simulation of ''Mensch ärgere dich nicht''. Every one of the players can create a dice with a given number of faces and certain numbers points on the faces. By simulating hundreds of games the best of the created dice is determined :)",
-      "images": [
-        "images/projects/gameSimulation.jpg"
-      ],
-      "url": "https://bwinf2021.dcermann.de",
-      "technologies": [
-        {
-          "class": "devicon-angularjs-plain",
-          "name": "Angular"
-        },
-        {
-          "class": "devicon-typescript-plain",
-          "name": "TypeScript"
-        },
-        {
-          "class": "devicon-csharp-plain",
-          "name": "C#"
-        }
-      ]
+      "description": "For the 4th task of the Bundeswettbewerb Informatik 2021 I coded and visualized a game simulation of ''Mensch ärgere dich nicht''. Every one of the players can create a dice with a given number of faces and certain numbers points on the faces. By simulating hundreds of games the best of the created dice is determined :)"
     }
   ],
   "skills": [
     {
       "name": "Languages I speak",
       "data": [
-        {
-          "name": "German",
-          "icon": "flag-germany",
-          "description": "Native Language...",
-          "proficiency": 100
-        },
-        {
-          "name": "English",
-          "icon": "flag-united-kingdom",
-          "description": "C2 Level according to ''Certificate of Advanced English'' (CAE)",
-          "proficiency": 90
-        },
-        {
-          "name": "Spanish",
-          "icon": "flag-spain",
-          "description": "I spent one year learning spanish in Argentina",
-          "proficiency": 85
-        }
+        { "name": "German",  "description": "Native Language..." },
+        { "name": "English", "description": "C2 Level according to ''Certificate of Advanced English'' (CAE)" },
+        { "name": "Spanish", "description": "I spent one year learning Spanish in Argentina" }
       ]
     },
     {
       "name": "Programming languages",
       "data": [
-        {
-          "name": "Python",
-          "icon": "devicon-python-plain",
-          "description": "",
-          "proficiency": 90
-        },
-        {
-          "name": "TypeScript",
-          "icon": "devicon-typescript-plain",
-          "description": "",
-          "proficiency": 80
-        },
-        {
-          "name": "Golang",
-          "icon": "devicon-go-plain",
-          "description": "",
-          "proficiency": 70
-        },
-
-        {
-          "name": "C++",
-          "icon": "devicon-cplusplus-plain",
-          "description": "",
-          "proficiency": 60
-        },
-        {
-          "name": "PHP",
-          "icon": "devicon-php-plain",
-          "description": "",
-          "proficiency": 60
-        },
-        {
-          "name": "Java",
-          "icon": "devicon-java-plain",
-          "description": "",
-          "proficiency": 50
-        },
-        {
-          "name": "HTML/CSS/JS",
-          "icon": "devicon-html5-plain",
-          "description": "",
-          "proficiency": 90
-        }
+        { "name": "Python",     "description": "" },
+        { "name": "TypeScript", "description": "" },
+        { "name": "Golang",     "description": "" },
+        { "name": "C++",        "description": "" },
+        { "name": "PHP",        "description": "" },
+        { "name": "Java",       "description": "" },
+        { "name": "HTML/CSS/JS","description": "" }
       ]
     },
     {
       "name": "Frameworks and libraries I like",
       "data": [
-        {
-          "name": "React",
-          "icon": "devicon-react-plain",
-          "description": "",
-          "proficiency": 80
-        },
-        {
-          "name": "Tailwind CSS",
-          "icon": "devicon-tailwindcss-plain",
-          "description": "",
-          "proficiency": 70
-        },
-        {
-          "name": "THREE JS",
-          "icon": "devicon-threejs-original",
-          "description": "",
-          "proficiency": 40
-        }
+        { "name": "React",       "description": "" },
+        { "name": "Tailwind CSS","description": "" },
+        { "name": "THREE JS",    "description": "" }
       ]
     },
     {
       "name": "Random tools and programming basics",
       "data": [
-        {
-          "name": "vim/neovim",
-          "icon": "devicon-vim-plain",
-          "description": "",
-          "proficiency": 70
-        },
-        {
-          "name": "LaTeX",
-          "icon": "devicon-latex-plain",
-          "description": "",
-          "proficiency": 70
-        },
-        {
-          "name": "3D-Design",
-          "icon": "fas fa-cube",
-          "description": "with Fusion 360",
-          "proficiency": 60
-        },
-        {
-          "name": "bash",
-          "icon": "devicon-bash-plain",
-          "description": "",
-          "proficiency": 60
-        },
-        {
-          "name": "git",
-          "icon": "devicon-git-plain",
-          "description": "",
-          "proficiency": 50
-        }
+        { "name": "vim/neovim", "description": "" },
+        { "name": "LaTeX",      "description": "" },
+        { "name": "3D-Design",  "description": "with Fusion 360" },
+        { "name": "bash",       "description": "" },
+        { "name": "git",        "description": "" }
       ]
     },
     {
       "name": "Things I wanna learn",
       "data": [
-        {
-          "name": "Svelte",
-          "icon": "devicon-svelte-plain",
-          "description": "It's sooo cool",
-          "proficiency": 100
-        },
-        {
-          "name": "Rust",
-          "icon": "devicon-rust-plain",
-          "description": "It sounds sooo cool",
-          "proficiency": 100
-        },
-        {
-          "name": "Test Driven Development",
-          "icon": "devicon-scrum-plain",
-          "description": "",
-          "proficiency": 100
-        },
-        {
-          "name": "Cyber Security",
-          "icon": "fas fa-shield-alt",
-          "description": "whitehat hacking only 😉",
-          "proficiency": 100
-        }
+        { "name": "Svelte",               "description": "It's sooo cool" },
+        { "name": "Rust",                 "description": "It sounds sooo cool" },
+        { "name": "Test Driven Development","description": "" },
+        { "name": "Cyber Security",       "description": "whitehat hacking only 😉" }
       ]
     }
   ],
   "experience": [
     {
       "title": "Side hustle at Logodata Erfurt",
-      "logo_path": "/images/logos/logodata.jpeg",
-      "years": "Oct 2021 - Feb 2022",
-      "description": "I was developing an internal tool of my company. I spent two weeks in their office, getting to know my colleagues and the workplace. After that, I worked home-office for a couple of months until I decided to concentrate on finishing highschool.",
-      "technologies": []
+      "description": "I was developing an internal tool of my company. I spent two weeks in their office, getting to know my colleagues and the workplace. After that, I worked home-office for a couple of months until I decided to concentrate on finishing highschool."
     },
     {
       "title": "Volunteer Year - Argentina 🇦🇷",
-      "logo_path": "",
-      "years": "September 2022 - August 2023",
-      "description": "I spent one year helping in a projects for children and teenagers in Buenos Aires. In the ''Refugio San Eugenio'' I learned a lot about life, difficult social situations and a lot of spanish swear words 😉",
-      "technologies": []
+      "description": "I spent one year helping in a projects for children and teenagers in Buenos Aires. In the ''Refugio San Eugenio'' I learned a lot about life, difficult social situations and a lot of spanish swear words 😉"
     },
     {
-      "title": "ISEF ",
-      "logo_path": "/images/logos/isef_logo.jpg",
-      "years": "May 2023",
-      "description": "With two close friends I flew to Dallas to present our highschool project ''BeeSupervisor'' at the International Science and Engineering Fair (ISEF). We got a third place grand award in the category ''Robotics and Intelligent Machines'' and two special awards 🥳🎊🥂",
-      "technologies": []
+      "title": "ISEF",
+      "description": "With two close friends I flew to Dallas to present our highschool project ''BeeSupervisor'' at the International Science and Engineering Fair (ISEF). We got a third place grand award in the category ''Robotics and Intelligent Machines'' and two special awards 🥳🎊🥂"
     },
     {
       "title": "Werkstudent @Engie",
-      "logo_path": "/images/logos/engie_logo.jpg",
-      "years": "March 2024 - December 2025",
-      "description": "At Engie GEMS I worked on two large projects as a Lead-Engineer: a 7/7 tool for electricity booking in internal systems, that books several gigawatt-hours of electricity daily, and a tool for automated generation of PPA contracts for our Legal team.",
-      "technologies": []
+      "description": "At Engie GEMS I worked on two large projects as a Lead-Engineer: a 7/7 tool for electricity booking in internal systems, that books several gigawatt-hours of electricity daily, and a tool for automated generation of PPA contracts for our Legal team."
     },
     {
       "title": "Bachelor's Degree @ Hasso-Plattner-Institute",
-      "logo_path": "/images/logos/logo_hpi.png",
-      "years": "Oct 2023 - present",
-      "description": "I am currently studying IT Systems Engineering at the Hasso-Plattner-Institute. There I am learning a lot of fundamentals in math, theory of computation, ... as well as hands-on problem solving skills.",
-      "technologies": []
+      "description": "I am currently studying IT Systems Engineering at the Hasso-Plattner-Institute. There I am learning a lot of fundamentals in math, theory of computation, ... as well as hands-on problem solving skills."
     }
   ]
 }

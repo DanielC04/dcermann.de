@@ -5,7 +5,7 @@ import './BackgroundAnimation.scss'
 
 function Box(props: any) {
 	// This reference will give us direct access to the mesh
-	const mesh = useRef()
+	const mesh = useRef<any>(null)
 	// Set up state for the hovered and active state
 	const [hovered, setHover] = useState(false)
 	const [active, setActive] = useState(false)

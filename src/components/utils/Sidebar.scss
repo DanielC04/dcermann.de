@@ -20,49 +20,92 @@ $sidebar-dim: clamp(50px, 10%, 100px);
 	font-size: medium;
 	color: var(--text-color);
 	z-index: 10;
+
 	.logo img {
 		font-size: 150%;
 		width: clamp(20px, 2em, 65px);
 		margin-top: clamp(10px, 3vh, 50px);
 	}
+
 	.link-container {
 		display: flex;
 		flex-direction: row-reverse;
 		writing-mode: sideways-lr;
 		margin-top: clamp(10px, 50%, 500px);
 	}
+
 	.section-label {
 		margin: 10px;
 		font-size: 120%;
 		text-decoration: none;
 		color: var(--text-color);
+		transition: color 0.2s;
 	}
+
 	.section-label.active {
 		color: var(--contrast-color);
 		font-size: 125%;
 	}
+
+	.hamburger {
+		display: none;
+	}
+
 	@media (max-width: $orientation-breakpoint) {
 		width: 100vw;
-		max-height: $sidebar-dim;
+		height: $sidebar-dim;
 		flex-direction: row;
 		align-items: center;
-		// background-color: var(--background-color);
-		max-height: $sidebar-dim;
+		background-color: var(--background-color);
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+
+		.hamburger {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			margin-left: auto;
+			margin-right: 16px;
+			background: none;
+			border: none;
+			color: var(--text-color);
+			font-size: 1.4em;
+			cursor: pointer;
+			padding: 8px;
+			border-radius: 4px;
+			transition: color 0.2s;
+			&:hover {
+				color: var(--contrast-color);
+			}
+		}
+
 		.link-container {
 			writing-mode: horizontal-tb;
-			margin-top: 0;
 			flex-direction: column;
-			margin-left: auto;
-			margin-right: auto;
-			opacity: 0;
-			margin-top: $sidebar-dim;
-			// 
-			// for now: make it disappear
-			// 
-			display: none;
+			position: absolute;
+			top: $sidebar-dim;
+			left: 0;
+			width: 100%;
+			background-color: var(--background-color);
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+			margin-top: 0;
+			max-height: 0;
+			overflow: hidden;
+			transition: max-height 0.3s ease;
+			&.open {
+				max-height: 400px;
+			}
 		}
-		.link-container.active {
-			opacity: 1;
+
+		.section-label {
+			margin: 0;
+			padding: 12px 24px;
+			font-size: 110%;
+			display: block;
+			border-left: 3px solid transparent;
+			&.active {
+				border-left-color: var(--contrast-color);
+				font-size: 110%;
+			}
 		}
 
 		.logo {

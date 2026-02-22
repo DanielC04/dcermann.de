@@ -1,7 +1,12 @@
-import { useState, lazy, Suspense } from "react";
+import { lazy, Suspense } from "react";
+import { useTranslation } from "react-i18next";
 import "./App.scss";
-import { LangSpecificData, SharedData } from "./components/loaded_data_types";
+import { LangTranslations, SharedData } from "./components/loaded_data_types";
 import LoaderPage from "./components/utils/LoaderPage";
+import sharedDataRaw from "./assets/text/shared_data.json";
+import { mergeData } from "./mergeData";
+
+const sharedData = sharedDataRaw as unknown as SharedData;
 
 const Home = lazy(() => import("./components/sections/Home"));
 const About = lazy(() => import("./components/sections/About/About"));
@@ -14,47 +19,33 @@ const Footer = lazy(() => import("./components/utils/Footer"));
 const LanguageSwitch = lazy(() => import("./components/utils/LanguageSwitch"));
 
 function App() {
-    const [resumeData, setResumeData] = useState<
-        LangSpecificData | undefined
-    >();
-    const [sharedData, setSharedData] = useState<SharedData | undefined>();
-    const [errorMessage, setErrorMessage] = useState("");
+    const { i18n } = useTranslation();
+    const langBundle = i18n.getResourceBundle(i18n.resolvedLanguage ?? 'en', "translation") as LangTranslations | undefined;
+    const resumeData = langBundle ? mergeData(langBundle, sharedData) : undefined;
 
     return (
         <div className="app">
             <Suspense fallback={<LoaderPage />}>
-                <LanguageSwitch
-                    setErrorMessage={setErrorMessage}
-                    setResumeData={setResumeData}
-                    setSharedData={setSharedData}
-                />
-                <Home sharedData={sharedData?.basic_info} />
-                {errorMessage !== "" ? (
-                    <section id="error-message">
-                        <h2 className="error-message">{errorMessage}</h2>
-                    </section>
-                ) : (
-                    <>
-                        <About
-                            resumeBasicInfo={resumeData?.basic_info}
-                            sharedBasicInfo={sharedData?.basic_info}
-                        />
-                        <Projects
-                            projects={resumeData?.projects}
-                            basicInfo={resumeData?.basic_info}
-                        />
-                        <Skills
-                            skills={resumeData?.skills}
-                            basicInfo={resumeData?.basic_info}
-                        />
-                        <Experience experiences={resumeData?.experience} basicInfo={resumeData?.basic_info} />
-                        <Contact basicInfo={resumeData?.basic_info} />
-                    </>
-                )}
-                <Sidebar
-                    sectionNames={resumeData?.basic_info.section_name}
-                />
-                <Footer sharedBasicInfo={sharedData?.basic_info} />
+                <LanguageSwitch />
+                <Home sharedData={sharedData.basic_info} />
+                <>
+                    <About
+                        resumeBasicInfo={resumeData?.basic_info}
+                        sharedBasicInfo={sharedData.basic_info}
+                    />
+                    <Projects
+                        projects={resumeData?.projects}
+                        basicInfo={resumeData?.basic_info}
+                    />
+                    <Skills
+                        skills={resumeData?.skills}
+                        basicInfo={resumeData?.basic_info}
+                    />
+                    <Experience experiences={resumeData?.experience} basicInfo={resumeData?.basic_info} />
+                    <Contact basicInfo={resumeData?.basic_info} />
+                </>
+                <Sidebar sectionNames={resumeData?.basic_info.section_name} />
+                <Footer sharedBasicInfo={sharedData.basic_info} />
             </Suspense>
         </div>
     );

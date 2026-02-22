@@ -9,6 +9,7 @@ interface Props {
 
 function Sidebar(props: Props) {
     const [activeSection, setActiveSection] = useState("home");
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const sectionRefs: React.RefObject<Array<HTMLElement | null>> = useRef([]);
 
     useEffect(() => {
@@ -18,7 +19,6 @@ function Sidebar(props: Props) {
             sectionRefs.current[i] = document.querySelector(`#${name}`);
         });
 
-        // set observer that checks what section is active
         window.addEventListener("scroll", () => {
             let minDist = Infinity;
             let currSection = "home";
@@ -35,24 +35,31 @@ function Sidebar(props: Props) {
         });
     }, [props.sectionNames]);
 
+    const navLinks = Object.keys(props.sectionNames || {}).map((section_id: string, id: number) => (
+        <HashLink
+            to={`#${section_id}`}
+            key={id}
+            className={`section-label ${section_id === activeSection ? "active" : ""}`}
+            onClick={() => setMobileMenuOpen(false)}
+        >
+            {(props.sectionNames as any)[section_id].toLowerCase()}
+        </HashLink>
+    ));
+
     return (
         <div className="sidebar">
             <HashLink to="/#home" className="logo">
                 <img src="dc-logo.svg" alt="DANIEL" />
             </HashLink>
-            <div className="link-container active">
-                {Object.keys(props.sectionNames || {}).map((section_id: string, id: number) => (
-                    <HashLink
-                        to={`#${section_id}`}
-                        key={id}
-                        className={`section-label ${
-                            section_id === activeSection && "active"
-                        }`}
-                    >
-                        {(props.sectionNames as any)[section_id].toLowerCase()}
-                        {/* {section_id} */}
-                    </HashLink>
-                ))}
+            <button
+                className="hamburger"
+                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                aria-label="Toggle navigation"
+            >
+                <i className={`fas ${mobileMenuOpen ? "fa-times" : "fa-bars"}`}></i>
+            </button>
+            <div className={`link-container ${mobileMenuOpen ? "open" : ""}`}>
+                {navLinks}
             </div>
         </div>
     );

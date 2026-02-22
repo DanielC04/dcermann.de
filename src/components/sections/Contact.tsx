@@ -17,7 +17,7 @@ function Contact(props: Props) {
   const [isSending, setSending] = useState(false);
 
   const title = props.basicInfo?.section_name.contact;
-  const form: any = useRef();
+  const form = useRef<HTMLFormElement>(null);
 
   const sendEmail = (e: React.FormEvent<HTMLFormElement>) => {
     console.log(e);
@@ -26,7 +26,7 @@ function Contact(props: Props) {
     setSending(true);
 
     emailjs
-      .sendForm(SERVICE_ID, TEMPLATE_ID, form.current, PUBLIC_KEY)
+      .sendForm(SERVICE_ID, TEMPLATE_ID, form.current!, PUBLIC_KEY)
       .then(
         () => {
           const successAlert = <CustomAlert isError={false} />;
@@ -62,7 +62,7 @@ function Contact(props: Props) {
                 </div>
                 <div className="user-box">
                   <input
-                    type="textx"
+                    type="email"
                     name="email"
                     className="input"
                     required

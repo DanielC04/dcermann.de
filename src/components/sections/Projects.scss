@@ -5,6 +5,55 @@
 
     .project {
         margin-bottom: 1.2em;
+
+        .project-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .project-year {
+            font-size: 0.85em;
+            color: var(--text-color-dim);
+        }
+
+        .tech-badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+
+        .tech-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 2.2em;
+            height: 2.2em;
+            border-radius: 6px;
+            background-color: var(--background-color);
+            font-size: 1.2em;
+            border: 1px solid var(--text-color-dim);
+            transition: transform 0.15s, border-color 0.15s;
+            &:hover {
+                transform: scale(1.15);
+                border-color: var(--contrast-color);
+            }
+        }
+
+        .project-link {
+            display: inline-block;
+            margin-top: 6px;
+            font-size: 0.9em;
+            color: var(--contrast-color);
+            text-decoration: none;
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+
         .description {
             text-align: justify;
         }

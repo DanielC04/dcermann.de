@@ -11,6 +11,7 @@ function TimelineBox(props: Experience) {
                             <img src={props.logo_path} />
                         )}{" "}
                     </h3>
+                    <div className="years">{props.years}</div>
                     <div>{props.description}</div>
                 </div>
             </div>
