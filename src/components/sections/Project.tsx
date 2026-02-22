@@ -2,7 +2,8 @@ import { Project as ProjectData } from "../loaded_data_types";
 
 function Project(props: ProjectData) {
 	return (
-		<div className="project col-sm-12 col-md-6 mx-auto p-3">
+		<div className="col-sm-12 col-md-6">
+		<div className="project reveal h-100 p-4">
 			<div className="project-header">
 				<span className="fancy-title">{props.title}</span>
 				<span className="project-year">{props.startDate}</span>
@@ -44,6 +45,7 @@ function Project(props: ProjectData) {
 					View Project →
 				</a>
 			</div>
+		</div>
 		</div>
 	);
 }

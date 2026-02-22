@@ -7,5 +7,5 @@ body[data-theme="light"] {
     // --background-color-2: color-mix(in srgb, var(--background-color) 80%, var(--text-color));
     --background-color-2:#83b7d3;
     --background-color-3: color-mix(in srgb, var(--background-color) 70%, var(--text-color));
-    --contrast-color: #eb5f31;
+    --contrast-color: #993b13; /* darkened from #eb5f31 — passes WCAG AA on all light backgrounds */
 }

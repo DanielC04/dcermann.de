@@ -1,0 +1,50 @@
+@media (pointer: fine) {
+    html {
+        cursor: none;
+    }
+    a,
+    button,
+    input,
+    textarea,
+    [role='button'] {
+        cursor: none;
+    }
+}
+
+.cursor-dot,
+.cursor-ring {
+    pointer-events: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 99999;
+    border-radius: 50%;
+    will-change: transform;
+
+    @media (pointer: coarse) {
+        display: none;
+    }
+}
+
+.cursor-dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--contrast-color);
+    margin: -4px 0 0 -4px;
+}
+
+.cursor-ring {
+    width: 36px;
+    height: 36px;
+    border: 2px solid var(--contrast-color);
+    margin: -18px 0 0 -18px;
+    opacity: 0.65;
+    transition: width 0.2s ease, height 0.2s ease, margin 0.2s ease, opacity 0.2s ease;
+
+    &.active {
+        width: 52px;
+        height: 52px;
+        margin: -26px 0 0 -26px;
+        opacity: 0.35;
+    }
+}

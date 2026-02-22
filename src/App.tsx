@@ -17,6 +17,7 @@ const Contact = lazy(() => import("./components/sections/Contact"));
 const Sidebar = lazy(() => import("./components/utils/Sidebar"));
 const Footer = lazy(() => import("./components/utils/Footer"));
 const LanguageSwitch = lazy(() => import("./components/utils/LanguageSwitch"));
+const CustomCursor = lazy(() => import("./components/utils/CustomCursor"));
 
 function App() {
     const { i18n } = useTranslation();
@@ -26,6 +27,7 @@ function App() {
     return (
         <div className="app">
             <Suspense fallback={<LoaderPage />}>
+                <CustomCursor />
                 <LanguageSwitch />
                 <Home sharedData={sharedData.basic_info} />
                 <>

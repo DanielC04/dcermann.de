@@ -1,6 +1,7 @@
 import "./Projects.scss";
 import { Project as ProjectType, BasicInfo } from "../loaded_data_types";
 import Project from "./Project";
+import { useStaggerReveal } from "../../customHooks/useScrollReveal";
 
 interface Props {
     projects: Array<ProjectType> | undefined;
@@ -8,6 +9,7 @@ interface Props {
 }
 
 function Projects(props: Props) {
+    const rowRef = useStaggerReveal<HTMLDivElement>('.project', 100);
     let sectionName, projects;
     if (props.projects && props.basicInfo) {
         sectionName = props.basicInfo.section_name.projects;
@@ -21,7 +23,7 @@ function Projects(props: Props) {
             <div className="col-sm-12">
                 <h2 className="section-title">{sectionName}</h2>
                 <div className="container">
-                    <div className="row g-6">{projects}</div>
+                    <div ref={rowRef} className="row g-4 justify-content-center">{projects}</div>
                 </div>
             </div>
         </section>

@@ -16,7 +16,7 @@ function Experience(props: Props) {
     if (props.basicInfo) {
         sectionName = props.basicInfo.section_name.experience;
         experiences = props.experiences?.map((experience_data, i: number) => (
-            <TimelineBox {...experience_data} key={i} />
+            <TimelineBox {...experience_data} side={i % 2 === 0 ? 'left' : 'right'} key={i} />
         ));
     }
 

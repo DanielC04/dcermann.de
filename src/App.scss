@@ -1,6 +1,7 @@
 @use "../src/scss/themes/theme-dark.scss";
 @use "../src/scss/themes/theme-light.scss";
-@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@200;300&display=swap");
+@use "./scss/animations";
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@200;300&family=Space+Grotesk:wght@400;600;700&display=swap");
 
 html {
     -webkit-font-smoothing: antialiased;
@@ -24,11 +25,33 @@ section h2 {
     padding-top: 4%;
     padding-bottom: 3%;
     margin-bottom: 0;
-    font: 28px/32px "opensans-bold", sans-serif;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(22px, 3.5vw, 38px);
+    font-weight: 700;
+    line-height: 1.2;
     text-transform: uppercase;
     letter-spacing: 3px;
     color: var(--text-color);
     text-align: center;
+    position: relative;
+    display: inline-block;
+    left: 50%;
+    transform: translateX(-50%);
+
+    &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0.4em;
+        height: 5px;
+        width: 0;
+        background-color: var(--contrast-color);
+        animation: h2-underline-grow 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.2s forwards;
+    }
+}
+
+@keyframes h2-underline-grow {
+    to { width: 55px; }
 }
 
 .center {

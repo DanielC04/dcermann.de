@@ -1,5 +1,12 @@
 #skills {
     background-color: var(--background-color-1);
+    position: relative;
+    isolation: isolate;
+
+    .skills-content {
+        position: relative;
+        z-index: 1;
+    }
 
     .skill {
         // cursor: pointer;
@@ -22,11 +29,16 @@
                 border-radius: 0.5em;
                 left: 0;
                 top: 0;
-                background-color: var(--text-color);
+                background: linear-gradient(
+                    90deg,
+                    var(--contrast-color),
+                    color-mix(in srgb, var(--text-color) 65%, var(--contrast-color))
+                );
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 color: var(--background-color);
+                transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
                 .name{
                     padding: 4px;
                 }

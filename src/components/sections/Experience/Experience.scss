@@ -1,56 +1,97 @@
-$timeline-breakpoint: 992px;
+$timeline-breakpoint: 768px;
+$gap: 40px;
+$dot-size: 14px;
+$dot-half: 7px;
+$line-width: 2px;
+$arrow-size: 8px;
+
 #experience {
     background-color: var(--background-color-2);
-    $timeline-padding-top-bottom: 20px;
-    $timeline-line-width: 2px;
-    $content-timeline-distance: 50px;
-    $content-padding: 20px;
 
     .timeline {
-        width: 100%;
-        border-right: $timeline-line-width solid var(--text-color);
-        padding-top: $timeline-padding-top-bottom;
-        padding-bottom: $timeline-padding-top-bottom;
         position: relative;
+        padding: 20px 0 56px;
+        margin: 0 auto;
+        max-width: 860px;
+
+        // Center vertical line
+        &::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            width: $line-width;
+            background-color: var(--text-color);
+            transform: translateX(-50%);
+        }
 
         .experience-item {
-            margin-right: $content-timeline-distance;
-            margin-bottom: $content-padding;
+            width: calc(50% - #{$gap});
+            margin-bottom: 30px;
             position: relative;
-            padding: 1em;
-            text-align: justify;
+            padding: 1.2em 1.4em;
             border-radius: 10px;
             background-color: var(--background-color);
             color: var(--text-color);
-        }
-        $time-arrow-distance: clamp(20px, 10%, 100px);
-        $arrow-width: 10px;
-        $arrow-length: 10px;
-        $box-to-box-distance: (2 * $content-timeline-distance + $timeline-line-width);
-        .experience-item::before {
-            content: "";
-            font-size: 0;
-            border-top: $arrow-width solid transparent;
-            border-bottom: $arrow-width solid transparent;
-            border-left: $arrow-length solid var(--background-color);
-            position: absolute;
-            right: 0;
-            top: $time-arrow-distance;
-            transform: translateX(95%);
-        }
-        .experience-item::after {
-            content: "";
-            position: absolute;
-            right: -$content-timeline-distance;
-            top: $time-arrow-distance;
-            transform: translate(
-                calc(50% + $timeline-line-width / 2),
-                calc(50% + $arrow-width / 2)
-            );
-            background-color: var(--text-color);
-            width: 20px;
-            height: 3px;
-            border-radius: 2px;
+
+            // Arrow (triangle pointing toward center line)
+            &::before {
+                content: '';
+                position: absolute;
+                top: 20px;
+                width: 0;
+                height: 0;
+                border-top: $arrow-size solid transparent;
+                border-bottom: $arrow-size solid transparent;
+            }
+
+            // Dot on the center line
+            &::after {
+                content: '';
+                position: absolute;
+                width: $dot-size;
+                height: $dot-size;
+                border-radius: 50%;
+                background-color: var(--contrast-color);
+                top: 20px;
+                border: 2px solid var(--background-color-2);
+                box-shadow: 0 0 8px 2px var(--contrast-color);
+            }
+
+            // LEFT items (even index → odd child because arrow-head counts too)
+            &:nth-child(odd) {
+                margin-right: auto;
+                margin-left: 0;
+
+                // Right-pointing arrow (toward center)
+                &::before {
+                    right: -#{$arrow-size};
+                    border-left: $arrow-size solid var(--background-color);
+                }
+
+                // Dot centered on line (to the right of card)
+                &::after {
+                    right: calc(-#{$gap} - #{$dot-half});
+                }
+            }
+
+            // RIGHT items
+            &:nth-child(even) {
+                margin-left: auto;
+                margin-right: 0;
+
+                // Left-pointing arrow (toward center)
+                &::before {
+                    left: -#{$arrow-size};
+                    border-right: $arrow-size solid var(--background-color);
+                }
+
+                // Dot centered on line (to the left of card)
+                &::after {
+                    left: calc(-#{$gap} - #{$dot-half});
+                }
+            }
         }
 
         .content-box {
@@ -58,10 +99,12 @@ $timeline-breakpoint: 992px;
             flex-direction: column;
             align-items: center;
             text-align: center;
-            img{
+
+            img {
                 height: 1.5em;
                 border-radius: 3px;
             }
+
             .years {
                 font-size: 0.8em;
                 color: var(--contrast-color);
@@ -69,37 +112,55 @@ $timeline-breakpoint: 992px;
                 margin: 4px 0 8px;
                 font-weight: 600;
             }
-            div{
+
+            div {
                 color: var(--text-color-dim);
             }
         }
-        @media (min-width: $timeline-breakpoint) {
-            width: 50%;
-            .experience-item:nth-of-type(2n) {
-                transform: scaleX(-1) translateX(calc(-100% - $box-to-box-distance));
-                & > .content-box{
-                    transform: scaleX(-1);
-                }
-            }
-        }
 
-
-
+        // Downward-pointing arrowhead at the bottom of the center line
         .arrow-head {
-            $arrow-width: 10px;
-            $arrow-length: 20px;
             position: absolute;
-            right: 0;
-            transform: translate(
-                calc(50% + $timeline-line-width/2),
-                $timeline-padding-top-bottom
-            );
-
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
             width: 0;
             height: 0;
-            border-left: $arrow-width solid transparent;
-            border-right: $arrow-width solid transparent;
-            border-top: $arrow-length solid var(--text-color);
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 20px solid var(--text-color);
+        }
+
+        // Mobile: stack everything on the left side
+        @media (max-width: $timeline-breakpoint) {
+            &::before {
+                left: 20px;
+            }
+
+            .experience-item {
+                width: calc(100% - 60px);
+                margin-left: 60px !important;
+                margin-right: 0 !important;
+
+                &::before {
+                    right: auto !important;
+                    left: -#{$arrow-size} !important;
+                    border-left: none !important;
+                    border-right: $arrow-size solid var(--background-color) !important;
+                    border-top: $arrow-size solid transparent !important;
+                    border-bottom: $arrow-size solid transparent !important;
+                }
+
+                &::after {
+                    right: auto !important;
+                    left: calc(-40px - #{$dot-half}) !important;
+                }
+            }
+
+            .arrow-head {
+                left: 20px;
+                transform: none;
+            }
         }
     }
 }

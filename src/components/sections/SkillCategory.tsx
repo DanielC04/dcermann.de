@@ -6,7 +6,7 @@ import Skill from "./Skill";
 
 function SkillCategory(props: SkillCategoryType) {
     return (
-        <div className="skill-category col-lg-4 col-md-6 col-sm-12">
+        <div className="skill-category col-lg-4 col-md-6 col-sm-12 reveal">
             <span className="fancy-title">{props.name}</span>
             {props.data.map((skill: SkillType, i: number) => (
                 <Skill key={i} {...skill} />

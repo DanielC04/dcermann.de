@@ -1,7 +1,10 @@
 import './About.scss';
 import { calculateAge } from '../../utils/utils';
+import { useScrollReveal } from '../../../customHooks/useScrollReveal';
 
 function About(props: any) {
+  const photoRef = useScrollReveal<HTMLDivElement>();
+  const cardRef = useScrollReveal<HTMLDivElement>();
   let profilepic, sectionName, hello, about;
   if (props.sharedBasicInfo) {
     profilepic = "images/" + props.sharedBasicInfo.image;
@@ -20,7 +23,7 @@ function About(props: any) {
           <span>{sectionName}</span>
         </h2>
         <div className="container row center mx-auto">
-          <div className="col-md-4 mb-5 center">
+          <div ref={photoRef} className="col-md-4 mb-5 center reveal-left">
             <div className="polaroid">
               <span>
                 <img
@@ -32,7 +35,7 @@ function About(props: any) {
             </div>
           </div>
 
-          <div className="col-md-8 center">
+          <div ref={cardRef} className="col-md-8 center reveal-right" style={{ transitionDelay: '0.12s' }}>
             <div className="col-md-10">
               <div className="card">
                 <div className="card-header">

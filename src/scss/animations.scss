@@ -1,0 +1,46 @@
+// ─── Scroll reveal animations ─────────────────────────────────────────────────
+$ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+$duration: 0.7s;
+
+.reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity $duration $ease-out-expo, transform $duration $ease-out-expo;
+
+    &.is-visible {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.reveal-left {
+    opacity: 0;
+    transform: translateX(-44px);
+    transition: opacity $duration $ease-out-expo, transform $duration $ease-out-expo;
+
+    &.is-visible {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+.reveal-right {
+    opacity: 0;
+    transform: translateX(44px);
+    transition: opacity $duration $ease-out-expo, transform $duration $ease-out-expo;
+
+    &.is-visible {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reveal,
+    .reveal-left,
+    .reveal-right {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
+}
