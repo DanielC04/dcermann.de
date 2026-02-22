@@ -1,0 +1,34 @@
+// Utility classes — replaces Bootstrap's utility layer.
+// Only classes actually used in the project are defined here.
+
+// ─── Spacing ─────────────────────────────────────────────────────────────────
+
+.mb-0 { margin-bottom: 0 !important; }
+.mb-5 { margin-bottom: 3rem !important; }
+.mt-4 { margin-top: 1.5rem !important; }
+.m-4  { margin: 1.5rem !important; }
+.p-4  { padding: 1.5rem !important; }
+.py-2 { padding-top: 0.5rem !important; padding-bottom: 0.5rem !important; }
+
+// Bootstrap 4 names (.ml-3/.mr-3) and Bootstrap 5 names (.ms-3/.me-3) both present
+.ml-3, .ms-3 { margin-left:  1rem !important; }
+.mr-3, .me-3 { margin-right: 1rem !important; }
+
+// ─── Sizing ──────────────────────────────────────────────────────────────────
+
+.h-100 { height: 100% !important; }
+
+// ─── Text ────────────────────────────────────────────────────────────────────
+
+.text-center  { text-align: center !important; }
+.text-justify { text-align: justify !important; }
+
+// ─── Display ─────────────────────────────────────────────────────────────────
+
+// Hide by default; show as flex on md+ (used for the "Say hello." panel in Contact)
+.d-sm-none,
+.d-xs-none  { display: none !important; }
+
+@media (min-width: 768px) {
+    .d-md-flex { display: flex !important; }
+}

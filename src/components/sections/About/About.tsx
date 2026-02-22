@@ -1,6 +1,9 @@
 import './About.scss';
 import { calculateAge } from '../../utils/utils';
 import { useScrollReveal } from '../../../customHooks/useScrollReveal';
+import { lazy, Suspense } from 'react';
+
+const ParticlesBg = lazy(() => import('../../../Backgrounds/ParticlesBg'));
 
 function About(props: any) {
   const photoRef = useScrollReveal<HTMLDivElement>();
@@ -18,7 +21,8 @@ function About(props: any) {
 
   return (
     <section id="about" className='grid-overlay'>
-      <div className="col-md-12">
+      <Suspense fallback={null}><ParticlesBg /></Suspense>
+      <div className="about-content col-md-12">
         <h2>
           <span>{sectionName}</span>
         </h2>

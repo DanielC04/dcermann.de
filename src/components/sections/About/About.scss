@@ -1,5 +1,12 @@
 #about {
+    position: relative;
+    isolation: isolate;
     background-color: var(--background-color-1);
+
+    .about-content {
+        position: relative;
+        z-index: 1;
+    }
 
     h2 {
         color: var(--text-color);
@@ -10,17 +17,23 @@
     }
 
     .card {
-        background: color-mix(in srgb, var(--background-color-1) 60%, transparent) !important;
+        background: color-mix(in srgb, var(--background-color-1) 60%, transparent);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
-        border: 1px solid color-mix(in srgb, var(--text-color) 18%, transparent) !important;
+        border: 1px solid color-mix(in srgb, var(--text-color) 18%, transparent);
+        border-radius: 0.5rem;
         box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
-        color: var(--text-color) !important;
+        color: var(--text-color);
     }
 
     .card-header {
-        background-color: color-mix(in srgb, var(--text-color) 6%, transparent) !important;
-        border-bottom: 1px solid color-mix(in srgb, var(--text-color) 12%, transparent) !important;
+        padding: 0.75rem 1rem;
+        background-color: color-mix(in srgb, var(--text-color) 6%, transparent);
+        border-bottom: 1px solid color-mix(in srgb, var(--text-color) 12%, transparent);
+    }
+
+    .card-body {
+        padding: 1rem;
     }
 
     .polaroid img {

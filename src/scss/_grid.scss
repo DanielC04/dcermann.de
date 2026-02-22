@@ -1,0 +1,70 @@
+// Minimal grid — replaces Bootstrap's grid system.
+// Only the classes that are actually used in this project are defined here.
+// Breakpoints mirror Bootstrap's defaults so existing className strings are unchanged.
+//
+// Gap model: each column carries 0.75rem padding on each side; adjacent columns
+// produce a 1.5rem visual gap. The row uses -0.75rem negative margins to keep
+// content flush with the container edges. (section { overflow: hidden } in
+// App.scss absorbs any edge bleed.)
+
+$bp-md: 768px;
+$bp-lg: 992px;
+$half-gutter: 0.75rem;
+
+// ─── Container ───────────────────────────────────────────────────────────────
+
+.container {
+    width: 100%;
+    max-width: 1140px;
+    margin-right: auto;
+    margin-left: auto;
+    padding-right: 1rem;
+    padding-left: 1rem;
+}
+
+// ─── Row ─────────────────────────────────────────────────────────────────────
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -$half-gutter;
+    margin-left: -$half-gutter;
+}
+
+// ─── Default column padding ───────────────────────────────────────────────────
+
+[class*="col-"] {
+    width: 100%;       // mobile-first: full width by default
+    min-width: 0;      // prevent flex blowout on long content
+    padding-right: $half-gutter;
+    padding-left: $half-gutter;
+}
+
+// ─── Column widths at breakpoints ─────────────────────────────────────────────
+
+@media (min-width: $bp-md) {
+    .col-md-4  { width: 33.3333%; }
+    .col-md-6  { width: 50%; }
+    .col-md-7  { width: 58.3333%; }
+    .col-md-8  { width: 66.6667%; }
+    .col-md-10 { width: 83.3333%; }
+    .col-md-12 { width: 100%; }
+}
+
+@media (min-width: $bp-lg) {
+    .col-lg-4  { width: 33.3333%; }
+    .col-lg-5  { width: 41.6667%; }
+    .col-lg-7  { width: 58.3333%; }
+}
+
+// ─── Row gap variant (adds vertical spacing between wrapped rows) ──────────────
+
+.g-4 {
+    row-gap: 1.5rem;
+}
+
+// ─── Flex alignment helpers ───────────────────────────────────────────────────
+
+.justify-content-center { justify-content: center; }
+.align-items-center     { align-items: center; }
+.mx-auto                { margin-left: auto !important; margin-right: auto !important; }

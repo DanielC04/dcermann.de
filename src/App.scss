@@ -1,6 +1,8 @@
 @use "../src/scss/themes/theme-dark.scss";
 @use "../src/scss/themes/theme-light.scss";
 @use "./scss/animations";
+@use "./scss/grid";
+@use "./scss/utilities";
 @import url("https://fonts.googleapis.com/css2?family=Raleway:wght@200;300&family=Space+Grotesk:wght@400;600;700&display=swap");
 
 html {

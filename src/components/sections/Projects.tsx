@@ -2,6 +2,9 @@ import "./Projects.scss";
 import { Project as ProjectType, BasicInfo } from "../loaded_data_types";
 import Project from "./Project";
 import { useStaggerReveal } from "../../customHooks/useScrollReveal";
+import { lazy, Suspense } from "react";
+
+const DotWaveBg = lazy(() => import("../../Backgrounds/DotWaveBg"));
 
 interface Props {
     projects: Array<ProjectType> | undefined;
@@ -20,7 +23,8 @@ function Projects(props: Props) {
 
     return (
         <section id="projects">
-            <div className="col-sm-12">
+            <Suspense fallback={null}><DotWaveBg /></Suspense>
+            <div className="projects-content col-sm-12">
                 <h2 className="section-title">{sectionName}</h2>
                 <div className="container">
                     <div ref={rowRef} className="row g-4 justify-content-center">{projects}</div>

@@ -4,6 +4,9 @@ import {
     Experience as ExperienceType,
 } from "../../loaded_data_types";
 import TimelineBox from "./TimelineBox";
+import { lazy, Suspense } from "react";
+
+const NetworkMesh = lazy(() => import("../../../Backgrounds/NetworkMesh"));
 
 interface Props {
     experiences: ExperienceType[] | undefined;
@@ -22,6 +25,8 @@ function Experience(props: Props) {
 
     return (
         <section id="experience">
+            <Suspense fallback={null}><NetworkMesh /></Suspense>
+            <div className="experience-content">
             <h2>{sectionName}</h2>
             <div className="container">
                 <div className="col-sm-12 mx-auto">
@@ -30,6 +35,7 @@ function Experience(props: Props) {
                         <div className="arrow-head"></div>
                     </div>
                 </div>
+            </div>
             </div>
         </section>
     );

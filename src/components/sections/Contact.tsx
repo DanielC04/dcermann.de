@@ -1,10 +1,11 @@
 import "./Contact.scss";
 import { BasicInfo } from "../loaded_data_types";
-import React, { useRef, useState } from "react";
+import React, { lazy, Suspense, useRef, useState } from "react";
 import emailjs from "@emailjs/browser";
 import { PUBLIC_KEY, SERVICE_ID, TEMPLATE_ID } from "./EmailjsLogin.ts";
-import { Alert } from "react-bootstrap";
 import Loader from "../utils/Loader.tsx";
+
+const Ripples = lazy(() => import("../../Backgrounds/Ripples"));
 
 interface Props {
   basicInfo: BasicInfo | undefined;
@@ -45,6 +46,8 @@ function Contact(props: Props) {
 
   return (
     <section id="contact">
+      <Suspense fallback={null}><Ripples /></Suspense>
+      <div className="contact-content">
       <h2>{title}</h2>
       <div className="container">
         <div className="row">
@@ -102,17 +105,18 @@ function Contact(props: Props) {
           </div>
         </div>
       </div>
+      </div>
     </section>
   );
 }
 
 function CustomAlert(props: { isError: boolean }) {
   return (
-    <Alert variant={props.isError ? "danger" : "success"}>
+    <div className={`alert alert--${props.isError ? "danger" : "success"}`}>
       {props.isError
         ? "Sending Message failed :( Try again later"
         : "Message sent successfully :)"}
-    </Alert>
+    </div>
   );
 }
 

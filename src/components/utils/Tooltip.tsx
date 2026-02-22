@@ -1,17 +1,20 @@
 import React from "react";
-import { OverlayTrigger, Tooltip as TooltipBs } from "react-bootstrap";
+import "./Tooltip.scss";
 
 interface Props {
-	text: string,
-	children: React.ReactElement,
-	placement?: 'left' | 'right' | 'top' | 'bottom',
-	cssClass?: string
+    text: string;
+    children: React.ReactElement;
+    placement?: 'left' | 'right' | 'top' | 'bottom';
+    cssClass?: string;
 }
 
-export const Tooltip = (props: Props) => {
-	return (
-		<OverlayTrigger overlay={<TooltipBs>{props.text}</TooltipBs>} bsClass={props.cssClass ?? ''} placement={props.placement ?? 'top'}>
-			{props.children}
-		</OverlayTrigger>
-	);
+export const Tooltip = ({ text, children, placement = 'top', cssClass }: Props) => {
+    return (
+        <div className={`tooltip-wrapper tooltip-wrapper--${placement}`}>
+            {children}
+            <span className={`tooltip-bubble${cssClass ? ` ${cssClass}` : ''}`} role="tooltip">
+                {text}
+            </span>
+        </div>
+    );
 };
