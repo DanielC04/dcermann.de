@@ -89,7 +89,7 @@
                 aspect-ratio: 8/5;
                 width: calc(100% * 0.696);
                 margin-left: calc((100% - 69.6%) / 2 - 1px);
-                border: 10px solid #474747;
+                border: 10px solid var(--screen-border-color);
                 border-radius: 8px;
                 margin-right: 15px;
             }

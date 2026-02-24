@@ -6,4 +6,7 @@ body[data-theme="light"] {
   --background-color-2: #dbd2ba;     /* muted warm tan */
   --contrast-color: #903510;         /* dark orange-red — WCAG AA on all light backgrounds */
   --matrix-rain-color: #b87010;      /* warm amber for the canvas animation */
+  --alert-success-color: #1a7a3a;    /* dark green — WCAG AA on warm linen */
+  --alert-error-color: #c0302a;      /* dark red — WCAG AA on warm linen */
+  --screen-border-color: #7a7060;    /* warm neutral gray for laptop bezel */
 }

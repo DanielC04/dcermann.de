@@ -55,6 +55,13 @@ section h2 {
     to { width: 55px; }
 }
 
+@media (prefers-reduced-motion: reduce) {
+    section h2::after {
+        animation: none;
+        width: 55px;
+    }
+}
+
 .center {
     display: flex;
     justify-content: center;

@@ -19,7 +19,7 @@ function Sidebar(props: Props) {
             sectionRefs.current[i] = document.querySelector(`#${name}`);
         });
 
-        window.addEventListener("scroll", () => {
+        const handleScroll = () => {
             let minDist = Infinity;
             let currSection = "home";
             if (sectionRefs.current == null) return;
@@ -32,7 +32,10 @@ function Sidebar(props: Props) {
                 }
             }
             setActiveSection(currSection);
-        });
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
     }, [props.sectionNames]);
 
     const navLinks = Object.keys(props.sectionNames || {}).map((section_id: string, id: number) => (
@@ -40,6 +43,7 @@ function Sidebar(props: Props) {
             to={`#${section_id}`}
             key={id}
             className={`section-label ${section_id === activeSection ? "active" : ""}`}
+            aria-current={section_id === activeSection ? "page" : undefined}
             onClick={() => setMobileMenuOpen(false)}
         >
             {(props.sectionNames as any)[section_id].toLowerCase()}
@@ -55,6 +59,7 @@ function Sidebar(props: Props) {
                 className="hamburger"
                 onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                 aria-label="Toggle navigation"
+                aria-expanded={mobileMenuOpen}
             >
                 <i className={`fas ${mobileMenuOpen ? "fa-times" : "fa-bars"}`}></i>
             </button>

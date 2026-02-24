@@ -33,7 +33,7 @@ function About(props: any) {
                 <img
                   height="250px"
                   src={profilepic}
-                  alt="Avatar placeholder"
+                  alt="Profile photo of Daniel Cermann"
                 />
               </span>
             </div>
@@ -61,14 +61,7 @@ function About(props: any) {
                     data-inline="false"
                   ></span>
                 </div>
-                <div
-                  className="card-body font-trebuchet text-justify ml-3 mr-3"
-                  style={{
-                    height: "auto",
-                    fontSize: "132%",
-                    lineHeight: "200%",
-                  }}
-                >
+                <div className="card-body font-trebuchet text-justify ml-3 mr-3">
                   <span className="wave">{hello} :) </span>
                   <br />
                   <span className="introduction" dangerouslySetInnerHTML={{ __html: about }}>

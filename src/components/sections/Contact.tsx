@@ -21,7 +21,6 @@ function Contact(props: Props) {
   const form = useRef<HTMLFormElement>(null);
 
   const sendEmail = (e: React.FormEvent<HTMLFormElement>) => {
-    console.log(e);
     e.preventDefault();
 
     setSending(true);
@@ -36,7 +35,7 @@ function Contact(props: Props) {
           setSending(false);
         },
         () => {
-          const errorAlert = <CustomAlert isError={false} />;
+          const errorAlert = <CustomAlert isError={true} />;
           setAlert(errorAlert);
           setTimeout(() => setAlert(undefined), ALERT_FADE_TIME_OUT);
           setSending(false);
@@ -79,7 +78,7 @@ function Contact(props: Props) {
                   ></textarea>
                   <label>Message</label>
                 </div>
-                <center>
+                <div className="center">
                   {
                     isSending ?
                       <Loader /> :
@@ -95,7 +94,7 @@ function Contact(props: Props) {
                         <span className="animation"></span>
                       </button>
                   }
-                </center>
+                </div>
               </form>
               <div className="mt-4">{alert}</div>
             </div>
