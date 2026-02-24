@@ -24,3 +24,14 @@
 .flag-container.active {
     filter: none;
 }
+
+@media (max-width: 687px) {
+    .language-container {
+        right: 70px;
+    }
+
+    .language-icon {
+        font-size: 30px;
+        margin: auto 5px;
+    }
+}

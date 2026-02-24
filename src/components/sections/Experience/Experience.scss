@@ -142,6 +142,7 @@ $arrow-size: 8px;
         @media (max-width: $timeline-breakpoint) {
             &::before {
                 left: 20px;
+                transform: none;
             }
 
             .experience-item {
@@ -161,6 +162,16 @@ $arrow-size: 8px;
                 &::after {
                     right: auto !important;
                     left: calc(-40px - #{$dot-half}) !important;
+                }
+
+                &.reveal-left,
+                &.reveal-right {
+                    transform: translateY(28px);
+                }
+
+                &.reveal-left.is-visible,
+                &.reveal-right.is-visible {
+                    transform: none;
                 }
             }
 

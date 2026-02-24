@@ -1,7 +1,6 @@
 import { useRef, useEffect } from 'react'
 import Effect from "./Effect.js";
 import './MatrixRain.scss'
-import { isInViewport } from '../../customHooks/useIsInView.js';
 
 
 function MatrixRain() {
@@ -15,31 +14,23 @@ function MatrixRain() {
 		const context = canvas.getContext('2d');
 		if (context == null) return;
 
-		// creating effect object which initializes symbols array with Symbol objects
 		const effect = new Effect(canvas.width, canvas.height);
 
 		let lastTime = 0;
 		const fps = 30;
-		const nextframe = 1000 / fps; //for fps = 50, nextFrame = 20
+		const nextframe = 1000 / fps;
 		let timer = 0;
+		let animFrameId: number | null = null;
+		let active = false;
+		let inView = false;
 
 		function animate(timeStamp: number) {
 			if (context == null || canvas == null) return;
-			if (timeStamp == 0) drawBackgroundOverlay('ff', context, canvas);
-
-			// checking paint time difference
 			const deltaTime = timeStamp - lastTime;
-			//updating lastTime = current elapsed time to  paint the screen
 			lastTime = timeStamp;
-			// if time exceeds nextframe value then paint
-			// and reset timer to zero else add delta time
-			if (timer > nextframe && isInViewport(canvas)) {
-				// drawing transparent rectangle over text to hide previous text
+			if (timer > nextframe) {
 				drawBackgroundOverlay('14', context, canvas);
-
-				// text color — read from CSS variable so it reacts to theme switches
 				context.fillStyle = getComputedStyle(document.body).getPropertyValue('--matrix-rain-color').trim();
-				//drawing text column
 				effect.characterColumns.forEach((symbol) => {
 					symbol.draw(context);
 					symbol.update();
@@ -48,17 +39,54 @@ function MatrixRain() {
 			} else {
 				timer += deltaTime;
 			}
-
-			requestAnimationFrame(animate);
+			animFrameId = requestAnimationFrame(animate);
 		}
-		animate(0);
 
-		// resize event to handle columns adjustment on window resize
-		window.addEventListener("resize", () => {
+		function start() {
+			if (active) return;
+			active = true;
+			lastTime = 0;
+			timer = nextframe + 1; // draw immediately on first frame
+			animFrameId = requestAnimationFrame(animate);
+		}
+
+		function stop() {
+			if (!active) return;
+			active = false;
+			if (animFrameId !== null) {
+				cancelAnimationFrame(animFrameId);
+				animFrameId = null;
+			}
+		}
+
+		drawBackgroundOverlay('ff', context, canvas);
+
+		const observer = new IntersectionObserver((entries) => {
+			inView = entries[0].isIntersecting;
+			if (inView && !document.hidden) start();
+			else stop();
+		}, { threshold: 0 });
+		observer.observe(canvas);
+
+		const onVisibilityChange = () => {
+			if (!document.hidden && inView) start();
+			else stop();
+		};
+		document.addEventListener('visibilitychange', onVisibilityChange);
+
+		const onResize = () => {
 			canvas.width = window.innerWidth;
 			canvas.height = window.innerHeight;
 			effect.resize(canvas.width, canvas.height);
-		});
+		};
+		window.addEventListener("resize", onResize);
+
+		return () => {
+			stop();
+			observer.disconnect();
+			document.removeEventListener('visibilitychange', onVisibilityChange);
+			window.removeEventListener("resize", onResize);
+		};
 	}, [])
 
 
