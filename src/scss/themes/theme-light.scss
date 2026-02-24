@@ -1,11 +1,9 @@
 body[data-theme="light"] {
-    --background-color: #a3dfff;
-    --text-color: #051923;
-    --text-color-dim: #0a1d27;
-    // --background-color-1: color-mix(in srgb, var(--background-color) 90%, var(--text-color));
-    --background-color-1: #93cbe9;
-    // --background-color-2: color-mix(in srgb, var(--background-color) 80%, var(--text-color));
-    --background-color-2:#83b7d3;
-    --background-color-3: color-mix(in srgb, var(--background-color) 70%, var(--text-color));
-    --contrast-color: #993b13; /* darkened from #eb5f31 — passes WCAG AA on all light backgrounds */
+  --background-color: #f0ead8;       /* warm linen/cream */
+  --text-color: #1a130a;             /* warm near-black */
+  --text-color-dim: #6b5d50;         /* warm mid-brown */
+  --background-color-1: #e6dfc9;     /* slightly deeper linen */
+  --background-color-2: #dbd2ba;     /* muted warm tan */
+  --contrast-color: #903510;         /* dark orange-red — WCAG AA on all light backgrounds */
+  --matrix-rain-color: #b87010;      /* warm amber for the canvas animation */
 }

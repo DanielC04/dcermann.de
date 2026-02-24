@@ -39,22 +39,21 @@ function Home(props: any) {
         <section id="home" style={{ height: pageHeight }}>
             <MatrixRain />
             <div className="row aligner">
-                <div>
+                <div className="w-100vw">
                     <span
                         className="iconify header-icon"
                         data-icon="la:laptop-code"
                         data-inline="false"
                     ></span>
                     <br />
-                    <h2 className="mb-0">
+                    <div>
                         <TypeAnimation
                             sequence={["Daniel Cermann"]}
-                            wrapper="span"
+                            wrapper="h1"
+                            className="name-styles"
                         />
-                    </h2>
-                    <div className="title-container">
-                        <HeaderTitleTypeAnimation />
                     </div>
+                    <HeaderTitleTypeAnimation />
                     <ColorThemeSwitch />
                 </div>
             </div>

@@ -15,12 +15,6 @@ function MatrixRain() {
 		const context = canvas.getContext('2d');
 		if (context == null) return;
 
-		//single color
-		const singleColor = "#0aff0a";
-
-		//gradient color
-		let gradientColor = makeGradientColor(context, window.innerWidth, window.innerHeight);
-
 		// creating effect object which initializes symbols array with Symbol objects
 		const effect = new Effect(canvas.width, canvas.height);
 
@@ -43,8 +37,8 @@ function MatrixRain() {
 				// drawing transparent rectangle over text to hide previous text
 				drawBackgroundOverlay('14', context, canvas);
 
-				// text color
-				context.fillStyle = document.body.getAttribute('data-theme') === 'dark' ? singleColor : gradientColor;
+				// text color — read from CSS variable so it reacts to theme switches
+				context.fillStyle = getComputedStyle(document.body).getPropertyValue('--matrix-rain-color').trim();
 				//drawing text column
 				effect.characterColumns.forEach((symbol) => {
 					symbol.draw(context);
@@ -61,7 +55,6 @@ function MatrixRain() {
 
 		// resize event to handle columns adjustment on window resize
 		window.addEventListener("resize", () => {
-			gradientColor = makeGradientColor(context, window.innerWidth, window.innerHeight);
 			canvas.width = window.innerWidth;
 			canvas.height = window.innerHeight;
 			effect.resize(canvas.width, canvas.height);
@@ -75,17 +68,6 @@ function MatrixRain() {
 			</canvas>
 		</div>
 	)
-}
-
-function makeGradientColor(context: CanvasRenderingContext2D, width: number, height: number) {
-	const gradientColor = context.createLinearGradient(0, 0, width, height);
-	gradientColor.addColorStop(0, "darkred");
-	gradientColor.addColorStop(0.2, "violet");
-	gradientColor.addColorStop(0.4, "darkgreen");
-	gradientColor.addColorStop(0.6, "darkblue");
-	gradientColor.addColorStop(0.8, "blue");
-	gradientColor.addColorStop(0, "magenta");
-	return gradientColor;
 }
 
 function drawBackgroundOverlay(hexOpacity: string, context: CanvasRenderingContext2D, canvas: HTMLCanvasElement) {
