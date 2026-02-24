@@ -2,7 +2,6 @@ import { TypeAnimation } from "react-type-animation";
 import MatrixRain from "../../Backgrounds/MatrixRain/MatrixRain.tsx";
 import "./Home.scss";
 import React, { useState, useEffect } from "react";
-import ColorThemeSwitch from "../utils/ColorThemeSwitch.tsx";
 
 function Home(props: any) {
     let titles: Array<string> = [];
@@ -54,7 +53,6 @@ function Home(props: any) {
                         />
                     </div>
                     <HeaderTitleTypeAnimation />
-                    <ColorThemeSwitch />
                 </div>
             </div>
         </section>
