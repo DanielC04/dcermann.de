@@ -27,23 +27,39 @@
   },
   "projects": [
     {
+      "startDate": "2023",
+      "images": ["images/projects/fluid_simulation.png"],
+      "url": "https://fluid.dcermann.de",
+      "technologies": [
+        { "class": "devicon-opengl-plain", "name": "opengl" },
+        { "class": "devicon-typescript-plain", "name": "TypeScript" },
+        { "class": "devicon-threejs-original", "name": "Three.js" }
+      ]
+    },
+    {
       "startDate": "2020",
       "images": ["images/projects/beesupervisor.jpg"],
       "url": "https://www.snexplores.org/article/device-count-honeybees-varroa-mite-parasite",
-      "technologies": []
+      "technologies": [
+        { "class": "devicon-python-plain", "name": "Python" },
+        { "class": "devicon-cplusplus-plain", "name": "C++" },
+        { "class": "devicon-raspberrypi-plain", "name": "Raspberry Pi" },
+        { "class": "devicon-opengl-plain", "name": "opengl" },
+        { "class": "devicon-embeddedc-plain", "name": "Electrical engineering" }
+      ]
     },
     {
       "startDate": "2021",
       "images": ["images/projects/gypt.jpg"],
       "url": "https://gypt.dcermann.de",
       "technologies": [
-        { "class": "devicon-angularjs-plain", "name": "Angular" },
-        { "class": "devicon-typescript-plain", "name": "TypeScript" },
-        { "class": "devicon-csharp-plain", "name": "C#" }
+        { "class": "devicon-javascript-plain", "name": "JavaScript" },
+        { "class": "devicon-react-plain", "name": "React" },
+        { "class": "devicon-threejs-original", "name": "Three.js" }
       ]
     },
     {
-      "startDate": "2018",
+      "startDate": "2019",
       "images": ["images/projects/convexhulls.jpg"],
       "url": "https://convexhulls.dcermann.de",
       "technologies": [
@@ -52,13 +68,13 @@
       ]
     },
     {
-      "startDate": "2015",
+      "startDate": "2020",
       "images": ["images/projects/tictactoe.jpg"],
       "url": "https://tictactoe.dcermann.de",
       "technologies": [
-        { "class": "devicon-angularjs-plain", "name": "Angular" },
+        { "class": "devicon-react-plain", "name": "React" },
         { "class": "devicon-typescript-plain", "name": "TypeScript" },
-        { "class": "devicon-csharp-plain", "name": "C#" }
+        { "class": "devicon-sass-plain", "name": "SASS" }
       ]
     },
     {
@@ -66,9 +82,9 @@
       "images": ["images/projects/gameSimulation.jpg"],
       "url": "https://bwinf2021.dcermann.de",
       "technologies": [
-        { "class": "devicon-angularjs-plain", "name": "Angular" },
+        { "class": "devicon-react-plain", "name": "React" },
         { "class": "devicon-typescript-plain", "name": "TypeScript" },
-        { "class": "devicon-csharp-plain", "name": "C#" }
+        { "class": "devicon-sass-plain", "name": "SASS" }
       ]
     }
   ],
