@@ -2,12 +2,16 @@
 import { getCollection } from 'astro:content';
 import { url } from '../utils/url';
 
-const allPapers = await getCollection('papers');
+const allPapers = await getCollection('papers', ({ data }) => !data.draft);
 
 // A paper has a detail page if it has a non-empty body
 function hasBody(paper: (typeof allPapers)[number]): boolean {
   return (paper.body ?? '').trim().length > 0;
 }
+
+const current = allPapers
+  .filter((p) => p.data.status === 'reading')
+  .sort((a, b) => b.data.year - a.data.year);
 
 const queue = allPapers
   .filter((p) => p.data.status === 'to-read')
@@ -34,6 +38,49 @@ const allTags = [...new Set(allPapers.flatMap((p) => p.data.tags))].sort();
         </button>
       ))}
     </div>
+  )}
+
+  <!-- Currently reading -->
+  {current.length > 0 && (
+    <section class="list-section" aria-label="Currently reading">
+      <h3 class="list-heading">Currently Reading</h3>
+      <ol class="paper-list" role="list">
+        {current.map((paper) => (
+          <li
+            class="paper-item"
+            data-tags={JSON.stringify(paper.data.tags)}
+          >
+            <div class="paper-main">
+              <a
+                class="paper-title"
+                href={paper.data.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {paper.data.title}
+              </a>
+              <span class="paper-meta">
+                {paper.data.authors.slice(0, 3).join(', ')}
+                {paper.data.authors.length > 3 && ' et al.'}
+                {' · '}
+                {paper.data.year}
+              </span>
+              <span class="reading-indicator" aria-label="Currently reading">↻</span>
+            </div>
+            {paper.data.tldr && (
+              <p class="paper-tldr">{paper.data.tldr}</p>
+            )}
+            {paper.data.tags.length > 0 && (
+              <ul class="inline-tags" role="list">
+                {paper.data.tags.map((t) => (
+                  <li class="tag">{t}</li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ol>
+    </section>
   )}
 
   <!-- Reading queue -->
@@ -137,7 +184,7 @@ const allTags = [...new Set(allPapers.flatMap((p) => p.data.tags))].sort();
     </section>
   )}
 
-  {queue.length === 0 && read.length === 0 && (
+  {current.length === 0 && queue.length === 0 && read.length === 0 && (
     <p class="empty">No papers yet.</p>
   )}
 </div>
@@ -243,7 +290,22 @@ const allTags = [...new Set(allPapers.flatMap((p) => p.data.tags))].sort();
     font-size: 0.75rem;
     color: var(--contrast-color);
     flex-shrink: 0;
-    title: 'Has reading notes';
+  }
+
+  .reading-indicator {
+    font-size: 0.8rem;
+    color: var(--contrast-color);
+    flex-shrink: 0;
+    animation: spin 3s linear infinite;
+    display: inline-block;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
   }
 
   .paper-tldr {
