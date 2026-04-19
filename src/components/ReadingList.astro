@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { url } from '../utils/url';
 
 const allPapers = await getCollection('papers');
 
@@ -86,7 +87,7 @@ const allTags = [...new Set(allPapers.flatMap((p) => p.data.tags))].sort();
           >
             <div class="paper-main">
               {hasBody(paper) ? (
-                <a class="paper-title" href={`/papers/${paper.slug}`}>
+                <a class="paper-title" href={url(`/papers/${paper.slug}`)}>
                   {paper.data.title}
                 </a>
               ) : (

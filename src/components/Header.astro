@@ -1,5 +1,6 @@
 ---
 import { siteInfo } from '../data/site';
+import { url } from '../utils/url';
 
 const navLinks = [
   { label: 'Home',     href: '/'         },
@@ -11,17 +12,18 @@ const navLinks = [
 
 const currentPath = Astro.url.pathname;
 
-function isActive(href: string): boolean {
-  if (href === '/') return currentPath === '/';
-  return currentPath.startsWith(href);
+function isActive(logicalHref: string): boolean {
+  const prefixed = url(logicalHref);
+  if (logicalHref === '/') return currentPath === prefixed;
+  return currentPath.startsWith(prefixed);
 }
 ---
 
 <header class="site-header">
   <nav class="nav-inner" aria-label="Main navigation">
     <!-- Logo / site name -->
-    <a class="nav-brand" href="/">
-      <img src="/dc-logo.svg" alt="DC logo" width="32" height="32" />
+    <a class="nav-brand" href={url('/')}>
+      <img src={url('/dc-logo.svg')} alt="DC logo" width="32" height="32" />
       <span class="nav-brand-name">{siteInfo.name}</span>
     </a>
 
@@ -30,7 +32,7 @@ function isActive(href: string): boolean {
       {navLinks.map((link) => (
         <li>
           <a
-            href={link.href}
+            href={url(link.href)}
             class:list={['nav-link', { active: isActive(link.href) }]}
             aria-current={isActive(link.href) ? 'page' : undefined}
           >
@@ -68,7 +70,7 @@ function isActive(href: string): boolean {
     {navLinks.map((link) => (
       <li>
         <a
-          href={link.href}
+          href={url(link.href)}
           class:list={['nav-link', { active: isActive(link.href) }]}
           aria-current={isActive(link.href) ? 'page' : undefined}
         >

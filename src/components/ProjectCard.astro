@@ -1,5 +1,6 @@
 ---
 import type { Project } from '../data/projects';
+import { url } from '../utils/url';
 
 interface Props {
   project: Project;
@@ -11,7 +12,7 @@ const { project } = Astro.props;
 <article class="project reveal">
   <div class="project-image">
     <img
-      src={project.image}
+      src={url(project.image)}
       alt={`Screenshot of ${project.title}`}
       loading="lazy"
     />

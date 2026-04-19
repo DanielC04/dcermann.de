@@ -29,21 +29,27 @@ src/
   components/
     Header.astro           # Sticky top nav, theme toggle, hamburger
     Footer.astro           # Social links
-    MatrixRain.astro       # Canvas rain animation (Home hero background)
+    MatrixRain.astro       # Canvas rain animation (about page banner)
     BlogPostCard.astro     # Card used on / and /blog
     ProjectCard.astro      # Card used on /projects
     SkillCategory.astro    # Proficiency bars, animated on scroll
     TimelineItem.astro     # Single experience entry
     ContactForm.astro      # EmailJS contact form (vanilla JS)
+    ReadingList.astro      # Papers reading list with tag filter
   pages/
-    index.astro            # Home: hero + intro + latest posts
+    index.astro            # Home: hero + latest posts
     blog/
       index.astro          # Blog post listing with tag filter
       [slug].astro         # Dynamic post page (SSG via getStaticPaths)
+    papers/
+      index.astro          # Reading list page
+      [slug].astro         # Paper detail/notes page (only for papers with a body)
     projects.astro         # Project grid
     about.astro            # About / Skills / Experience / Contact
   styles/
     global.scss            # Theme vars, base styles, section h2, scroll-reveal, prose
+  utils/
+    url.ts                 # url() helper — prefixes paths with BASE_URL for GitHub Pages
 public/
   dc-logo.svg
   images/
@@ -89,6 +95,24 @@ PUBLIC_EMAILJS_TEMPLATE=...
 ```
 
 See `.env.example` for the template. The same variables are passed as GitHub Actions secrets in the CI workflow so EmailJS credentials are baked into the production build.
+
+## Base path / GitHub Pages sub-path
+
+The site is served from `https://danielc04.github.io/dcermann.de/`. Astro's `base`
+is set to `process.env.BASE_PATH` (injected by `actions/configure-pages` in CI) and
+falls back to `/` for local dev.
+
+**All internal links and `public/` asset references must use the `url()` helper** from
+`src/utils/url.ts`, which prepends `import.meta.env.BASE_URL`:
+
+```ts
+import { url } from '../utils/url';
+// <a href={url('/blog')}>  →  /dcermann.de/blog  (CI)  or  /blog  (local)
+// <img src={url('/images/foo.jpg')}>
+```
+
+Do not use bare `/...` strings for any internal link or public asset — they will break
+on GitHub Pages.
 
 ## CI/CD
 
