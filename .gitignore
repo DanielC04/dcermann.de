@@ -1,4 +1,7 @@
+# EmailJS credentials (replaced by .env)
 EmailjsLogin.ts
+.env
+.astro
 # Logs
 logs
 *.log
