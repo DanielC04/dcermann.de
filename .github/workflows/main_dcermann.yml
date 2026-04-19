@@ -29,14 +29,16 @@ jobs:
           cache: 'npm'
 
       - name: Configure GitHub Pages
+        id: pages
         uses: actions/configure-pages@v5
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Build with Astro
         run: npm run build
         env:
+          BASE_PATH:               ${{ steps.pages.outputs.base_path }}
           PUBLIC_EMAILJS_KEY:      ${{ secrets.PUBLIC_EMAILJS_KEY }}
           PUBLIC_EMAILJS_SERVICE:  ${{ secrets.PUBLIC_EMAILJS_SERVICE }}
           PUBLIC_EMAILJS_TEMPLATE: ${{ secrets.PUBLIC_EMAILJS_TEMPLATE }}
