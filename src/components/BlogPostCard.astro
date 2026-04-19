@@ -1,0 +1,110 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  slug: string;
+  tags?: string[];
+}
+
+const { title, description, pubDate, slug, tags = [] } = Astro.props;
+
+const dateStr = pubDate.toLocaleDateString('en-GB', {
+  year: 'numeric',
+  month: 'short',
+  day: 'numeric',
+});
+---
+
+<article class="post-card reveal">
+  <a href={`/blog/${slug}`} class="post-card-link">
+    <div class="post-meta">
+      <time datetime={pubDate.toISOString()}>{dateStr}</time>
+      {tags.length > 0 && (
+        <ul class="tag-list" role="list">
+          {tags.map((tag) => <li class="tag">{tag}</li>)}
+        </ul>
+      )}
+    </div>
+    <h2 class="post-title">{title}</h2>
+    <p class="post-desc">{description}</p>
+    <span class="read-more">Read more →</span>
+  </a>
+</article>
+
+<style lang="scss">
+  .post-card {
+    border-radius: 12px;
+    background-color: var(--background-color);
+    border: 1px solid color-mix(in srgb, var(--text-color) 12%, transparent);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+
+    &:hover {
+      transform: translateY(-4px);
+    }
+  }
+
+  .post-card-link {
+    display: block;
+    padding: 1.5rem;
+    text-decoration: none;
+    color: inherit;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 0.6rem;
+
+    time {
+      font-size: 0.85rem;
+      color: var(--text-color-dim);
+    }
+  }
+
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .tag {
+    font-size: 0.75rem;
+    padding: 0.15em 0.6em;
+    border-radius: 999px;
+    background-color: color-mix(in srgb, var(--contrast-color) 15%, transparent);
+    color: var(--contrast-color);
+    font-weight: 600;
+  }
+
+  .post-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    margin: 0 0 0.5rem;
+    color: var(--text-color);
+    line-height: 1.3;
+  }
+
+  .post-desc {
+    font-size: 0.95rem;
+    color: var(--text-color-dim);
+    margin: 0 0 1rem;
+    line-height: 1.6;
+  }
+
+  .read-more {
+    font-size: 0.9rem;
+    color: var(--contrast-color);
+    font-weight: 600;
+  }
+</style>

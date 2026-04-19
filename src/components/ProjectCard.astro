@@ -1,0 +1,155 @@
+---
+import type { Project } from '../data/projects';
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+---
+
+<article class="project reveal">
+  <div class="project-image">
+    <img
+      src={project.image}
+      alt={`Screenshot of ${project.title}`}
+      loading="lazy"
+    />
+  </div>
+  <div class="project-body">
+    <div class="project-header">
+      <h3 class="project-title">{project.title}</h3>
+      <span class="project-year">{project.startDate}</span>
+    </div>
+    <p class="project-desc">{project.description}</p>
+    <div class="tech-badges" role="list" aria-label="Technologies used">
+      {project.technologies.map((tech) => (
+        <span
+          class:list={['tech-badge', tech.icon]}
+          role="listitem"
+          title={tech.name}
+          aria-label={tech.name}
+        ></span>
+      ))}
+    </div>
+    <a
+      href={project.url}
+      class="project-link"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={`View ${project.title} (opens in new tab)`}
+    >
+      View project →
+    </a>
+  </div>
+</article>
+
+<style lang="scss">
+  .project {
+    border-radius: 12px;
+    background-color: var(--background-color);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+    &:hover {
+      transform: translateY(-6px);
+    }
+  }
+
+  .project-image {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background-color: var(--background-color-2);
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.4s ease;
+    }
+
+    &:hover img {
+      transform: scale(1.04);
+    }
+  }
+
+  .project-body {
+    padding: 1.2rem 1.4rem 1.4rem;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .project-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.6rem;
+  }
+
+  .project-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin: 0;
+    color: var(--text-color);
+  }
+
+  .project-year {
+    font-size: 0.85em;
+    color: var(--text-color-dim);
+    flex-shrink: 0;
+  }
+
+  .project-desc {
+    font-size: 0.92rem;
+    color: var(--text-color-dim);
+    line-height: 1.65;
+    margin: 0 0 0.75rem;
+    flex: 1;
+  }
+
+  .tech-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 0.75rem;
+  }
+
+  .tech-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.2em;
+    height: 2.2em;
+    border-radius: 6px;
+    background-color: var(--background-color-1);
+    font-size: 1.2em;
+    border: 1px solid var(--text-color-dim);
+    transition: transform 0.15s, border-color 0.15s;
+
+    &:hover {
+      transform: scale(1.15);
+      border-color: var(--contrast-color);
+    }
+  }
+
+  .project-link {
+    display: inline-block;
+    font-size: 0.9em;
+    color: var(--contrast-color);
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+</style>

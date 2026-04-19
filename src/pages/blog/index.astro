@@ -1,0 +1,136 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BlogPostCard from '../../components/BlogPostCard.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const posts = allPosts.sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime(),
+);
+
+// Collect unique tags
+const allTags = [...new Set(posts.flatMap((p) => p.data.tags ?? []))].sort();
+---
+
+<BaseLayout
+  title="Blog"
+  description="Thoughts on software engineering, graphics programming, and life at HPI."
+>
+  <section id="blog-index">
+    <div class="section-container">
+      <h2>Blog</h2>
+
+      {allTags.length > 0 && (
+        <div class="tag-filter" role="list" aria-label="Filter by tag">
+          {allTags.map((tag) => (
+            <button
+              class="tag-btn"
+              data-tag={tag}
+              role="listitem"
+              type="button"
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {posts.length === 0 ? (
+        <p class="empty">No posts yet — check back soon.</p>
+      ) : (
+        <div class="posts-grid" id="posts-grid">
+          {posts.map((post) => (
+            <div class="post-wrapper" data-tags={JSON.stringify(post.data.tags ?? [])}>
+              <BlogPostCard
+                title={post.data.title}
+                description={post.data.description}
+                pubDate={post.data.pubDate}
+                slug={post.slug}
+                tags={post.data.tags}
+              />
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+</BaseLayout>
+
+<style lang="scss">
+  #blog-index {
+    background-color: var(--background-color);
+    min-height: calc(100vh - 60px);
+  }
+
+  .tag-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .tag-btn {
+    background: color-mix(in srgb, var(--contrast-color) 12%, transparent);
+    color: var(--contrast-color);
+    border: 1px solid color-mix(in srgb, var(--contrast-color) 30%, transparent);
+    border-radius: 999px;
+    padding: 0.25em 0.85em;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    font-family: 'Raleway', sans-serif;
+
+    &:hover,
+    &.active {
+      background: var(--contrast-color);
+      color: #fff;
+    }
+  }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .post-wrapper {
+    &.hidden {
+      display: none;
+    }
+  }
+
+  .empty {
+    color: var(--text-color-dim);
+    text-align: center;
+    font-size: 1.1rem;
+    margin-top: 3rem;
+  }
+</style>
+
+<script>
+  const tagBtns = document.querySelectorAll<HTMLButtonElement>('.tag-btn');
+  const wrappers = document.querySelectorAll<HTMLElement>('.post-wrapper');
+
+  let activeTag: string | null = null;
+
+  tagBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const tag = btn.dataset.tag!;
+      if (activeTag === tag) {
+        // Deselect
+        activeTag = null;
+        btn.classList.remove('active');
+        wrappers.forEach((w) => w.classList.remove('hidden'));
+      } else {
+        activeTag = tag;
+        tagBtns.forEach((b) => b.classList.remove('active'));
+        btn.classList.add('active');
+        wrappers.forEach((w) => {
+          const tags: string[] = JSON.parse(w.dataset.tags ?? '[]');
+          w.classList.toggle('hidden', !tags.includes(tag));
+        });
+      }
+    });
+  });
+</script>

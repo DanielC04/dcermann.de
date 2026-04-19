@@ -1,0 +1,138 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+
+const dateStr = post.data.pubDate.toLocaleDateString('en-GB', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout title={post.data.title} description={post.data.description}>
+  <section id="blog-post">
+    <div class="section-container">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/blog">← All posts</a>
+      </nav>
+
+      <header class="post-header">
+        <div class="post-meta">
+          <time datetime={post.data.pubDate.toISOString()}>{dateStr}</time>
+          {post.data.tags && post.data.tags.length > 0 && (
+            <ul class="tag-list" role="list">
+              {post.data.tags.map((tag) => (
+                <li class="tag">{tag}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+        <h1>{post.data.title}</h1>
+        <p class="post-description">{post.data.description}</p>
+      </header>
+
+      <article class="prose">
+        <Content />
+      </article>
+
+      <nav class="post-footer" aria-label="Post navigation">
+        <a href="/blog">← Back to blog</a>
+      </nav>
+    </div>
+  </section>
+</BaseLayout>
+
+<style lang="scss">
+  #blog-post {
+    background-color: var(--background-color);
+    min-height: calc(100vh - 60px);
+    padding-bottom: 4rem;
+  }
+
+  .breadcrumb {
+    margin-bottom: 2rem;
+    font-size: 0.9rem;
+
+    a {
+      color: var(--contrast-color);
+    }
+  }
+
+  .post-header {
+    max-width: 72ch;
+    margin: 0 auto 3rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--background-color-2);
+
+    h1 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(1.6rem, 4vw, 2.5rem);
+      font-weight: 700;
+      color: var(--text-color);
+      margin: 0.5rem 0 0.75rem;
+      line-height: 1.2;
+    }
+  }
+
+  .post-meta {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 0.5rem;
+
+    time {
+      font-size: 0.9rem;
+      color: var(--text-color-dim);
+    }
+  }
+
+  .tag-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .tag {
+    font-size: 0.78rem;
+    padding: 0.15em 0.65em;
+    border-radius: 999px;
+    background-color: color-mix(in srgb, var(--contrast-color) 15%, transparent);
+    color: var(--contrast-color);
+    font-weight: 600;
+  }
+
+  .post-description {
+    font-size: 1.1rem;
+    color: var(--text-color-dim);
+    line-height: 1.65;
+    margin: 0;
+    font-style: italic;
+  }
+
+  .post-footer {
+    max-width: 72ch;
+    margin: 3rem auto 0;
+    padding-top: 2rem;
+    border-top: 1px solid var(--background-color-2);
+
+    a {
+      color: var(--contrast-color);
+      font-weight: 600;
+    }
+  }
+</style>

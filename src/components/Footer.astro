@@ -1,0 +1,65 @@
+---
+import { siteInfo } from '../data/site';
+---
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div class="footer-social">
+      {siteInfo.social.map((s) => (
+        <a
+          href={s.url}
+          class="social-link"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={s.name}
+          title={s.name}
+        >
+          <i class={s.icon}></i>
+        </a>
+      ))}
+    </div>
+    <p class="footer-copy">
+      &copy; {new Date().getFullYear()} {siteInfo.name}
+    </p>
+  </div>
+</footer>
+
+<style lang="scss">
+  .site-footer {
+    background-color: var(--background-color-1);
+    padding: 1.5rem 1rem;
+    text-align: center;
+  }
+
+  .footer-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .footer-social {
+    display: flex;
+    gap: 1.25rem;
+  }
+
+  .social-link {
+    color: var(--text-color-dim);
+    font-size: 1.4rem;
+    transition: color 0.2s;
+    text-decoration: none;
+
+    &:hover {
+      color: var(--contrast-color);
+      text-decoration: none;
+    }
+  }
+
+  .footer-copy {
+    margin: 0;
+    font-size: 0.85rem;
+    color: var(--text-color-dim);
+  }
+</style>

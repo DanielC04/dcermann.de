@@ -1,0 +1,144 @@
+---
+import type { ExperienceItem } from '../data/experience';
+
+interface Props {
+  item: ExperienceItem;
+  index: number;
+}
+
+const { item, index } = Astro.props;
+const revealClass = index % 2 === 0 ? 'reveal-left' : 'reveal-right';
+---
+
+<div class:list={['experience-item', revealClass]}>
+  <div class="content-box">
+    {item.logo && (
+      <img src={item.logo} alt={`${item.title} logo`} loading="lazy" />
+    )}
+    <p class="years">{item.years}</p>
+    <h3 class="item-title">{item.title}</h3>
+    <p class="item-desc">{item.description}</p>
+  </div>
+</div>
+
+<style lang="scss">
+  $arrow: 8px;
+  $dot: 14px;
+  $gap: 40px;
+
+  .experience-item {
+    width: calc(50% - #{$gap});
+    margin-bottom: 30px;
+    position: relative;
+    padding: 1.2em 1.4em;
+    border-radius: 10px;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    border: 1px solid color-mix(in srgb, var(--text-color) 10%, transparent);
+
+    // Arrow toward center line
+    &::before {
+      content: '';
+      position: absolute;
+      top: 20px;
+      width: 0;
+      height: 0;
+      border-top: $arrow solid transparent;
+      border-bottom: $arrow solid transparent;
+    }
+
+    // Dot on center line
+    &::after {
+      content: '';
+      position: absolute;
+      width: $dot;
+      height: $dot;
+      border-radius: 50%;
+      background-color: var(--contrast-color);
+      top: 20px;
+      border: 2px solid var(--background-color-2);
+      box-shadow: 0 0 8px 2px var(--contrast-color);
+    }
+
+    // Left-side items
+    &:nth-child(odd) {
+      margin-right: auto;
+      margin-left: 0;
+
+      &::before {
+        right: -#{$arrow};
+        border-left: $arrow solid var(--background-color);
+      }
+      &::after {
+        right: calc(-#{$gap} - #{$dot * 0.5});
+      }
+    }
+
+    // Right-side items
+    &:nth-child(even) {
+      margin-left: auto;
+      margin-right: 0;
+
+      &::before {
+        left: -#{$arrow};
+        border-right: $arrow solid var(--background-color);
+      }
+      &::after {
+        left: calc(-#{$gap} - #{$dot * 0.5});
+      }
+    }
+
+    @media (max-width: 768px) {
+      width: calc(100% - 60px);
+      margin-left: 60px !important;
+      margin-right: 0 !important;
+
+      &::before {
+        right: auto !important;
+        left: -#{$arrow} !important;
+        border-left: none !important;
+        border-right: $arrow solid var(--background-color) !important;
+      }
+      &::after {
+        right: auto !important;
+        left: calc(-40px - #{$dot * 0.5}) !important;
+      }
+    }
+  }
+
+  .content-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+
+    img {
+      height: 1.5em;
+      border-radius: 3px;
+      margin-bottom: 4px;
+    }
+  }
+
+  .years {
+    font-size: 0.8em;
+    color: var(--contrast-color);
+    letter-spacing: 0.05em;
+    margin: 4px 0 8px;
+    font-weight: 600;
+  }
+
+  .item-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    margin: 0 0 6px;
+    color: var(--text-color);
+  }
+
+  .item-desc {
+    font-size: 0.9rem;
+    color: var(--text-color-dim);
+    line-height: 1.6;
+    margin: 0;
+  }
+</style>

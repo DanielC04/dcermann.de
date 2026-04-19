@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { projects } from '../data/projects';
+---
+
+<BaseLayout
+  title="Projects"
+  description="A selection of side projects and experiments by Daniel Cermann."
+>
+  <section id="projects">
+    <div class="section-container">
+      <h2>Projects</h2>
+      <div class="projects-grid">
+        {projects.map((project) => (
+          <ProjectCard project={project} />
+        ))}
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style lang="scss">
+  #projects {
+    background-color: var(--background-color-2);
+    min-height: calc(100vh - 60px);
+    padding-bottom: 4rem;
+  }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.75rem;
+  }
+</style>

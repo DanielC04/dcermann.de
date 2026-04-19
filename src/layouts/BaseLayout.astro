@@ -1,0 +1,88 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '../styles/global.scss';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const {
+  title = 'Daniel Cermann',
+  description = 'Software Engineer & maker from Germany, studying IT-Systems Engineering at HPI.',
+} = Astro.props;
+
+const fullTitle = title === 'Daniel Cermann' ? title : `${title} — Daniel Cermann`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <title>{fullTitle}</title>
+    <link rel="icon" type="image/svg+xml" href="/dc-logo.svg" />
+    <link rel="manifest" href="/manifest.json" />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Raleway:wght@200;300&family=Space+Grotesk:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css"
+    />
+    <!-- Prevent theme flash: read localStorage before first paint -->
+    <script is:inline>
+      (function () {
+        const saved = localStorage.getItem('theme');
+        document.documentElement.setAttribute('data-theme', saved || 'dark');
+      })();
+    </script>
+  </head>
+  <body>
+    <!-- Apply theme to body as soon as it exists -->
+    <script is:inline>
+      document.body.setAttribute(
+        'data-theme',
+        localStorage.getItem('theme') || 'dark',
+      );
+    </script>
+
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+
+    <!-- Scroll-reveal observer (runs on every page) -->
+    <script>
+      const revealEls = document.querySelectorAll(
+        '.reveal, .reveal-left, .reveal-right',
+      );
+      if (revealEls.length > 0) {
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((e) => {
+              if (e.isIntersecting) {
+                e.target.classList.add('is-visible');
+                observer.unobserve(e.target);
+              }
+            });
+          },
+          { threshold: 0.12 },
+        );
+        revealEls.forEach((el) => observer.observe(el));
+      }
+    </script>
+  </body>
+</html>

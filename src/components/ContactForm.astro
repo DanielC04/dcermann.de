@@ -1,0 +1,218 @@
+---
+// EmailJS credentials are loaded from environment variables.
+// Create a .env file (gitignored) with:
+//   PUBLIC_EMAILJS_KEY=your_public_key
+//   PUBLIC_EMAILJS_SERVICE=your_service_id
+//   PUBLIC_EMAILJS_TEMPLATE=your_template_id
+---
+
+<div class="login-box">
+  <form id="contact-form" novalidate>
+    <div class="user-box">
+      <input
+        type="text"
+        id="name"
+        name="name"
+        class="input"
+        autocomplete="name"
+        required
+      />
+      <label for="name">Name</label>
+    </div>
+
+    <div class="user-box">
+      <input
+        type="email"
+        id="email"
+        name="email"
+        class="input"
+        autocomplete="email"
+        required
+      />
+      <label for="email">Email</label>
+    </div>
+
+    <div class="user-box">
+      <textarea
+        id="message"
+        name="message"
+        class="input"
+        required
+      ></textarea>
+      <label for="message">Message</label>
+    </div>
+
+    <button type="submit" id="submit-btn">
+      Send
+      <span class="animation"></span>
+    </button>
+
+    <div id="form-alert" role="alert" aria-live="polite"></div>
+  </form>
+</div>
+
+<style lang="scss">
+  $contrast: var(--contrast-color);
+
+  .login-box {
+    width: 100%;
+    max-width: 480px;
+    padding: 40px;
+    border: 2px solid var(--text-color);
+    box-shadow: 0 0 15px var(--text-color);
+    border-radius: 10px;
+    margin: 0 auto;
+  }
+
+  .user-box {
+    position: relative;
+    margin-bottom: 30px;
+
+    &:focus-within label {
+      color: $contrast;
+    }
+  }
+
+  .input {
+    width: 100%;
+    padding: 10px 0;
+    font-size: 16px;
+    color: var(--text-color);
+    border: none;
+    border-bottom: 1px solid var(--text-color);
+    outline: none;
+    background: transparent;
+    font-family: 'Raleway', sans-serif;
+    resize: vertical;
+
+    &:focus {
+      border-color: $contrast;
+    }
+
+    &:focus ~ label,
+    &:valid ~ label {
+      top: -20px;
+      font-size: 12px;
+      color: var(--text-color);
+    }
+  }
+
+  textarea.input {
+    min-height: 8em;
+  }
+
+  label {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 10px 0;
+    font-size: 16px;
+    color: var(--text-color);
+    pointer-events: none;
+    transition: top 0.3s ease, font-size 0.3s ease, color 0.3s ease;
+
+    @media (prefers-reduced-motion: reduce) {
+      transition: none;
+    }
+  }
+
+  button[type="submit"] {
+    position: relative;
+    background: transparent;
+    border: none;
+    padding: 10px 20px;
+    color: var(--text-color);
+    font-size: 16px;
+    font-family: 'Raleway', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease, border-radius 0.3s ease;
+    margin-top: 10px;
+    overflow: hidden;
+
+    &:hover {
+      background: $contrast;
+      border-radius: 5px;
+      box-shadow: 0 0 5px $contrast, 0 0 25px $contrast, 0 0 50px $contrast;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+
+  .animation {
+    position: absolute;
+    bottom: 2px;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, $contrast);
+    animation: btn-slide 2s linear infinite;
+
+    @media (prefers-reduced-motion: reduce) {
+      animation: none;
+    }
+  }
+
+  @keyframes btn-slide {
+    0%   { left: -100%; }
+    50%, 100% { left: 100%; }
+  }
+
+  #form-alert {
+    margin-top: 1rem;
+    font-size: 0.9rem;
+    min-height: 1.5em;
+
+    &.success {
+      color: var(--alert-success-color);
+    }
+    &.error {
+      color: var(--alert-error-color);
+    }
+  }
+</style>
+
+<script>
+  // EmailJS is loaded from npm (installed as a dependency)
+  import emailjs from '@emailjs/browser';
+
+  const KEY      = import.meta.env.PUBLIC_EMAILJS_KEY      ?? '';
+  const SERVICE  = import.meta.env.PUBLIC_EMAILJS_SERVICE  ?? '';
+  const TEMPLATE = import.meta.env.PUBLIC_EMAILJS_TEMPLATE ?? '';
+
+  if (KEY) emailjs.init(KEY);
+
+  const form    = document.getElementById('contact-form') as HTMLFormElement;
+  const alert   = document.getElementById('form-alert')!;
+  const btn     = document.getElementById('submit-btn') as HTMLButtonElement;
+
+  function showAlert(msg: string, type: 'success' | 'error') {
+    alert.textContent = msg;
+    alert.className = type;
+  }
+
+  form?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!KEY) {
+      showAlert('Contact form is not configured yet.', 'error');
+      return;
+    }
+    btn.disabled = true;
+    btn.textContent = 'Sending…';
+    try {
+      await emailjs.sendForm(SERVICE, TEMPLATE, form);
+      showAlert('Message sent — thanks! 🎉', 'success');
+      form.reset();
+    } catch {
+      showAlert('Something went wrong. Please try again or email me directly.', 'error');
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'Send';
+    }
+  });
+</script>

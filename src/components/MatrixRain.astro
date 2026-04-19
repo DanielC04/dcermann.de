@@ -1,0 +1,98 @@
+<!-- Canvas-based Matrix Rain animation. No props needed. -->
+<canvas id="matrix-canvas" aria-hidden="true"></canvas>
+
+<style>
+  canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  const canvas = document.getElementById('matrix-canvas') as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d')!;
+
+  const CHAR_SIZE = 14;
+  const CHARS =
+    'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ' +
+    'ヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+  let cols: number;
+  let drops: number[];
+  let animId: number | null = null;
+
+  function resize() {
+    const parent = canvas.parentElement!;
+    canvas.width = parent.clientWidth;
+    canvas.height = parent.clientHeight;
+    const newCols = Math.floor(canvas.width / CHAR_SIZE);
+    if (newCols !== cols) {
+      const prev = drops ?? [];
+      drops = Array.from(
+        { length: newCols },
+        (_, i) => prev[i] ?? Math.floor(Math.random() * -60),
+      );
+      cols = newCols;
+    }
+  }
+
+  function getTheme() {
+    return document.body.getAttribute('data-theme') ?? 'dark';
+  }
+
+  function draw() {
+    const theme = getTheme();
+    // Semi-transparent fill to create trail effect
+    ctx.fillStyle =
+      theme === 'dark'
+        ? 'rgba(6, 20, 56, 0.05)'
+        : 'rgba(240, 234, 216, 0.05)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.font = `${CHAR_SIZE}px monospace`;
+    ctx.fillStyle = getComputedStyle(document.body)
+      .getPropertyValue('--matrix-rain-color')
+      .trim();
+
+    for (let i = 0; i < cols; i++) {
+      const char = CHARS[Math.floor(Math.random() * CHARS.length)];
+      ctx.fillText(char, i * CHAR_SIZE, drops[i] * CHAR_SIZE);
+      if (drops[i] * CHAR_SIZE > canvas.height && Math.random() > 0.975) {
+        drops[i] = 0;
+      }
+      drops[i]++;
+    }
+  }
+
+  function start() {
+    if (animId !== null) return;
+    animId = window.setInterval(draw, 50);
+  }
+
+  function stop() {
+    if (animId !== null) {
+      clearInterval(animId);
+      animId = null;
+    }
+  }
+
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Pause animation when hero section is scrolled out of view
+  const observer = new IntersectionObserver(
+    ([entry]) => (entry.isIntersecting ? start() : stop()),
+    { threshold: 0.05 },
+  );
+  observer.observe(canvas.parentElement!);
+  start();
+
+  // Re-render once on theme change so the background colour updates
+  document.addEventListener('themechange', () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  });
+</script>

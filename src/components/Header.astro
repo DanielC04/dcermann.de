@@ -1,0 +1,269 @@
+---
+import { siteInfo } from '../data/site';
+
+const navLinks = [
+  { label: 'Home',     href: '/'         },
+  { label: 'Blog',     href: '/blog'     },
+  { label: 'Papers',   href: '/papers'   },
+  { label: 'Projects', href: '/projects' },
+  { label: 'About',    href: '/about'    },
+];
+
+const currentPath = Astro.url.pathname;
+
+function isActive(href: string): boolean {
+  if (href === '/') return currentPath === '/';
+  return currentPath.startsWith(href);
+}
+---
+
+<header class="site-header">
+  <nav class="nav-inner" aria-label="Main navigation">
+    <!-- Logo / site name -->
+    <a class="nav-brand" href="/">
+      <img src="/dc-logo.svg" alt="DC logo" width="32" height="32" />
+      <span class="nav-brand-name">{siteInfo.name}</span>
+    </a>
+
+    <!-- Desktop links -->
+    <ul class="nav-links" role="list">
+      {navLinks.map((link) => (
+        <li>
+          <a
+            href={link.href}
+            class:list={['nav-link', { active: isActive(link.href) }]}
+            aria-current={isActive(link.href) ? 'page' : undefined}
+          >
+            {link.label}
+          </a>
+        </li>
+      ))}
+    </ul>
+
+    <!-- Theme toggle + hamburger -->
+    <div class="nav-controls">
+      <button
+        id="theme-toggle"
+        class="icon-btn"
+        aria-label="Toggle colour theme"
+        title="Toggle colour theme"
+      >
+        <i class="fas fa-moon" id="theme-icon"></i>
+      </button>
+
+      <button
+        id="hamburger"
+        class="icon-btn hamburger-btn"
+        aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+      >
+        <i class="fas fa-bars"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile dropdown menu -->
+  <ul class="mobile-menu" id="mobile-menu" role="list" aria-hidden="true">
+    {navLinks.map((link) => (
+      <li>
+        <a
+          href={link.href}
+          class:list={['nav-link', { active: isActive(link.href) }]}
+          aria-current={isActive(link.href) ? 'page' : undefined}
+        >
+          {link.label}
+        </a>
+      </li>
+    ))}
+  </ul>
+</header>
+
+<style lang="scss">
+  $breakpoint: 640px;
+
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background-color: var(--background-color);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    transition: background-color 0.3s ease;
+  }
+
+  .nav-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: var(--text-color);
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 1.05rem;
+    flex-shrink: 0;
+
+    img {
+      width: 32px;
+      height: 32px;
+    }
+
+    &:hover {
+      text-decoration: none;
+      color: var(--contrast-color);
+    }
+  }
+
+  .nav-brand-name {
+    @media (max-width: 400px) {
+      display: none;
+    }
+  }
+
+  .nav-links {
+    display: flex;
+    list-style: none;
+    margin: 0 0 0 auto;
+    padding: 0;
+    gap: 0.25rem;
+
+    @media (max-width: $breakpoint) {
+      display: none;
+    }
+  }
+
+  .nav-link {
+    display: block;
+    padding: 0.4rem 0.75rem;
+    border-radius: 6px;
+    text-decoration: none;
+    color: var(--text-color);
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: color 0.2s, background-color 0.2s;
+
+    &:hover {
+      text-decoration: none;
+      color: var(--contrast-color);
+    }
+
+    &.active {
+      color: var(--contrast-color);
+      font-weight: 600;
+    }
+  }
+
+  .nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    margin-left: auto;
+
+    @media (min-width: calc($breakpoint + 1px)) {
+      margin-left: 0.5rem;
+    }
+  }
+
+  .icon-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-color);
+    font-size: 1.1rem;
+    padding: 0.4rem 0.6rem;
+    border-radius: 6px;
+    transition: color 0.2s, background-color 0.2s;
+
+    &:hover {
+      color: var(--contrast-color);
+      background-color: color-mix(in srgb, var(--contrast-color) 10%, transparent);
+    }
+  }
+
+  .hamburger-btn {
+    @media (min-width: calc($breakpoint + 1px)) {
+      display: none;
+    }
+  }
+
+  .mobile-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    background-color: var(--background-color);
+    border-top: 1px solid color-mix(in srgb, var(--text-color) 15%, transparent);
+    transition: max-height 0.3s ease;
+
+    &.open {
+      max-height: 300px;
+    }
+
+    .nav-link {
+      padding: 0.85rem 1.5rem;
+      border-radius: 0;
+      border-left: 3px solid transparent;
+
+      &.active {
+        border-left-color: var(--contrast-color);
+      }
+    }
+
+    @media (min-width: calc($breakpoint + 1px)) {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  // ── Theme toggle ──────────────────────────────────────────────────────────
+  const themeBtn = document.getElementById('theme-toggle');
+  const themeIcon = document.getElementById('theme-icon');
+
+  function applyTheme(theme: string) {
+    document.body.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    if (themeIcon) {
+      themeIcon.className = theme === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+    }
+  }
+
+  // Sync icon with current theme on load
+  const currentTheme = localStorage.getItem('theme') || 'dark';
+  applyTheme(currentTheme);
+
+  themeBtn?.addEventListener('click', () => {
+    const next =
+      document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
+  });
+
+  // ── Hamburger ─────────────────────────────────────────────────────────────
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+
+  hamburger?.addEventListener('click', () => {
+    const open = mobileMenu?.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', String(open));
+    mobileMenu?.setAttribute('aria-hidden', String(!open));
+  });
+
+  // Close menu on link click
+  mobileMenu?.querySelectorAll('a').forEach((a) => {
+    a.addEventListener('click', () => {
+      mobileMenu.classList.remove('open');
+      hamburger?.setAttribute('aria-expanded', 'false');
+      mobileMenu.setAttribute('aria-hidden', 'true');
+    });
+  });
+</script>

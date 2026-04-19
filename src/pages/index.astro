@@ -1,0 +1,155 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BlogPostCard from '../components/BlogPostCard.astro';
+import { getCollection } from 'astro:content';
+import { siteInfo } from '../data/site';
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const latestPosts = allPosts
+  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
+  .slice(0, 3);
+---
+
+<BaseLayout
+  title="Daniel Cermann"
+  description="Software Engineer & maker from Germany — blog, projects, and more."
+>
+  <!-- ── Hero ──────────────────────────────────────────────────────────── -->
+  <section id="home">
+    <div class="hero-content">
+      <h1 class="hero-name">{siteInfo.name}</h1>
+      <p class="hero-tagline">{siteInfo.tagline}</p>
+      <div class="hero-cta">
+        <a href="/blog" class="btn btn-primary">Read the blog</a>
+        <a href="/projects" class="btn btn-outline">See projects</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Latest posts ──────────────────────────────────────────────────── -->
+  {latestPosts.length > 0 && (
+    <section id="latest-posts">
+      <div class="section-container">
+        <h2>Latest posts</h2>
+        <div class="posts-grid">
+          {latestPosts.map((post) => (
+            <BlogPostCard
+              title={post.data.title}
+              description={post.data.description}
+              pubDate={post.data.pubDate}
+              slug={post.slug}
+              tags={post.data.tags}
+            />
+          ))}
+        </div>
+        <div class="all-posts-link">
+          <a href="/blog">All posts →</a>
+        </div>
+      </div>
+    </section>
+  )}
+</BaseLayout>
+
+<style lang="scss">
+  // ── Hero ──────────────────────────────────────────────────────────────
+  #home {
+    background-color: var(--background-color);
+    padding: clamp(4rem, 12vh, 8rem) 1.5rem clamp(3rem, 8vh, 6rem);
+    text-align: center;
+  }
+
+  .hero-content {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .hero-name {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(2rem, 7vw, 3.5rem);
+    font-weight: 700;
+    color: var(--text-color);
+    margin: 0 0 0.5rem;
+    letter-spacing: -1px;
+  }
+
+  .hero-tagline {
+    font-family: 'Raleway', sans-serif;
+    font-size: clamp(0.95rem, 2.5vw, 1.2rem);
+    font-weight: 300;
+    color: var(--text-color-dim);
+    margin: 0 0 2.5rem;
+  }
+
+  .hero-cta {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    display: inline-block;
+    padding: 0.65rem 1.6rem;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    font-family: 'Space Grotesk', sans-serif;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+  }
+
+  .btn-primary {
+    background-color: var(--contrast-color);
+    color: #fff;
+
+    &:hover {
+      box-shadow: 0 4px 16px color-mix(in srgb, var(--contrast-color) 50%, transparent);
+    }
+  }
+
+  .btn-outline {
+    border: 2px solid var(--contrast-color);
+    color: var(--contrast-color);
+    background: transparent;
+
+    &:hover {
+      background: color-mix(in srgb, var(--contrast-color) 10%, transparent);
+    }
+  }
+
+  // ── Latest posts ──────────────────────────────────────────────────────
+  #latest-posts {
+    background-color: var(--background-color-2);
+    padding-bottom: 3rem;
+
+    h2 {
+      text-align: center;
+      display: block;
+      left: unset;
+      transform: none;
+      margin-bottom: 2rem;
+    }
+  }
+
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+
+  .all-posts-link {
+    text-align: center;
+    font-size: 1rem;
+    font-weight: 600;
+
+    a {
+      color: var(--contrast-color);
+    }
+  }
+</style>
