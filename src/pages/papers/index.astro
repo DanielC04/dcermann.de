@@ -1,0 +1,39 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ReadingList from '../../components/ReadingList.astro';
+---
+
+<BaseLayout
+  title="Reading List"
+  description="Papers I'm reading or have read, with notes on the ones that stuck."
+>
+  <section id="papers">
+    <div class="section-container">
+      <h2>Reading List</h2>
+      <p class="page-desc">
+        Papers I'm reading or have read. Entries marked <span class="note-mark">✦</span> have reading notes.
+      </p>
+      <ReadingList />
+    </div>
+  </section>
+</BaseLayout>
+
+<style lang="scss">
+  #papers {
+    background-color: var(--background-color);
+    min-height: calc(100vh - 60px);
+    padding-bottom: 5rem;
+  }
+
+  .page-desc {
+    font-size: 0.9rem;
+    color: var(--text-color-dim);
+    margin-bottom: 2.5rem;
+    line-height: 1.6;
+  }
+
+  .note-mark {
+    color: var(--contrast-color);
+    font-size: 0.8em;
+  }
+</style>

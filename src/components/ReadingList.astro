@@ -1,0 +1,305 @@
+---
+import { getCollection } from 'astro:content';
+
+const allPapers = await getCollection('papers');
+
+// A paper has a detail page if it has a non-empty body
+function hasBody(paper: (typeof allPapers)[number]): boolean {
+  return (paper.body ?? '').trim().length > 0;
+}
+
+const queue = allPapers
+  .filter((p) => p.data.status === 'to-read')
+  .sort((a, b) => b.data.year - a.data.year);
+
+const read = allPapers
+  .filter((p) => p.data.status === 'read')
+  .sort((a, b) => {
+    const da = a.data.dateRead?.getTime() ?? 0;
+    const db = b.data.dateRead?.getTime() ?? 0;
+    return db - da;
+  });
+
+const allTags = [...new Set(allPapers.flatMap((p) => p.data.tags))].sort();
+---
+
+<div class="reading-list">
+  <!-- Tag filter -->
+  {allTags.length > 0 && (
+    <div class="tag-bar" role="list" aria-label="Filter by tag">
+      {allTags.map((tag) => (
+        <button class="tag-btn" data-tag={tag} type="button" role="listitem">
+          {tag}
+        </button>
+      ))}
+    </div>
+  )}
+
+  <!-- Reading queue -->
+  {queue.length > 0 && (
+    <section class="list-section" aria-label="Reading queue">
+      <h3 class="list-heading">Reading Queue</h3>
+      <ol class="paper-list" role="list">
+        {queue.map((paper) => (
+          <li
+            class="paper-item"
+            data-tags={JSON.stringify(paper.data.tags)}
+          >
+            <div class="paper-main">
+              <a
+                class="paper-title"
+                href={paper.data.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {paper.data.title}
+              </a>
+              <span class="paper-meta">
+                {paper.data.authors.slice(0, 3).join(', ')}
+                {paper.data.authors.length > 3 && ' et al.'}
+                {' · '}
+                {paper.data.year}
+              </span>
+            </div>
+            {paper.data.tags.length > 0 && (
+              <ul class="inline-tags" role="list">
+                {paper.data.tags.map((t) => (
+                  <li class="tag">{t}</li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ol>
+    </section>
+  )}
+
+  <!-- Read -->
+  {read.length > 0 && (
+    <section class="list-section" aria-label="Papers read">
+      <h3 class="list-heading">Read</h3>
+      <ol class="paper-list" role="list">
+        {read.map((paper) => (
+          <li
+            class="paper-item"
+            data-tags={JSON.stringify(paper.data.tags)}
+          >
+            <div class="paper-main">
+              {hasBody(paper) ? (
+                <a class="paper-title" href={`/papers/${paper.slug}`}>
+                  {paper.data.title}
+                </a>
+              ) : (
+                <a
+                  class="paper-title"
+                  href={paper.data.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {paper.data.title}
+                </a>
+              )}
+              <span class="paper-meta">
+                {paper.data.authors.slice(0, 3).join(', ')}
+                {paper.data.authors.length > 3 && ' et al.'}
+                {' · '}
+                {paper.data.year}
+                {paper.data.dateRead && (
+                  <>
+                    {' · read '}
+                    <time datetime={paper.data.dateRead.toISOString()}>
+                      {paper.data.dateRead.toLocaleDateString('en-GB', {
+                        month: 'short',
+                        year: 'numeric',
+                      })}
+                    </time>
+                  </>
+                )}
+              </span>
+              {hasBody(paper) && (
+                <span class="has-notes" title="Has reading notes">✦</span>
+              )}
+            </div>
+            {paper.data.tldr && (
+              <p class="paper-tldr">{paper.data.tldr}</p>
+            )}
+            {paper.data.tags.length > 0 && (
+              <ul class="inline-tags" role="list">
+                {paper.data.tags.map((t) => (
+                  <li class="tag">{t}</li>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
+      </ol>
+    </section>
+  )}
+
+  {queue.length === 0 && read.length === 0 && (
+    <p class="empty">No papers yet.</p>
+  )}
+</div>
+
+<style lang="scss">
+  .reading-list {
+    max-width: 72ch;
+  }
+
+  // ── Tag filter bar ─────────────────────────────────��──────────────────
+  .tag-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .tag-btn {
+    background: none;
+    border: 1px solid color-mix(in srgb, var(--text-color-dim) 40%, transparent);
+    color: var(--text-color-dim);
+    border-radius: 999px;
+    padding: 0.2em 0.75em;
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-family: 'Raleway', sans-serif;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+
+    &:hover {
+      border-color: var(--contrast-color);
+      color: var(--contrast-color);
+    }
+
+    &.active {
+      background: var(--contrast-color);
+      border-color: var(--contrast-color);
+      color: #fff;
+    }
+  }
+
+  // ── Section headings ─────────────────────────────────────────────────
+  .list-section {
+    margin-bottom: 3rem;
+  }
+
+  .list-heading {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--contrast-color);
+    margin: 0 0 1.25rem;
+  }
+
+  // ── Paper list ────────────────────────────────────────────────────────
+  .paper-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .paper-item {
+    padding: 1rem 0;
+    border-top: 1px solid color-mix(in srgb, var(--text-color-dim) 20%, transparent);
+
+    &:last-child {
+      border-bottom: 1px solid color-mix(in srgb, var(--text-color-dim) 20%, transparent);
+    }
+
+    &.hidden {
+      display: none;
+    }
+  }
+
+  .paper-main {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.5rem 0.75rem;
+  }
+
+  .paper-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-color);
+    text-decoration: none;
+    font-family: 'Space Grotesk', sans-serif;
+
+    &:hover {
+      color: var(--contrast-color);
+      text-decoration: none;
+    }
+  }
+
+  .paper-meta {
+    font-size: 0.82rem;
+    color: var(--text-color-dim);
+    flex-shrink: 0;
+  }
+
+  .has-notes {
+    font-size: 0.75rem;
+    color: var(--contrast-color);
+    flex-shrink: 0;
+    title: 'Has reading notes';
+  }
+
+  .paper-tldr {
+    margin: 0.4rem 0 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-color-dim);
+    line-height: 1.6;
+    font-style: italic;
+  }
+
+  // ── Inline tags ───────────────────────────────────────────────────────
+  .inline-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    list-style: none;
+    margin: 0.4rem 0 0;
+    padding: 0;
+  }
+
+  .tag {
+    font-size: 0.72rem;
+    color: var(--text-color-dim);
+    border: 1px solid color-mix(in srgb, var(--text-color-dim) 35%, transparent);
+    border-radius: 999px;
+    padding: 0.1em 0.6em;
+  }
+
+  .empty {
+    color: var(--text-color-dim);
+  }
+</style>
+
+<script>
+  const tagBtns = document.querySelectorAll<HTMLButtonElement>('.tag-btn');
+  const items   = document.querySelectorAll<HTMLElement>('.paper-item');
+
+  let active: string | null = null;
+
+  tagBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const tag = btn.dataset.tag!;
+
+      if (active === tag) {
+        active = null;
+        tagBtns.forEach((b) => b.classList.remove('active'));
+        items.forEach((item) => item.classList.remove('hidden'));
+      } else {
+        active = tag;
+        tagBtns.forEach((b) =>
+          b.classList.toggle('active', b.dataset.tag === tag),
+        );
+        items.forEach((item) => {
+          const tags: string[] = JSON.parse(item.dataset.tags ?? '[]');
+          item.classList.toggle('hidden', !tags.includes(tag));
+        });
+      }
+    });
+  });
+</script>
