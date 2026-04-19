@@ -1,6 +1,7 @@
 ---
-import { siteInfo } from '../data/site';
+import { Image } from 'astro:assets';
 import { url } from '../utils/url';
+import logoSrc from '../assets/dc-logo.svg';
 
 const navLinks = [
   { label: 'Home',     href: '/'         },
@@ -23,8 +24,7 @@ function isActive(logicalHref: string): boolean {
   <nav class="nav-inner" aria-label="Main navigation">
     <!-- Logo / site name -->
     <a class="nav-brand" href={url('/')}>
-      <img src={url('/dc-logo.svg')} alt="DC logo" width="32" height="32" />
-      <span class="nav-brand-name">{siteInfo.name}</span>
+      <Image src={logoSrc} alt="DC logo" width={32} height={32} loading="eager" />
     </a>
 
     <!-- Desktop links -->

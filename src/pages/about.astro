@@ -1,4 +1,5 @@
 ---
+import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SkillCategory from '../components/SkillCategory.astro';
 import TimelineItem from '../components/TimelineItem.astro';
@@ -6,7 +7,7 @@ import ContactForm from '../components/ContactForm.astro';
 import { skillCategories } from '../data/skills';
 import { experiences } from '../data/experience';
 import { siteInfo } from '../data/site';
-import { url } from '../utils/url';
+import profilePhoto from '../assets/images/myProfile.jpg';
 
 // Calculate age dynamically
 function calculateAge(birthdate: Date): number {
@@ -30,11 +31,12 @@ const age = calculateAge(new Date('2004-06-06'));
       <div class="about-layout">
         <div class="polaroid reveal-left">
           <span>
-            <img
-              src={url('/images/myProfile.jpg')}
+            <Image
+              src={profilePhoto}
               alt="Daniel Cermann"
-              width="200"
-              height="200"
+              width={200}
+              height={200}
+              loading="eager"
             />
           </span>
         </div>

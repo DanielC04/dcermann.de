@@ -1,6 +1,7 @@
 ---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import type { ExperienceItem } from '../data/experience';
-import { url } from '../utils/url';
 
 interface Props {
   item: ExperienceItem;
@@ -9,12 +10,24 @@ interface Props {
 
 const { item, index } = Astro.props;
 const revealClass = index % 2 === 0 ? 'reveal-left' : 'reveal-right';
+
+const logoImages = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/images/logos/*.{jpg,jpeg,png}',
+);
+const logoKey = item.logo
+  ? item.logo.replace('/images/logos/', '/src/assets/images/logos/')
+  : '';
+const logoModule = logoKey ? logoImages[logoKey] : undefined;
 ---
 
 <div class:list={['experience-item', revealClass]}>
   <div class="content-box">
     {item.logo && (
-      <img src={url(item.logo)} alt={`${item.title} logo`} loading="lazy" />
+      logoModule ? (
+        <Image src={logoModule()} alt={`${item.title} logo`} loading="lazy" height={24} />
+      ) : (
+        <img src={item.logo} alt={`${item.title} logo`} loading="lazy" />
+      )
     )}
     <p class="years">{item.years}</p>
     <h3 class="item-title">{item.title}</h3>

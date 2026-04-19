@@ -1,21 +1,38 @@
 ---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
 import type { Project } from '../data/projects';
-import { url } from '../utils/url';
 
 interface Props {
   project: Project;
 }
 
 const { project } = Astro.props;
+
+const projectImages = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/images/projects/*.{jpg,jpeg,png}',
+);
+const imgKey = project.image.replace('/images/projects/', '/src/assets/images/projects/');
+const imgModule = projectImages[imgKey];
 ---
 
 <article class="project reveal">
   <div class="project-image">
-    <img
-      src={url(project.image)}
-      alt={`Screenshot of ${project.title}`}
-      loading="lazy"
-    />
+    {imgModule ? (
+      <Image
+        src={imgModule()}
+        alt={`Screenshot of ${project.title}`}
+        loading="lazy"
+        width={600}
+        height={338}
+      />
+    ) : (
+      <img
+        src={project.image}
+        alt={`Screenshot of ${project.title}`}
+        loading="lazy"
+      />
+    )}
   </div>
   <div class="project-body">
     <div class="project-header">
