@@ -7,8 +7,8 @@ tags: ["meta", "web", "astro"]
 
 Welcome to the new version of my personal site!
 
-In the last weeks I have started enjoying reading papers about topics that I'm intersted in. Rather than just reading and forgetting abou them, I decided to start collecting thoughts and ideas on them. This way I will think about the papers more deeply and also have a place to build a collection of knowledge that I can refer back to in the future. My personal website will be the place of choice for this.
-This is why I decided to rebuild my personal homepage from scratch with **Astro** — a framework purpose-built for content-driven, mostly-static sites.
+In the last weeks I have started enjoying reading papers about topics that I'm intersted in. Rather than just reading and forgetting about them, I decided to start collecting thoughts and ideas on them. This way I will think about the papers more deeply and also have a place to build a collection of knowledge that I can refer back to in the future. My personal website will be the place of choice for this.
+This is why I decided to rebuild my personal homepage from scratch with **Astro** and include a paper section where I will write about the papers I read. I also have a general blog section where I will write about other topics that I find interesting. There, I want to get into more technical depth.
 
 ## Why Astro?
 

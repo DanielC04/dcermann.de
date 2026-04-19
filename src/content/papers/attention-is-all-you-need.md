@@ -4,7 +4,7 @@ authors: ["Ashish Vaswani", "Noam Shazeer", "Niki Parmar", "Jakob Uszkoreit", "L
 year: 2017
 url: "https://arxiv.org/abs/1706.03762"
 tags: ["deep-learning", "nlp", "transformers", "attention"]
-status: "read"
+status: "to-read"
 dateRead: 2026-03-15
 tldr: "Replaces recurrence and convolutions entirely with multi-head self-attention, achieving state-of-the-art translation quality at a fraction of the training cost."
 ---

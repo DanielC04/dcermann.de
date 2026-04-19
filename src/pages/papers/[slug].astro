@@ -4,7 +4,7 @@ import { getCollection } from 'astro:content';
 import { url } from '../../utils/url';
 
 export async function getStaticPaths() {
-  const papers = await getCollection('papers');
+  const papers = await getCollection('papers', ({ data }) => !data.draft);
   // Only generate detail pages for papers that have a body
   return papers
     .filter((p) => (p.body ?? '').trim().length > 0)

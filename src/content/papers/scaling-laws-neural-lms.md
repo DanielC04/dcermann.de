@@ -4,7 +4,7 @@ authors: ["Jared Kaplan", "Sam McCandlish", "Tom Henighan", "Tom B. Brown", "Ben
 year: 2020
 url: "https://arxiv.org/abs/2001.08361"
 tags: ["deep-learning", "nlp", "scaling", "empirical"]
-status: "read"
+status: "to-read"
 dateRead: 2026-04-01
 tldr: "Language model loss follows clean power laws in compute, data, and parameters, with compute being the binding constraint — implying you should train larger models for fewer steps than is common practice."
 ---
