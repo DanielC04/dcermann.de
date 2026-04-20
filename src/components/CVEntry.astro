@@ -1,0 +1,87 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import type { ExperienceItem } from '../data/experience';
+
+interface Props {
+  item: ExperienceItem;
+}
+
+const { item } = Astro.props;
+
+const logoImages = import.meta.glob<{ default: ImageMetadata }>(
+  '/src/assets/images/logos/*.{jpg,jpeg,png}',
+);
+const logoKey = item.logo
+  ? item.logo.replace('/images/logos/', '/src/assets/images/logos/')
+  : '';
+const logoModule = logoKey ? logoImages[logoKey] : undefined;
+---
+
+<div class="cv-entry">
+  <div class="entry-head">
+    <div class="entry-title-row">
+      {logoModule && (
+        <Image src={logoModule()} alt="" height={18} loading="lazy" class="entry-logo" />
+      )}
+      <span class="entry-title">{item.title}</span>
+    </div>
+    <span class="entry-years">{item.years}</span>
+  </div>
+  <p class="entry-desc">{item.description}</p>
+</div>
+
+<style lang="scss">
+  .cv-entry {
+    padding: 0.9rem 0;
+    border-top: 1px solid color-mix(in srgb, var(--text-color-dim) 12%, transparent);
+
+    &:last-child {
+      border-bottom: 1px solid color-mix(in srgb, var(--text-color-dim) 12%, transparent);
+    }
+  }
+
+  .entry-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.35rem;
+  }
+
+  .entry-title-row {
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+  }
+
+  .entry-logo {
+    height: 18px;
+    width: auto;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .entry-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-color);
+  }
+
+  .entry-years {
+    font-family: 'Space Mono', 'Courier New', monospace;
+    font-size: 0.72rem;
+    color: var(--contrast-color);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .entry-desc {
+    font-size: 0.87rem;
+    color: var(--text-color-dim);
+    line-height: 1.65;
+    margin: 0;
+  }
+</style>
