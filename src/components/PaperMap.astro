@@ -1,0 +1,273 @@
+---
+import paperCoords from '../data/paper-coords.json';
+const data = JSON.stringify(paperCoords);
+---
+
+<div class="pm-card">
+  <div class="pm-header">
+    <span class="pm-title">Paper Map</span>
+    <span class="pm-legend">
+      <span class="pm-leg-item"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="currentColor"/></svg>read</span>
+      <span class="pm-leg-item pm-leg-reading"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="currentColor" opacity=".55"/></svg>reading</span>
+      <span class="pm-leg-item"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>to-read</span>
+    </span>
+  </div>
+
+  <div class="pm-wrap">
+    <canvas id="pm-canvas" data-papers={data}></canvas>
+    <div id="pm-tooltip" class="pm-tooltip" aria-hidden="true"></div>
+  </div>
+</div>
+
+<style lang="scss">
+  .pm-card {
+    border: 1px solid color-mix(in srgb, var(--text-color-dim) 20%, transparent);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--background-color-1) 80%, transparent);
+    overflow: hidden;
+    position: relative;
+
+    // subtle scanline texture, consistent with ReadingActivity
+    &::before {
+      content: '';
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        color-mix(in srgb, var(--text-color) 1.5%, transparent) 3px,
+        color-mix(in srgb, var(--text-color) 1.5%, transparent) 4px
+      );
+      z-index: 1;
+    }
+  }
+
+  .pm-header {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 0.9rem 0.5rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--text-color-dim) 12%, transparent);
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .pm-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: var(--contrast-color);
+  }
+
+  .pm-legend {
+    display: flex;
+    gap: 0.85rem;
+    align-items: center;
+  }
+
+  .pm-leg-item {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-family: 'Space Mono', 'Courier New', monospace;
+    font-size: 0.62rem;
+    color: var(--text-color-dim);
+
+    svg { flex-shrink: 0; color: var(--contrast-color); }
+  }
+
+  .pm-leg-reading svg { opacity: 0.6; }
+
+  .pm-wrap {
+    position: relative;
+    z-index: 2;
+    line-height: 0;
+
+    canvas {
+      display: block;
+      width: 100%;
+      height: auto;
+    }
+  }
+
+  .pm-tooltip {
+    display: none;
+    position: absolute;
+    max-width: 220px;
+    padding: 0.5rem 0.65rem;
+    background: color-mix(in srgb, var(--background-color) 92%, transparent);
+    border: 1px solid color-mix(in srgb, var(--text-color-dim) 25%, transparent);
+    border-radius: 6px;
+    backdrop-filter: blur(4px);
+    pointer-events: none;
+    z-index: 10;
+    font-size: 0;         // children control their own size
+    line-height: normal;
+  }
+</style>
+
+<!-- Load Three.js from CDN, then initialise the scene -->
+<script is:inline>
+(function () {
+  var THREE_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+
+  var TAG_COLORS = {
+    'ai-safety':            0xe07b54,
+    'alignment':            0xd4a853,
+    'ethics':               0xd4a87b,
+    'deep-learning':        0x7b93d4,
+    'nlp':                  0x6cb4e4,
+    'transformers':         0x8b7fd4,
+    'attention':            0x9b8fd4,
+    'scaling':              0x7ba8d4,
+    'empirical':            0xa8d4b4,
+    'llm':                  0xc47bd4,
+    'interpretability':     0x9fd4a8,
+    'reinforcement-learning': 0xe4a07b,
+    'chemistry':            0x6bc47a,
+    'nanomaterials':        0x7bc47a,
+    'quantum-dots':         0xa4e47b,
+    'biomedical':           0xd47b8b,
+    'epidemiology':         0xc47bbd,
+    'graph-theory':         0xe4c46c,
+    'network-analysis':     0xd4c46c,
+    'python':               0x4b8bbe,
+    'software':             0x8bc4d4,
+  };
+
+  function tagColor(tags) {
+    for (var i = 0; i < tags.length; i++) {
+      if (TAG_COLORS[tags[i]]) return TAG_COLORS[tags[i]];
+    }
+    return 0x888894;
+  }
+
+  function initScene() {
+    var canvas  = document.getElementById('pm-canvas');
+    var tooltip = document.getElementById('pm-tooltip');
+    if (!canvas || canvas._pmReady) return;
+    canvas._pmReady = true;
+
+    var papers = JSON.parse(canvas.dataset.papers || '[]');
+    var THREE  = window.THREE;
+
+    var W = 480, H = 320;
+
+    var renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
+    renderer.setSize(W, H);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+
+    var scene  = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(55, W / H, 0.1, 100);
+    camera.position.z = 2.8;
+
+    var group  = new THREE.Group();
+    scene.add(group);
+
+    var meshes = [];
+
+    papers.forEach(function (paper) {
+      var color  = tagColor(paper.tags);
+      var isRead    = paper.status === 'read';
+      var isReading = paper.status === 'reading';
+
+      var geo, mat;
+      if (isRead) {
+        geo = new THREE.SphereGeometry(0.07, 16, 12);
+        mat = new THREE.MeshBasicMaterial({ color: color });
+      } else if (isReading) {
+        geo = new THREE.SphereGeometry(0.07, 16, 12);
+        mat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.55 });
+      } else {
+        geo = new THREE.SphereGeometry(0.07, 16, 12);
+        mat = new THREE.MeshBasicMaterial({ color: color, wireframe: true });
+      }
+
+      var mesh = new THREE.Mesh(geo, mat);
+      mesh.position.set(paper.x, paper.y, paper.z || 0);
+      mesh.userData = paper;
+      group.add(mesh);
+      meshes.push(mesh);
+    });
+
+    // Raycaster + hover tooltip
+    var raycaster = new THREE.Raycaster();
+    var mouse     = new THREE.Vector2();
+
+    function onMove(e) {
+      var rect = canvas.getBoundingClientRect();
+      var cx = e.clientX - rect.left;
+      var cy = e.clientY - rect.top;
+      // Normalise to NDC using the CSS display size
+      mouse.x =  (cx / rect.width)  * 2 - 1;
+      mouse.y = -(cy / rect.height) * 2 + 1;
+
+      raycaster.setFromCamera(mouse, camera);
+      var hits = raycaster.intersectObjects(meshes);
+
+      if (hits.length > 0) {
+        var p     = hits[0].object.userData;
+        var title = p.title.length > 60 ? p.title.slice(0, 60) + '…' : p.title;
+        var tldr  = p.tldr
+          ? '<span style="display:block;font-size:0.75rem;color:var(--text-color-dim);font-style:italic;margin-top:0.25rem;line-height:1.45">'
+            + (p.tldr.length > 90 ? p.tldr.slice(0, 90) + '…' : p.tldr)
+            + '</span>'
+          : '';
+
+        tooltip.innerHTML =
+          '<span style="display:block;font-family:\'Space Grotesk\',sans-serif;font-size:0.82rem;font-weight:700;color:var(--text-color);line-height:1.35">'
+          + title + '</span>'
+          + '<span style="display:block;font-family:\'Space Mono\',monospace;font-size:0.68rem;color:var(--contrast-color);margin-top:0.2rem">'
+          + p.year + ' · ' + p.tags.join(', ') + '</span>'
+          + tldr;
+
+        tooltip.style.display = 'block';
+        // Flip horizontally if close to right edge
+        var tipW = 224;
+        tooltip.style.left = (cx > rect.width / 2 ? cx - tipW - 8 : cx + 14) + 'px';
+        tooltip.style.top  = Math.max(4, Math.min(cy - 24, rect.height - 100)) + 'px';
+      } else {
+        tooltip.style.display = 'none';
+      }
+    }
+
+    canvas.addEventListener('mousemove', onMove);
+    canvas.addEventListener('mouseleave', function () {
+      tooltip.style.display = 'none';
+    });
+
+    // Animation — slow tumble in 3D
+    var clock = 0;
+    (function animate() {
+      requestAnimationFrame(animate);
+      clock += 0.001;
+      group.rotation.y += 0.003;
+      group.rotation.x += 0.001;
+      renderer.render(scene, camera);
+    })();
+  }
+
+  // Inject Three.js CDN script once, then call initScene
+  if (window.THREE) {
+    initScene();
+  } else {
+    var existing = document.querySelector('script[data-pm-three]');
+    if (!existing) {
+      var s = document.createElement('script');
+      s.setAttribute('data-pm-three', '1');
+      s.src = THREE_CDN;
+      s.onload = initScene;
+      document.head.appendChild(s);
+    } else {
+      existing.addEventListener('load', initScene);
+    }
+  }
+})();
+</script>

@@ -1,0 +1,117 @@
+[
+  {
+    "title": "Introduction to AI Safety, Ethics, and Society",
+    "tags": [
+      "ai-safety",
+      "alignment",
+      "ethics"
+    ],
+    "status": "reading",
+    "year": 2025,
+    "tldr": "",
+    "x": 0.673257697630741,
+    "y": 0.4420127664768885,
+    "z": 0.12181552734130441
+  },
+  {
+    "title": "The Assistant Axis: Situating and Stabilizing the Default Persona of Language Models",
+    "tags": [
+      "ai-safety",
+      "alignment",
+      "interpretability",
+      "llm"
+    ],
+    "status": "read",
+    "year": 2026,
+    "tldr": "Language models develop a dominant 'Assistant Axis' in persona space during post-training. Steering along it reinforces helpful behaviour; constraining activations to it stabilises models against persona drift and jailbreak-style persona attacks.",
+    "x": 0.8,
+    "y": 0.5145915022153282,
+    "z": 0.15623137116577845
+  },
+  {
+    "title": "Attention Is All You Need",
+    "tags": [
+      "deep-learning",
+      "nlp",
+      "transformers",
+      "attention"
+    ],
+    "status": "to-read",
+    "year": 2017,
+    "tldr": "Replaces recurrence and convolutions entirely with multi-head self-attention, achieving state-of-the-art translation quality at a fraction of the training cost.",
+    "x": -0.8,
+    "y": 0.8,
+    "z": 0.18747677793408868
+  },
+  {
+    "title": "Carbon Dots for Carbon Dummies: The Quantum and The Molecular Questions Among Some Others",
+    "tags": [
+      "chemistry",
+      "nanomaterials",
+      "quantum-dots"
+    ],
+    "status": "reading",
+    "year": 2022,
+    "tldr": "",
+    "x": -0.1692143596952591,
+    "y": -0.26340634075064584,
+    "z": -0.8
+  },
+  {
+    "title": "Community-based transmission networks of Staphylococcus aureus identified through hospital-based active surveillance and whole genome sequencing",
+    "tags": [
+      "epidemiology",
+      "biomedical"
+    ],
+    "status": "reading",
+    "year": 2026,
+    "tldr": "",
+    "x": -0.1367925325032313,
+    "y": -0.09437915355732496,
+    "z": -0.2009378257612976
+  },
+  {
+    "title": "Concrete Problems in AI Safety",
+    "tags": [
+      "ai-safety",
+      "reinforcement-learning",
+      "alignment"
+    ],
+    "status": "to-read",
+    "year": 2016,
+    "tldr": "",
+    "x": 0.673257697630741,
+    "y": 0.4420127664768887,
+    "z": 0.1218155273413043
+  },
+  {
+    "title": "NetworkX-Temporal: Building, manipulating, and analyzing dynamic graph structures",
+    "tags": [
+      "graph-theory",
+      "network-analysis",
+      "python",
+      "software"
+    ],
+    "status": "read",
+    "year": 2025,
+    "tldr": "NetworkX-Temporal is a Python library for working with temporal graphs, providing tools for building, manipulating, and analyzing dynamic graph structures.",
+    "x": -0.22132693557683947,
+    "y": -0.8,
+    "z": 0.8
+  },
+  {
+    "title": "Scaling Laws for Neural Language Models",
+    "tags": [
+      "deep-learning",
+      "nlp",
+      "scaling",
+      "empirical"
+    ],
+    "status": "to-read",
+    "year": 2020,
+    "tldr": "Language model loss follows clean power laws in compute, data, and parameters, with compute being the binding constraint — implying you should train larger models for fewer steps than is common practice.",
+    "x": -0.8,
+    "y": 0.8,
+    "z": 0.18747677793408868
+  }
+]
