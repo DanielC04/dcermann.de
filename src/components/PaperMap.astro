@@ -173,6 +173,53 @@ const data = JSON.stringify(paperCoords);
 
     var meshes = [];
 
+    // ── Axis arrows (PC1=x, PC2=y, PC3=z) ──────────────────────────────
+    var AXIS_LEN  = 0.88;
+    var HEAD_LEN  = 0.13;
+    var HEAD_W    = 0.065;
+    var AXIS_DEFS = [
+      { dir: new THREE.Vector3(1,0,0), color: 0xc4775a, label: 'PC1' },
+      { dir: new THREE.Vector3(0,1,0), color: 0x5a8ec4, label: 'PC2' },
+      { dir: new THREE.Vector3(0,0,1), color: 0x6ab88a, label: 'PC3' },
+    ];
+
+    var wrap = canvas.parentElement;
+    var axisLabels = AXIS_DEFS.map(function(def) {
+      var origin = def.dir.clone().multiplyScalar(-AXIS_LEN);
+      var arrow  = new THREE.ArrowHelper(def.dir, origin, AXIS_LEN * 2, def.color, HEAD_LEN, HEAD_W);
+      // Soften the shaft opacity (line material)
+      arrow.line.material.transparent = true;
+      arrow.line.material.opacity = 0.55;
+      group.add(arrow);
+
+      var el = document.createElement('span');
+      el.textContent = def.label;
+      el.style.cssText = 'position:absolute;font-family:"Space Mono",monospace;font-size:0.58rem;'
+        + 'color:#' + def.color.toString(16).padStart(6,'0') + ';'
+        + 'pointer-events:none;transform:translate(-50%,-50%);z-index:5;opacity:0.9;'
+        + 'text-shadow:0 0 4px rgba(0,0,0,0.6);letter-spacing:1px;display:none';
+      wrap.appendChild(el);
+      return { el: el, tip: def.dir.clone().multiplyScalar(AXIS_LEN + 0.1) };
+    });
+
+    // Subtle bounding-box wireframe for spatial reference
+    var boxEdges = new THREE.EdgesGeometry(new THREE.BoxGeometry(AXIS_LEN*2, AXIS_LEN*2, AXIS_LEN*2));
+    var boxLine  = new THREE.LineSegments(boxEdges,
+      new THREE.LineBasicMaterial({ color: 0x888888, transparent: true, opacity: 0.10 }));
+    group.add(boxLine);
+
+    function updateAxisLabels() {
+      axisLabels.forEach(function(info) {
+        var wp = info.tip.clone();
+        group.localToWorld(wp);
+        wp.project(camera);
+        if (wp.z >= 1) { info.el.style.display = 'none'; return; }
+        info.el.style.display = 'block';
+        info.el.style.left = (wp.x *  0.5 + 0.5) * 100 + '%';
+        info.el.style.top  = (wp.y * -0.5 + 0.5) * 100 + '%';
+      });
+    }
+
     papers.forEach(function (paper) {
       var color  = tagColor(paper.tags);
       var isRead    = paper.status === 'read';
@@ -244,13 +291,12 @@ const data = JSON.stringify(paperCoords);
     });
 
     // Animation — slow tumble in 3D
-    var clock = 0;
     (function animate() {
       requestAnimationFrame(animate);
-      clock += 0.001;
       group.rotation.y += 0.003;
       group.rotation.x += 0.001;
       renderer.render(scene, camera);
+      updateAxisLabels();
     })();
   }
 
