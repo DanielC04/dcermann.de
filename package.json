@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev --host",
+    "prebuild": "node scripts/generate-paper-coords.mjs",
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro"
@@ -13,5 +14,8 @@
     "@emailjs/browser": "^4.4.1",
     "astro": "^5.0.0",
     "sass": "^1.63.4"
+  },
+  "devDependencies": {
+    "gray-matter": "^4.0.3"
   }
 }

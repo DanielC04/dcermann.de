@@ -55,7 +55,7 @@ export const skillCategories: SkillCategory[] = [
       { name: 'Svelte',         description: "It's sooo cool",      icon: 'devicon-svelte-plain', proficiency: 100 },
       { name: 'Rust',           description: 'Sounds sooo cool',    icon: 'devicon-rust-plain',   proficiency: 100 },
       { name: 'TDD',            description: '',                    icon: 'devicon-scrum-plain',  proficiency: 100 },
-      { name: 'Cyber Security', description: 'Whitehat only 😉',   icon: 'fas fa-shield-alt',    proficiency: 100 },
+      { name: 'Cyber Security', description: 'Whitehat only ;)',    icon: 'fas fa-shield-alt',    proficiency: 100 },
     ],
   },
 ];

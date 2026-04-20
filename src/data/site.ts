@@ -7,10 +7,7 @@ export interface SocialLink {
 export const siteInfo = {
   name: 'Daniel Cermann',
   tagline: 'Software Engineer in training :)',
-  description: `I'm Daniel Cermann — 21 years old, Software Engineer and maker from Germany.
-I enjoy everything from web development to solving challenging problems.
-Currently studying IT-Systems Engineering at the Hasso Plattner Institute and
-working as a student at Engie, where we help modernise the green energy market.`,
+  description: `I'm Daniel, studying IT-Systems Engineering at the Hasso Plattner Institute. I like hard problems and building software to solve them. This is where I document what I'm working on and thinking about.`,
   social: [
     { name: 'GitHub',    url: 'https://github.com/DanielC04',                  icon: 'fab fa-github'   },
     { name: 'Instagram', url: 'https://www.instagram.com/dan_cmn',              icon: 'fab fa-instagram'},
