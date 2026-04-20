@@ -298,7 +298,6 @@ function fmt(d: Date) {
     height: var(--cellPx);
     border-radius: 3px;
     background: color-mix(in srgb, var(--text-color-dim) 10%, transparent);
-    transition: transform 0.1s, box-shadow 0.1s;
     cursor: default;
 
     &.future {
@@ -307,24 +306,10 @@ function fmt(d: Date) {
 
     &.active {
       background: color-mix(in srgb, var(--contrast-color) 55%, transparent);
-      box-shadow: 0 0 4px color-mix(in srgb, var(--contrast-color) 45%, transparent);
     }
 
     &.multi {
       background: var(--contrast-color);
-      box-shadow:
-        0 0 6px  color-mix(in srgb, var(--contrast-color) 70%, transparent),
-        0 0 14px color-mix(in srgb, var(--contrast-color) 35%, transparent);
-    }
-
-    &.active:hover,
-    &.multi:hover {
-      transform: scale(1.35);
-      box-shadow:
-        0 0 8px  color-mix(in srgb, var(--contrast-color) 80%, transparent),
-        0 0 20px color-mix(in srgb, var(--contrast-color) 40%, transparent);
-      z-index: 2;
-      position: relative;
     }
   }
 
@@ -350,10 +335,5 @@ function fmt(d: Date) {
 
   .legend-cell {
     cursor: default;
-
-    &:hover {
-      transform: none !important;
-      box-shadow: revert !important;
-    }
   }
 </style>
