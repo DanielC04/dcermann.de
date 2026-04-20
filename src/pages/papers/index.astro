@@ -2,6 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ReadingList from '../../components/ReadingList.astro';
 import ReadingActivity from '../../components/ReadingActivity.astro';
+import PaperMap from '../../components/PaperMap.astro';
 ---
 
 <BaseLayout
@@ -10,16 +11,27 @@ import ReadingActivity from '../../components/ReadingActivity.astro';
 >
   <section id="papers">
     <div class="section-container">
-      <div class="page-header">
-        <div class="page-intro">
-          <h2>Reading List</h2>
-          <p class="page-desc">
-            Papers I'm reading or have read. Entries marked <span class="note-mark">✦</span> have reading notes.
-          </p>
+
+      <div class="page-layout">
+
+        <!-- Left: intro + activity heatmap + reading list -->
+        <div class="left-col">
+          <div class="page-intro">
+            <h2>Reading List</h2>
+            <p class="page-desc">
+              Papers I'm reading or have read. Entries marked <span class="note-mark">✦</span> have reading notes.
+            </p>
+          </div>
+          <ReadingActivity />
+          <ReadingList />
         </div>
-        <ReadingActivity />
+
+        <!-- Right: Paper Topics 3-D map (sticky) -->
+        <aside class="right-col">
+          <PaperMap />
+        </aside>
+
       </div>
-      <ReadingList />
     </div>
   </section>
 </BaseLayout>
@@ -31,20 +43,27 @@ import ReadingActivity from '../../components/ReadingActivity.astro';
     padding-bottom: 5rem;
   }
 
-  .page-header {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 2rem;
-    margin-bottom: 2.5rem;
-    flex-wrap: wrap;
+  // ── Two-column layout ─────────────────────────────────────────────────
+  .page-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 2.5rem;
+    align-items: start;
+
+    @media (max-width: 860px) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  // ── Left column ───────────────────────────────────────────────────────
+  .left-col {
+    min-width: 0;  // prevent grid blowout
   }
 
   .page-intro {
-    flex: 1;
-    min-width: 0;
+    margin-bottom: 1.5rem;
 
-    // h2 is globally centered with position:relative tricks; override for inline context
+    // h2 is globally centred with position tricks; override for inline context
     :global(h2) {
       position: static;
       transform: none;
@@ -66,5 +85,18 @@ import ReadingActivity from '../../components/ReadingActivity.astro';
   .note-mark {
     color: var(--contrast-color);
     font-size: 0.8em;
+  }
+
+  // ── Right column — sticky Paper Topics ───────────────────────────────
+  .right-col {
+    position: sticky;
+    top: 80px;
+
+    @media (max-width: 860px) {
+      position: static;
+      // On mobile the aside comes after the list; bump it up so it appears
+      // first in reading order (grid-row reorder)
+      order: -1;
+    }
   }
 </style>

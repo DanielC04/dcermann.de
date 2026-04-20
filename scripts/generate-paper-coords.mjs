@@ -22,15 +22,17 @@ const files = fs.readdirSync(papersDir).filter(f => f.endsWith('.md'));
 
 const papers = files
   .map(file => {
-    const raw     = fs.readFileSync(path.join(papersDir, file), 'utf8');
-    const { data } = matter(raw);
+    const raw            = fs.readFileSync(path.join(papersDir, file), 'utf8');
+    const { data, content } = matter(raw);
     return {
-      title:  data.title  ?? '',
-      tags:   Array.isArray(data.tags) ? data.tags : [],
-      status: data.status ?? 'to-read',
-      year:   data.year   ?? 0,
-      tldr:   data.tldr   ?? '',
-      draft:  data.draft  ?? false,
+      title:   data.title  ?? '',
+      slug:    file.replace(/\.md$/, ''),
+      hasPage: content.trim().length > 0,   // true when reading notes exist
+      tags:    Array.isArray(data.tags) ? data.tags : [],
+      status:  data.status ?? 'to-read',
+      year:    data.year   ?? 0,
+      tldr:    data.tldr   ?? '',
+      draft:   data.draft  ?? false,
     };
   })
   .filter(p => p.title && !p.draft);
@@ -134,15 +136,24 @@ const yRange = yMax - yMin || 1;
 const zRange = zMax - zMin || 1;
 
 const result = papers.map((p, i) => ({
-  title:  p.title,
-  tags:   p.tags,
-  status: p.status,
-  year:   p.year,
-  tldr:   p.tldr,
+  title:   p.title,
+  slug:    p.slug,
+  hasPage: p.hasPage,
+  tags:    p.tags,
+  status:  p.status,
+  year:    p.year,
+  tldr:    p.tldr,
   x: ((raw2d[i].x - xMin) / xRange) * 1.6 - 0.8,
   y: ((raw2d[i].y - yMin) / yRange) * 1.6 - 0.8,
   z: ((raw2d[i].z - zMin) / zRange) * 1.6 - 0.8,
 }));
+
+// Shift so the centroid of the paper cloud sits exactly at the origin.
+// This ensures the coordinate axes cross at the visual centre of the cluster.
+const cx = result.reduce((s, p) => s + p.x, 0) / result.length;
+const cy = result.reduce((s, p) => s + p.y, 0) / result.length;
+const cz = result.reduce((s, p) => s + p.z, 0) / result.length;
+result.forEach(p => { p.x -= cx; p.y -= cy; p.z -= cz; });
 
 // ── 5. Write output ───────────────────────────────────────────────────────────
 

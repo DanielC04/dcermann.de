@@ -1,20 +1,67 @@
 ---
 import paperCoords from '../data/paper-coords.json';
-const data = JSON.stringify(paperCoords);
+const data    = JSON.stringify(paperCoords);
+const baseUrl = import.meta.env.BASE_URL;
 ---
 
 <div class="pm-card">
   <div class="pm-header">
-    <span class="pm-title">Paper Map</span>
+    <span class="pm-title">Paper Topics</span>
+
+    <!--
+      Legend — three visual encodings for reading status.
+      Color encodes research topic (same palette as the 3D spheres).
+      Shape + size encodes status:
+        • Solid sphere   = finished reading
+        • Large sphere   = currently reading (pulses in 3D)
+        • Ring / torus   = on the reading list, not yet started
+      Drag the canvas to rotate freely.
+    -->
     <span class="pm-legend">
-      <span class="pm-leg-item"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="currentColor"/></svg>read</span>
-      <span class="pm-leg-item pm-leg-reading"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4.5" fill="currentColor" opacity=".55"/></svg>reading</span>
-      <span class="pm-leg-item"><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>to-read</span>
+
+      <!-- read: solid filled circle, normal size -->
+      <span class="pm-leg-item">
+        <svg width="11" height="11" viewBox="0 0 11 11" aria-hidden="true">
+          <circle cx="5.5" cy="5.5" r="5" fill="currentColor"/>
+        </svg>
+        read
+      </span>
+
+      <!-- reading: larger filled circle with animated outer ring -->
+      <span class="pm-leg-item">
+        <span class="pm-reading-icon" aria-hidden="true">
+          <svg width="13" height="13" viewBox="0 0 13 13">
+            <circle cx="6.5" cy="6.5" r="5.5" fill="currentColor"/>
+          </svg>
+          <svg class="pm-reading-ring" width="21" height="21" viewBox="0 0 21 21">
+            <circle cx="10.5" cy="10.5" r="9.5" fill="none" stroke="currentColor" stroke-width="1.2"/>
+          </svg>
+        </span>
+        reading
+      </span>
+
+      <!-- to-read: ring / donut — hollow, outline only -->
+      <span class="pm-leg-item">
+        <svg width="13" height="13" viewBox="0 0 13 13" aria-hidden="true">
+          <circle cx="6.5" cy="6.5" r="5" fill="none" stroke="currentColor" stroke-width="2.5"/>
+        </svg>
+        to&#8209;read
+      </span>
+
     </span>
   </div>
 
+  <!-- Encoding key — one short line so it's always visible -->
+  <p class="pm-encoding-key">
+    <span>color&nbsp;= research topic</span>
+    <span class="pm-key-sep">·</span>
+    <span>shape&nbsp;= reading status</span>
+    <span class="pm-key-sep">·</span>
+    <span>drag to rotate</span>
+  </p>
+
   <div class="pm-wrap">
-    <canvas id="pm-canvas" data-papers={data}></canvas>
+    <canvas id="pm-canvas" data-papers={data} data-base={baseUrl}></canvas>
     <div id="pm-tooltip" class="pm-tooltip" aria-hidden="true"></div>
   </div>
 </div>
@@ -27,7 +74,7 @@ const data = JSON.stringify(paperCoords);
     overflow: hidden;
     position: relative;
 
-    // subtle scanline texture, consistent with ReadingActivity
+    // subtle scanline texture
     &::before {
       content: '';
       pointer-events: none;
@@ -50,7 +97,7 @@ const data = JSON.stringify(paperCoords);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.6rem 0.9rem 0.5rem;
+    padding: 0.6rem 0.9rem 0.4rem;
     border-bottom: 1px solid color-mix(in srgb, var(--text-color-dim) 12%, transparent);
     gap: 0.75rem;
     flex-wrap: wrap;
@@ -67,80 +114,142 @@ const data = JSON.stringify(paperCoords);
 
   .pm-legend {
     display: flex;
-    gap: 0.85rem;
+    gap: 0.9rem;
     align-items: center;
+    flex-wrap: wrap;
   }
 
   .pm-leg-item {
     display: flex;
     align-items: center;
-    gap: 0.3rem;
+    gap: 0.35rem;
     font-family: 'Space Mono', 'Courier New', monospace;
-    font-size: 0.62rem;
+    font-size: 0.6rem;
     color: var(--text-color-dim);
 
     svg { flex-shrink: 0; color: var(--contrast-color); }
   }
 
-  .pm-leg-reading svg { opacity: 0.6; }
+  // ── Reading icon: larger sphere + pulsing outer ring ──────────────────
+  .pm-reading-icon {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 21px;
+    height: 21px;
+    flex-shrink: 0;
 
+    svg:first-child {
+      color: var(--contrast-color);
+    }
+
+    .pm-reading-ring {
+      position: absolute;
+      inset: 0;
+      color: var(--contrast-color);
+      animation: pm-pulse 2s ease-in-out infinite;
+    }
+  }
+
+  @keyframes pm-pulse {
+    0%, 100% { opacity: 0.7; transform: scale(1);    }
+    50%       { opacity: 0;   transform: scale(1.25); }
+  }
+
+  // ── Encoding key bar ─────────────────────────────────────────────────
+  .pm-encoding-key {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 0.28rem 0.9rem;
+    margin: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--text-color-dim) 8%, transparent);
+    font-family: 'Space Mono', 'Courier New', monospace;
+    font-size: 0.56rem;
+    color: var(--text-color-dim);
+    opacity: 0.7;
+    letter-spacing: 0.02em;
+  }
+
+  .pm-key-sep {
+    color: var(--contrast-color);
+    opacity: 0.5;
+  }
+
+  // ── Canvas wrapper ────────────────────────────────────────────────────
   .pm-wrap {
     position: relative;
     z-index: 2;
     line-height: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 
     canvas {
       display: block;
       width: 100%;
+      max-width: 480px;
       height: auto;
+      margin: 0 auto;
+      cursor: grab;
+      &:active { cursor: grabbing; }
     }
   }
 
+  // ── Hover tooltip ─────────────────────────────────────────────────────
   .pm-tooltip {
     display: none;
     position: absolute;
-    max-width: 220px;
+    max-width: 230px;
     padding: 0.5rem 0.65rem;
-    background: color-mix(in srgb, var(--background-color) 92%, transparent);
+    background: color-mix(in srgb, var(--background-color) 94%, transparent);
     border: 1px solid color-mix(in srgb, var(--text-color-dim) 25%, transparent);
     border-radius: 6px;
     backdrop-filter: blur(4px);
     pointer-events: none;
     z-index: 10;
-    font-size: 0;         // children control their own size
+    font-size: 0;       // children control their own sizes
     line-height: normal;
   }
 </style>
 
-<!-- Load Three.js from CDN, then initialise the scene -->
+<!-- Load Three.js r128 from CDN, then initialise the 3D scene -->
 <script is:inline>
 (function () {
   var THREE_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
 
+  // ── Topic color palette ────────────────────────────────────────────────
+  // One color per research tag.  The same hue is used for all papers that
+  // share a tag, so clusters of similar topics appear as same-colored blobs.
   var TAG_COLORS = {
-    'ai-safety':            0xe07b54,
-    'alignment':            0xd4a853,
-    'ethics':               0xd4a87b,
-    'deep-learning':        0x7b93d4,
-    'nlp':                  0x6cb4e4,
-    'transformers':         0x8b7fd4,
-    'attention':            0x9b8fd4,
-    'scaling':              0x7ba8d4,
-    'empirical':            0xa8d4b4,
-    'llm':                  0xc47bd4,
-    'interpretability':     0x9fd4a8,
+    'ai-safety':              0xe07b54,
+    'alignment':              0xd4a853,
+    'ethics':                 0xd4a87b,
+    'deep-learning':          0x7b93d4,
+    'nlp':                    0x6cb4e4,
+    'transformers':           0x8b7fd4,
+    'attention':              0x9b8fd4,
+    'scaling':                0x7ba8d4,
+    'empirical':              0xa8d4b4,
+    'llm':                    0xc47bd4,
+    'interpretability':       0x9fd4a8,
     'reinforcement-learning': 0xe4a07b,
-    'chemistry':            0x6bc47a,
-    'nanomaterials':        0x7bc47a,
-    'quantum-dots':         0xa4e47b,
-    'biomedical':           0xd47b8b,
-    'epidemiology':         0xc47bbd,
-    'graph-theory':         0xe4c46c,
-    'network-analysis':     0xd4c46c,
-    'python':               0x4b8bbe,
-    'software':             0x8bc4d4,
+    'chemistry':              0x6bc47a,
+    'nanomaterials':          0x7bc47a,
+    'quantum-dots':           0xa4e47b,
+    'biomedical':             0xd47b8b,
+    'epidemiology':           0xc47bbd,
+    'graph-theory':           0xe4c46c,
+    'network-analysis':       0xd4c46c,
+    'python':                 0x4b8bbe,
+    'software':               0x8bc4d4,
   };
 
+  // Return the color of the first recognised tag, or a neutral grey.
   function tagColor(tags) {
     for (var i = 0; i < tags.length; i++) {
       if (TAG_COLORS[tags[i]]) return TAG_COLORS[tags[i]];
@@ -157,6 +266,7 @@ const data = JSON.stringify(paperCoords);
     var papers = JSON.parse(canvas.dataset.papers || '[]');
     var THREE  = window.THREE;
 
+    // Internal render resolution; the canvas CSS stretches it to fill the card.
     var W = 480, H = 320;
 
     var renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
@@ -165,76 +275,87 @@ const data = JSON.stringify(paperCoords);
     renderer.setClearColor(0x000000, 0);
 
     var scene  = new THREE.Scene();
+
+    // Perspective camera gives a natural sense of depth.
     var camera = new THREE.PerspectiveCamera(55, W / H, 0.1, 100);
     camera.position.z = 2.8;
 
-    var group  = new THREE.Group();
+    // Everything lives in one group so drag-rotation affects papers + axes together.
+    var group = new THREE.Group();
     scene.add(group);
 
-    var meshes = [];
+    // Start at a slight tilt so the 3D structure is immediately apparent.
+    group.rotation.x = 0.28;
+    group.rotation.y = 0.55;
 
-    // ── Axis arrows (PC1=x, PC2=y, PC3=z) ──────────────────────────────
-    var AXIS_LEN  = 0.88;
-    var HEAD_LEN  = 0.13;
-    var HEAD_W    = 0.065;
+    // ── Coordinate axes (PC1, PC2, PC3) ───────────────────────────────────
+    // Each axis is a Three.js ArrowHelper spanning [-AXIS_LEN, +AXIS_LEN].
+    // The three axes correspond to the first three principal components of
+    // the one-hot tag matrix, so papers that share topics cluster together.
+    var AXIS_LEN = 0.88;
     var AXIS_DEFS = [
-      { dir: new THREE.Vector3(1,0,0), color: 0xc4775a, label: 'PC1' },
-      { dir: new THREE.Vector3(0,1,0), color: 0x5a8ec4, label: 'PC2' },
-      { dir: new THREE.Vector3(0,0,1), color: 0x6ab88a, label: 'PC3' },
+      { dir: new THREE.Vector3(1, 0, 0), color: 0xc4775a }, // PC1 — terracotta
+      { dir: new THREE.Vector3(0, 1, 0), color: 0x5a8ec4 }, // PC2 — steel blue
+      { dir: new THREE.Vector3(0, 0, 1), color: 0x6ab88a }, // PC3 — sage green
     ];
 
-    var wrap = canvas.parentElement;
-    var axisLabels = AXIS_DEFS.map(function(def) {
+    AXIS_DEFS.forEach(function (def) {
       var origin = def.dir.clone().multiplyScalar(-AXIS_LEN);
-      var arrow  = new THREE.ArrowHelper(def.dir, origin, AXIS_LEN * 2, def.color, HEAD_LEN, HEAD_W);
-      // Soften the shaft opacity (line material)
+      var arrow  = new THREE.ArrowHelper(
+        def.dir, origin,
+        AXIS_LEN * 2,   // total length
+        def.color,
+        0.13,           // head length
+        0.065           // head width
+      );
+      // Soften shaft so it doesn't compete with the paper nodes.
       arrow.line.material.transparent = true;
-      arrow.line.material.opacity = 0.55;
+      arrow.line.material.opacity = 0.45;
       group.add(arrow);
-
-      var el = document.createElement('span');
-      el.textContent = def.label;
-      el.style.cssText = 'position:absolute;font-family:"Space Mono",monospace;font-size:0.58rem;'
-        + 'color:#' + def.color.toString(16).padStart(6,'0') + ';'
-        + 'pointer-events:none;transform:translate(-50%,-50%);z-index:5;opacity:0.9;'
-        + 'text-shadow:0 0 4px rgba(0,0,0,0.6);letter-spacing:1px;display:none';
-      wrap.appendChild(el);
-      return { el: el, tip: def.dir.clone().multiplyScalar(AXIS_LEN + 0.1) };
     });
 
-    // Subtle bounding-box wireframe for spatial reference
-    var boxEdges = new THREE.EdgesGeometry(new THREE.BoxGeometry(AXIS_LEN*2, AXIS_LEN*2, AXIS_LEN*2));
-    var boxLine  = new THREE.LineSegments(boxEdges,
-      new THREE.LineBasicMaterial({ color: 0x888888, transparent: true, opacity: 0.10 }));
-    group.add(boxLine);
+    // Subtle wireframe cube — gives the eye corner-reference points in space.
+    var boxEdges = new THREE.EdgesGeometry(
+      new THREE.BoxGeometry(AXIS_LEN * 2, AXIS_LEN * 2, AXIS_LEN * 2)
+    );
+    group.add(new THREE.LineSegments(
+      boxEdges,
+      new THREE.LineBasicMaterial({ color: 0x888888, transparent: true, opacity: 0.09 })
+    ));
 
-    function updateAxisLabels() {
-      axisLabels.forEach(function(info) {
-        var wp = info.tip.clone();
-        group.localToWorld(wp);
-        wp.project(camera);
-        if (wp.z >= 1) { info.el.style.display = 'none'; return; }
-        info.el.style.display = 'block';
-        info.el.style.left = (wp.x *  0.5 + 0.5) * 100 + '%';
-        info.el.style.top  = (wp.y * -0.5 + 0.5) * 100 + '%';
-      });
-    }
+    // ── Paper nodes ────────────────────────────────────────────────────────
+    // Visual encoding:
+    //   color  → research topic  (see TAG_COLORS above)
+    //   shape  → reading status:
+    //     solid sphere (r 0.070)             = read (finished)
+    //     larger solid sphere (r 0.090)      = reading (currently active, pulses)
+    //     torus / ring (r 0.062, tube 0.018) = to-read (hollow outline)
+    var meshes        = [];  // all hittable meshes for raycasting
+    var readingMeshes = [];  // subset that gets the scale-pulse animation
 
     papers.forEach(function (paper) {
-      var color  = tagColor(paper.tags);
+      var color     = tagColor(paper.tags);
       var isRead    = paper.status === 'read';
       var isReading = paper.status === 'reading';
 
       var geo, mat;
+
       if (isRead) {
-        geo = new THREE.SphereGeometry(0.07, 16, 12);
+        // Finished — solid sphere, full opacity, standard size.
+        geo = new THREE.SphereGeometry(0.070, 16, 12);
         mat = new THREE.MeshBasicMaterial({ color: color });
+
       } else if (isReading) {
-        geo = new THREE.SphereGeometry(0.07, 16, 12);
-        mat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.55 });
+        // In progress — larger solid sphere, pulses in the render loop.
+        geo = new THREE.SphereGeometry(0.090, 16, 12);
+        mat = new THREE.MeshBasicMaterial({ color: color });
+
       } else {
-        geo = new THREE.SphereGeometry(0.07, 16, 12);
-        mat = new THREE.MeshBasicMaterial({ color: color, wireframe: true });
+        // To-read — torus (ring), semi-transparent.
+        // Looks like a donut from the front and a line from the side,
+        // making it clearly distinct from the spheres.
+        geo = new THREE.TorusGeometry(0.062, 0.018, 8, 28);
+        mat = new THREE.MeshBasicMaterial({ color: color, transparent: true, opacity: 0.70 });
       }
 
       var mesh = new THREE.Mesh(geo, mat);
@@ -242,17 +363,24 @@ const data = JSON.stringify(paperCoords);
       mesh.userData = paper;
       group.add(mesh);
       meshes.push(mesh);
+
+      if (isReading) readingMeshes.push(mesh);
     });
 
-    // Raycaster + hover tooltip
+    // ── Raycaster — hover tooltip ──────────────────────────────────────────
     var raycaster = new THREE.Raycaster();
     var mouse     = new THREE.Vector2();
 
+    // STATUS_LABEL maps paper status to a short human-readable string
+    // shown inside the tooltip so the encoding is self-documenting.
+    var STATUS_LABEL = { read: '✓ read', reading: '▶ reading', 'to-read': '○ to-read' };
+
     function onMove(e) {
       var rect = canvas.getBoundingClientRect();
-      var cx = e.clientX - rect.left;
-      var cy = e.clientY - rect.top;
-      // Normalise to NDC using the CSS display size
+      var cx   = e.clientX - rect.left;
+      var cy   = e.clientY - rect.top;
+
+      // Normalise cursor to NDC [-1, 1] using the CSS display size.
       mouse.x =  (cx / rect.width)  * 2 - 1;
       mouse.y = -(cy / rect.height) * 2 + 1;
 
@@ -262,82 +390,135 @@ const data = JSON.stringify(paperCoords);
       if (hits.length > 0) {
         var p     = hits[0].object.userData;
         var title = p.title.length > 60 ? p.title.slice(0, 60) + '…' : p.title;
-        var tldr  = p.tldr
-          ? '<span style="display:block;font-size:0.75rem;color:var(--text-color-dim);font-style:italic;margin-top:0.25rem;line-height:1.45">'
-            + (p.tldr.length > 90 ? p.tldr.slice(0, 90) + '…' : p.tldr)
+        var status = STATUS_LABEL[p.status] || p.status;
+        // Show pointer cursor only when the paper has a detail page.
+        if (!dragging) canvas.style.cursor = p.hasPage ? 'pointer' : 'grab';
+
+        var tldr = p.tldr
+          ? '<span style="display:block;font-size:0.74rem;color:var(--text-color-dim);'
+            + 'font-style:italic;margin-top:0.25rem;line-height:1.45">'
+            + (p.tldr.length > 100 ? p.tldr.slice(0, 100) + '…' : p.tldr)
             + '</span>'
           : '';
 
         tooltip.innerHTML =
-          '<span style="display:block;font-family:\'Space Grotesk\',sans-serif;font-size:0.82rem;font-weight:700;color:var(--text-color);line-height:1.35">'
+          '<span style="display:block;font-family:\'Space Grotesk\',sans-serif;'
+          + 'font-size:0.82rem;font-weight:700;color:var(--text-color);line-height:1.35">'
           + title + '</span>'
-          + '<span style="display:block;font-family:\'Space Mono\',monospace;font-size:0.68rem;color:var(--contrast-color);margin-top:0.2rem">'
-          + p.year + ' · ' + p.tags.join(', ') + '</span>'
+          + '<span style="display:block;font-family:\'Space Mono\',monospace;'
+          + 'font-size:0.66rem;color:var(--contrast-color);margin-top:0.2rem">'
+          + p.year + ' · ' + status + '</span>'
+          + '<span style="display:block;font-family:\'Space Mono\',monospace;'
+          + 'font-size:0.62rem;color:var(--text-color-dim);margin-top:0.1rem">'
+          + p.tags.join(', ') + '</span>'
           + tldr;
 
         tooltip.style.display = 'block';
-        // Flip horizontally if close to right edge
-        var tipW = 224;
+        var tipW = 234;
         tooltip.style.left = (cx > rect.width / 2 ? cx - tipW - 8 : cx + 14) + 'px';
-        tooltip.style.top  = Math.max(4, Math.min(cy - 24, rect.height - 100)) + 'px';
+        tooltip.style.top  = Math.max(4, Math.min(cy - 24, rect.height - 110)) + 'px';
       } else {
         tooltip.style.display = 'none';
+        if (!dragging) canvas.style.cursor = 'grab';
       }
     }
 
     canvas.addEventListener('mousemove', onMove);
     canvas.addEventListener('mouseleave', function () {
       tooltip.style.display = 'none';
+      if (!dragging) canvas.style.cursor = 'grab';
     });
 
-    // ── Drag-to-rotate + inertia ─────────────────────────────────────────
-    var AUTO_Y   = 0.003;           // base turntable speed
-    var velX = 0, velY = AUTO_Y;
+    // ── Drag-to-rotate with inertia ────────────────────────────────────────
+    // No auto-rotation — the scene is static until the user drags.
+    // On release, velocity decays to rest (exponential damping).
+    var velX = 0, velY = 0;
     var dragging = false;
     var lastMX = 0, lastMY = 0;
+    var dragDist = 0;  // total pixels moved since mousedown — used to distinguish clicks from drags
 
     function startDrag(x, y) {
-      dragging = true; lastMX = x; lastMY = y;
+      dragging = true;
+      dragDist = 0;
+      lastMX = x; lastMY = y;
       velX = 0; velY = 0;
-      canvas.style.cursor = 'grabbing';
     }
     function moveDrag(x, y) {
       if (!dragging) return;
-      velY = (x - lastMX) * 0.007;
-      velX = (y - lastMY) * 0.007;
+      var dx = x - lastMX, dy = y - lastMY;
+      dragDist += Math.abs(dx) + Math.abs(dy);
+      velY = dx * 0.007;
+      velX = dy * 0.007;
       group.rotation.y += velY;
-      group.rotation.x += velX;
+      // Clamp X rotation to ±60° so the scene never flips upside-down.
+      group.rotation.x = Math.max(-Math.PI / 3,
+                          Math.min( Math.PI / 3, group.rotation.x + velX));
       lastMX = x; lastMY = y;
+      canvas.style.cursor = 'grabbing';
     }
-    function endDrag() {
-      dragging = false;
-      canvas.style.cursor = 'grab';
-    }
+    function endDrag() { dragging = false; canvas.style.cursor = 'grab'; }
 
-    canvas.style.cursor = 'grab';
-    canvas.addEventListener('mousedown', function(e) { startDrag(e.clientX, e.clientY); e.preventDefault(); });
-    window.addEventListener('mousemove',  function(e) { moveDrag(e.clientX, e.clientY); });
-    window.addEventListener('mouseup',    endDrag);
-    canvas.addEventListener('touchstart', function(e) { if (e.touches[0]) startDrag(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault(); }, { passive: false });
-    canvas.addEventListener('touchmove',  function(e) { if (e.touches[0]) moveDrag(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault(); }, { passive: false });
-    canvas.addEventListener('touchend',   endDrag);
+    canvas.addEventListener('mousedown', function (e) {
+      startDrag(e.clientX, e.clientY); e.preventDefault();
+    });
+    window.addEventListener('mousemove', function (e) { moveDrag(e.clientX, e.clientY); });
+    window.addEventListener('mouseup',   endDrag);
 
-    // Animation — turntable Y, drag-controlled X (clamped so it never flips)
+    canvas.addEventListener('touchstart', function (e) {
+      if (e.touches[0]) startDrag(e.touches[0].clientX, e.touches[0].clientY);
+      e.preventDefault();
+    }, { passive: false });
+    canvas.addEventListener('touchmove', function (e) {
+      if (e.touches[0]) moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+      e.preventDefault();
+    }, { passive: false });
+    canvas.addEventListener('touchend', endDrag);
+
+    // ── Click — navigate to paper detail page if one exists ───────────────
+    // Only fires when the pointer barely moved (dragDist < 6px), so dragging
+    // the scene doesn't accidentally trigger navigation.
+    var BASE = canvas.dataset.base || '/';
+
+    canvas.addEventListener('click', function (e) {
+      if (dragDist >= 6) return;
+      var rect = canvas.getBoundingClientRect();
+      mouse.x =  ((e.clientX - rect.left) / rect.width)  * 2 - 1;
+      mouse.y = -((e.clientY - rect.top)  / rect.height) * 2 + 1;
+      raycaster.setFromCamera(mouse, camera);
+      var hits = raycaster.intersectObjects(meshes);
+      if (hits.length > 0) {
+        var p = hits[0].object.userData;
+        if (p.hasPage && p.slug) {
+          window.location.href = BASE + 'papers/' + p.slug;
+        }
+      }
+    });
+
+    // ── Render loop ────────────────────────────────────────────────────────
     (function animate() {
       requestAnimationFrame(animate);
+
+      // Decay drag velocity when not held — comes to rest naturally.
       if (!dragging) {
-        velX *= 0.88;                               // decay X toward zero
-        velY  = velY * 0.88 + AUTO_Y * 0.12;       // ease Y back to auto-spin
+        velX *= 0.85;
+        velY *= 0.85;
       }
       group.rotation.y += velY;
       group.rotation.x  = Math.max(-Math.PI / 3,
                            Math.min( Math.PI / 3, group.rotation.x + velX));
+
+      // Pulse "reading" papers: gentle breathing scale over ~4 s.
+      var t = Date.now() * 0.0015;
+      readingMeshes.forEach(function (m) {
+        var s = 1 + 0.18 * Math.sin(t);
+        m.scale.set(s, s, s);
+      });
+
       renderer.render(scene, camera);
-      updateAxisLabels();
     })();
   }
 
-  // Inject Three.js CDN script once, then call initScene
+  // Inject the Three.js CDN bundle once, then initialise.
   if (window.THREE) {
     initScene();
   } else {
