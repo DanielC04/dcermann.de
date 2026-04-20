@@ -14,7 +14,7 @@ import PaperMap from '../../components/PaperMap.astro';
 
       <div class="page-layout">
 
-        <!-- Left: intro + activity heatmap + reading list -->
+        <!-- Left: intro + reading list -->
         <div class="left-col">
           <div class="page-intro">
             <h2>Reading List</h2>
@@ -22,12 +22,12 @@ import PaperMap from '../../components/PaperMap.astro';
               Papers I'm reading or have read. Entries marked <span class="note-mark">✦</span> have reading notes.
             </p>
           </div>
-          <ReadingActivity />
           <ReadingList />
         </div>
 
-        <!-- Right: Paper Topics 3-D map (sticky) -->
+        <!-- Right: reading activity heatmap + Paper Topics 3-D map (sticky) -->
         <aside class="right-col">
+          <ReadingActivity />
           <PaperMap />
         </aside>
 

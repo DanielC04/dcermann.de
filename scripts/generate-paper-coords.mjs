@@ -1,9 +1,19 @@
 /**
  * generate-paper-coords.mjs
  *
- * Reads src/content/papers/*.md, builds one-hot tag vectors per paper,
- * reduces to 2D via PCA (power iteration, no ML deps), and writes
- * src/data/paper-coords.json.
+ * Reads src/content/papers/*.md, builds a TF-IDF matrix from each paper's
+ * title words + tags, reduces to 3D via PCA (power iteration, no ML deps),
+ * and writes src/data/paper-coords.json.
+ *
+ * Feature vector construction (weighted concatenation):
+ *   [TAG_WEIGHT × one-hot(tags)]  ||  [L2-normalised TF-IDF(title + tldr)]
+ *
+ *   Tags are kept as a separate scaled one-hot block so the manually assigned
+ *   categories always dominate clustering.  TF-IDF of title + tldr provides
+ *   finer within-category separation without diluting the tag signal.
+ *
+ *   TF  = count(term, doc) / len(doc)
+ *   IDF = log(N / df(term))   where df = number of docs containing term
  */
 
 import fs   from 'fs';
@@ -43,15 +53,71 @@ if (papers.length === 0) {
   process.exit(0);
 }
 
-// ── 2. One-hot tag vectors ────────────────────────────────────────────────────
+// ── 2. Feature matrix: weighted tag one-hot ∥ TF-IDF(title + tldr) ───────────
+
+// How much louder tags speak relative to the TF-IDF block.
+// Raise to make category boundaries sharper; lower for more content-driven layout.
+const TAG_WEIGHT = 2.0;
+
+const STOP_WORDS = new Set([
+  'a','an','the','and','or','of','in','for','to','with','on','is','are',
+  'was','be','by','as','at','from','that','this','it','its','via','using',
+  'based','large','new','towards','toward','into','over','under','between',
+]);
+
+function tokenise(text) {
+  return text
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, ' ')   // strip punctuation except hyphens
+    .split(/\s+/)
+    .filter(t => t.length > 1 && !STOP_WORDS.has(t));
+}
+
+// ── 2a. Tag one-hot block (scaled) ───────────────────────────────────────────
+// Tags are manually curated category labels — treat them as explicit categorical
+// features, not bag-of-words tokens, so they aren't diluted by document length.
 
 const allTags = [...new Set(papers.flatMap(p => p.tags))].sort();
 
-function oneHot(tags) {
-  return allTags.map(t => (tags.includes(t) ? 1 : 0));
+function tagOneHot(tags) {
+  return allTags.map(t => (tags.includes(t) ? TAG_WEIGHT : 0));
 }
 
-const X = papers.map(p => oneHot(p.tags));   // shape: n_papers × n_tags
+// ── 2b. TF-IDF block (title + tldr only — tags excluded to avoid double-counting)
+
+const docTerms = papers.map(p => [
+  ...tokenise(p.title),
+  ...(p.tldr ? tokenise(p.tldr) : []),
+]);
+
+// Vocabulary over text content only
+const vocab  = [...new Set(docTerms.flat())].sort();
+const termIdx = Object.fromEntries(vocab.map((t, i) => [t, i]));
+const V = vocab.length;
+const N = papers.length;
+
+// Document frequency per term
+const df = new Array(V).fill(0);
+docTerms.forEach(terms => {
+  const seen = new Set(terms);
+  seen.forEach(t => { if (termIdx[t] !== undefined) df[termIdx[t]]++; });
+});
+
+// IDF = log(N / df) — standard non-smoothed variant
+const idf = df.map(d => (d > 0 ? Math.log(N / d) : 0));
+
+// TF-IDF vector, L2-normalised so document length doesn't dominate distance
+function tfidfVector(terms) {
+  const tf  = new Array(V).fill(0);
+  terms.forEach(t => { if (termIdx[t] !== undefined) tf[termIdx[t]]++; });
+  const len = terms.length || 1;
+  const vec = tf.map((c, i) => (c / len) * idf[i]);
+  const norm = Math.sqrt(vec.reduce((s, v) => s + v * v, 0));
+  return norm > 1e-10 ? vec.map(v => v / norm) : vec;
+}
+
+// ── 2c. Concatenate: [tag block | tfidf block]  shape: n_papers × (|tags| + V)
+const X = papers.map((p, i) => [...tagOneHot(p.tags), ...tfidfVector(docTerms[i])]);
 
 // ── 3. PCA — power iteration on the covariance matrix ────────────────────────
 
