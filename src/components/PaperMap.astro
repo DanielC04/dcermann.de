@@ -354,8 +354,8 @@ const baseUrl = import.meta.env.BASE_URL;
         mat = new THREE.MeshBasicMaterial({ color: color });
 
       } else if (isReading) {
-        // In progress — solid core, same size as read.
-        geo = new THREE.SphereGeometry(0.072, 16, 12);
+        // In progress — solid core
+        geo = new THREE.SphereGeometry(0.052, 16, 12);
         mat = new THREE.MeshBasicMaterial({ color: color });
 
       } else {
@@ -374,7 +374,7 @@ const baseUrl = import.meta.env.BASE_URL;
         // Expanding shell — a slightly larger transparent sphere that grows
         // and fades out over SHELL_PERIOD ms, then snaps back to the start.
         // Each reading paper gets a staggered time offset so they don't sync.
-        var shellGeo = new THREE.SphereGeometry(0.072, 16, 12);
+        var shellGeo = new THREE.SphereGeometry(0.062, 16, 12);
         var shellMat = new THREE.MeshBasicMaterial({
           color: color, transparent: true, opacity: SHELL_A_START,
         });
