@@ -7,13 +7,6 @@ export interface ExperienceItem {
 
 export const experiences: ExperienceItem[] = [
   {
-    title: 'Side hustle at Logodata Erfurt',
-    description:
-      'I developed an internal tool for the company, spending two weeks in their office before switching to remote for a few months — until I decided to focus on finishing high school.',
-    years: 'Oct 2021 – Feb 2022',
-    logo: '/images/logos/logodata.jpeg',
-  },
-  {
     title: 'Volunteer Year — Argentina 🇦🇷',
     description:
       "I spent a year helping in projects for children and teenagers in Buenos Aires. At the 'Refugio San Eugenio' I learned a lot about life, difficult social situations, and quite a few Spanish swear words 😉",
@@ -28,7 +21,7 @@ export const experiences: ExperienceItem[] = [
     logo: '/images/logos/isef_logo.jpg',
   },
   {
-    title: 'Werkstudent @ Engie',
+    title: 'Working student @ Engie',
     description:
       'At Engie GEMS I worked as Lead-Engineer on two large projects: a 7/7 electricity booking tool processing multiple gigawatt-hours daily, and a system for automated PPA contract generation for the Legal team.',
     years: 'Mar 2024 – Dec 2025',

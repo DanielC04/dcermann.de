@@ -53,7 +53,7 @@ src/
 public/
   dc-logo.svg
   images/
-    myProfile.jpg
+    myProfile.png
     projects/              # Project screenshots
     logos/                 # Company/institution logos for timeline
 ```
