@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ReadingList from '../../components/ReadingList.astro';
+import ReadingActivity from '../../components/ReadingActivity.astro';
 ---
 
 <BaseLayout
@@ -9,10 +10,15 @@ import ReadingList from '../../components/ReadingList.astro';
 >
   <section id="papers">
     <div class="section-container">
-      <h2>Reading List</h2>
-      <p class="page-desc">
-        Papers I'm reading or have read. Entries marked <span class="note-mark">✦</span> have reading notes.
-      </p>
+      <div class="page-header">
+        <div class="page-intro">
+          <h2>Reading List</h2>
+          <p class="page-desc">
+            Papers I'm reading or have read. Entries marked <span class="note-mark">✦</span> have reading notes.
+          </p>
+        </div>
+        <ReadingActivity />
+      </div>
       <ReadingList />
     </div>
   </section>
@@ -25,11 +31,36 @@ import ReadingList from '../../components/ReadingList.astro';
     padding-bottom: 5rem;
   }
 
+  .page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+  }
+
+  .page-intro {
+    flex: 1;
+    min-width: 0;
+
+    // h2 is globally centered with position:relative tricks; override for inline context
+    :global(h2) {
+      position: static;
+      transform: none;
+      text-align: left;
+      display: block;
+      left: unset;
+    }
+  }
+
   .page-desc {
     font-size: 0.9rem;
     color: var(--text-color-dim);
-    margin-bottom: 2.5rem;
+    margin-top: 0.5rem;
+    margin-bottom: 0;
     line-height: 1.6;
+    max-width: 50ch;
   }
 
   .note-mark {

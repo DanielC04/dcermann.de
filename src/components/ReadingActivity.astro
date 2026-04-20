@@ -1,0 +1,359 @@
+---
+import { getCollection } from 'astro:content';
+
+const allPapers = await getCollection('papers', ({ data }) => !data.draft);
+const readPapers = allPapers.filter((p) => p.data.status === 'read' && p.data.dateRead);
+
+// Use local calendar date as key (avoids UTC/local midnight mismatch)
+function localKey(d: Date) {
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+}
+
+// date → count of papers read that day
+const dateMap = new Map<string, number>();
+for (const paper of readPapers) {
+  // dateRead is coerced as UTC midnight; use UTC parts so the date matches what's written in the file
+  const dr = paper.data.dateRead!;
+  const key = `${dr.getUTCFullYear()}-${String(dr.getUTCMonth() + 1).padStart(2, '0')}-${String(dr.getUTCDate()).padStart(2, '0')}`;
+  dateMap.set(key, (dateMap.get(key) ?? 0) + 1);
+}
+
+// Build a ~26-week grid ending today, rows = Mon–Sun
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+const WEEKS = 26;
+const gridStart = new Date(today);
+gridStart.setDate(gridStart.getDate() - WEEKS * 7 + 1);
+// Align to Monday (getDay: 0=Sun, 1=Mon … 6=Sat)
+const startDow = (gridStart.getDay() + 6) % 7;
+gridStart.setDate(gridStart.getDate() - startDow);
+
+type Cell = { date: Date; count: number; future: boolean };
+const days: Cell[] = [];
+const cursor = new Date(gridStart);
+// Generate until today is included, then pad to complete the last week
+while (cursor <= today || days.length % 7 !== 0) {
+  const key = localKey(cursor);
+  days.push({ date: new Date(cursor), count: dateMap.get(key) ?? 0, future: cursor > today });
+  cursor.setDate(cursor.getDate() + 1);
+}
+
+// Group into week columns
+const weeks: Cell[][] = [];
+for (let i = 0; i < days.length; i += 7) weeks.push(days.slice(i, i + 7));
+
+// Month labels — track first week a new month appears
+const monthLabels: { label: string; col: number }[] = [];
+let lastMonth = -1;
+weeks.forEach((week, col) => {
+  const m = week[0].date.getMonth();
+  if (m !== lastMonth) {
+    monthLabels.push({
+      label: week[0].date.toLocaleDateString('en-GB', { month: 'short' }),
+      col,
+    });
+    lastMonth = m;
+  }
+});
+
+// Stats
+const totalRead = readPapers.length;
+
+const weekHasRead = weeks.map((w) => w.some((d) => d.count > 0));
+
+// Current streak (consecutive weeks up to and including this week)
+const todayWeekIdx = weeks.findLastIndex((w) =>
+  w.some((d) => d.date <= today && d.date >= new Date(today.getTime() - 6 * 86400000)),
+);
+let currentStreak = 0;
+for (let i = todayWeekIdx; i >= 0; i--) {
+  if (weekHasRead[i]) currentStreak++;
+  else break;
+}
+
+// Longest streak
+let longestStreak = 0;
+let run = 0;
+for (const has of weekHasRead) {
+  if (has) { run++; longestStreak = Math.max(longestStreak, run); }
+  else run = 0;
+}
+
+const CELL = 9;  // px — cell size
+const GAP  = 2;  // px — gap between cells
+const step  = CELL + GAP;
+const LABEL_W = 22; // px — width of day-label column
+
+function fmt(d: Date) {
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+}
+---
+
+<div class="activity-widget">
+  <!-- header row: title + stats -->
+  <div class="widget-header">
+    <span class="widget-title">Reading Activity</span>
+    <span class="widget-stats">
+      <span class="stat">{totalRead} read</span>
+      <span class="sep">·</span>
+      <span class="stat">{currentStreak}w streak</span>
+      <span class="sep">·</span>
+      <span class="stat">best&nbsp;{longestStreak}w</span>
+    </span>
+  </div>
+
+  <!-- scrollable grid area -->
+  <div class="grid-scroll">
+    <div class="grid-inner" style={`width: ${LABEL_W + weeks.length * step}px`}>
+
+      <!-- month labels -->
+      <div class="month-row" style={`padding-left: ${LABEL_W}px`}>
+        {monthLabels.map(({ label, col }) => (
+          <span
+            class="month-label"
+            style={`left: ${LABEL_W + col * step}px`}
+          >{label}</span>
+        ))}
+      </div>
+
+      <!-- day labels + cell grid -->
+      <div class="grid-body">
+        <div class="day-labels">
+          {['Mon','','Wed','','Fri','',''].map((d) => (
+            <span>{d}</span>
+          ))}
+        </div>
+
+        <div class="week-columns">
+          {weeks.map((week) => (
+            <div class="week-col">
+              {week.map((cell) => (
+                <div
+                  class:list={[
+                    'cell',
+                    cell.count > 0 && 'active',
+                    cell.count > 1 && 'multi',
+                    cell.future  && 'future',
+                  ]}
+                  title={
+                    cell.count > 0
+                      ? `${cell.count} paper${cell.count > 1 ? 's' : ''} · ${fmt(cell.date)}`
+                      : fmt(cell.date)
+                  }
+                  aria-label={
+                    cell.count > 0
+                      ? `${cell.count} paper${cell.count > 1 ? 's' : ''} read on ${fmt(cell.date)}`
+                      : `No papers on ${fmt(cell.date)}`
+                  }
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- legend -->
+  <div class="legend">
+    <span class="legend-label">Less</span>
+    <div class="cell legend-cell"></div>
+    <div class="cell legend-cell active"></div>
+    <div class="cell legend-cell active multi"></div>
+    <span class="legend-label">More</span>
+  </div>
+</div>
+
+<style lang="scss" define:vars={{ cellPx: `${CELL}px`, gapPx: `${GAP}px`, labelW: `${LABEL_W}px` }}>
+  .activity-widget {
+    margin-bottom: 3rem;
+    padding: 1.1rem 1.25rem 1rem;
+    border: 1px solid color-mix(in srgb, var(--text-color-dim) 20%, transparent);
+    border-radius: 10px;
+    background: color-mix(in srgb, var(--background-color-1) 70%, transparent);
+    position: relative;
+    overflow: hidden;
+
+    // scanline texture
+    &::before {
+      content: '';
+      pointer-events: none;
+      position: absolute;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 3px,
+        color-mix(in srgb, var(--text-color) 2%, transparent) 3px,
+        color-mix(in srgb, var(--text-color) 2%, transparent) 4px
+      );
+      z-index: 0;
+    }
+  }
+
+  .widget-header {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.85rem;
+  }
+
+  .widget-title {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--contrast-color);
+  }
+
+  .widget-stats {
+    font-family: 'Space Mono', 'Courier New', monospace;
+    font-size: 0.72rem;
+    color: var(--text-color-dim);
+    display: flex;
+    gap: 0.4rem;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .stat { color: var(--text-color); }
+  .sep  { opacity: 0.4; }
+
+  // ── Grid ─────────────────────────────────────────────────────────────────
+
+  .grid-scroll {
+    position: relative;
+    z-index: 1;
+    overflow-x: auto;
+    overflow-y: visible;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--text-color-dim) 25%, transparent) transparent;
+  }
+
+  .grid-inner {
+    display: inline-block;
+    padding-bottom: 2px;
+  }
+
+  .month-row {
+    position: relative;
+    height: 16px;
+    margin-bottom: 4px;
+  }
+
+  .month-label {
+    position: absolute;
+    font-size: 0.68rem;
+    font-family: 'Space Mono', 'Courier New', monospace;
+    color: var(--text-color-dim);
+    white-space: nowrap;
+    top: 0;
+  }
+
+  .grid-body {
+    display: flex;
+    gap: var(--gapPx);
+    align-items: flex-start;
+  }
+
+  .day-labels {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gapPx);
+    flex-shrink: 0;
+    width: var(--labelW);
+
+    span {
+      height: var(--cellPx);
+      font-size: 0.62rem;
+      font-family: 'Space Mono', 'Courier New', monospace;
+      color: var(--text-color-dim);
+      line-height: var(--cellPx);
+      opacity: 0.6;
+    }
+  }
+
+  .week-columns {
+    display: flex;
+    gap: var(--gapPx);
+  }
+
+  .week-col {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gapPx);
+  }
+
+  // ── Cells ─────────────────────────────────────────────────────────────────
+
+  .cell {
+    width:  var(--cellPx);
+    height: var(--cellPx);
+    border-radius: 3px;
+    background: color-mix(in srgb, var(--text-color-dim) 10%, transparent);
+    transition: transform 0.1s, box-shadow 0.1s;
+    cursor: default;
+
+    &.future {
+      opacity: 0.25;
+    }
+
+    &.active {
+      background: color-mix(in srgb, var(--contrast-color) 55%, transparent);
+      box-shadow: 0 0 4px color-mix(in srgb, var(--contrast-color) 45%, transparent);
+    }
+
+    &.multi {
+      background: var(--contrast-color);
+      box-shadow:
+        0 0 6px  color-mix(in srgb, var(--contrast-color) 70%, transparent),
+        0 0 14px color-mix(in srgb, var(--contrast-color) 35%, transparent);
+    }
+
+    &.active:hover,
+    &.multi:hover {
+      transform: scale(1.35);
+      box-shadow:
+        0 0 8px  color-mix(in srgb, var(--contrast-color) 80%, transparent),
+        0 0 20px color-mix(in srgb, var(--contrast-color) 40%, transparent);
+      z-index: 2;
+      position: relative;
+    }
+  }
+
+  // ── Legend ────────────────────────────────────────────────────────────────
+
+  .legend {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 0.7rem;
+    justify-content: flex-end;
+  }
+
+  .legend-label {
+    font-size: 0.65rem;
+    font-family: 'Space Mono', 'Courier New', monospace;
+    color: var(--text-color-dim);
+    opacity: 0.6;
+    margin: 0 2px;
+  }
+
+  .legend-cell {
+    cursor: default;
+
+    &:hover {
+      transform: none !important;
+      box-shadow: revert !important;
+    }
+  }
+</style>
