@@ -290,11 +290,48 @@ const data = JSON.stringify(paperCoords);
       tooltip.style.display = 'none';
     });
 
-    // Animation — slow tumble in 3D
+    // ── Drag-to-rotate + inertia ─────────────────────────────────────────
+    var AUTO_Y   = 0.003;           // base turntable speed
+    var velX = 0, velY = AUTO_Y;
+    var dragging = false;
+    var lastMX = 0, lastMY = 0;
+
+    function startDrag(x, y) {
+      dragging = true; lastMX = x; lastMY = y;
+      velX = 0; velY = 0;
+      canvas.style.cursor = 'grabbing';
+    }
+    function moveDrag(x, y) {
+      if (!dragging) return;
+      velY = (x - lastMX) * 0.007;
+      velX = (y - lastMY) * 0.007;
+      group.rotation.y += velY;
+      group.rotation.x += velX;
+      lastMX = x; lastMY = y;
+    }
+    function endDrag() {
+      dragging = false;
+      canvas.style.cursor = 'grab';
+    }
+
+    canvas.style.cursor = 'grab';
+    canvas.addEventListener('mousedown', function(e) { startDrag(e.clientX, e.clientY); e.preventDefault(); });
+    window.addEventListener('mousemove',  function(e) { moveDrag(e.clientX, e.clientY); });
+    window.addEventListener('mouseup',    endDrag);
+    canvas.addEventListener('touchstart', function(e) { if (e.touches[0]) startDrag(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault(); }, { passive: false });
+    canvas.addEventListener('touchmove',  function(e) { if (e.touches[0]) moveDrag(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault(); }, { passive: false });
+    canvas.addEventListener('touchend',   endDrag);
+
+    // Animation — turntable Y, drag-controlled X (clamped so it never flips)
     (function animate() {
       requestAnimationFrame(animate);
-      group.rotation.y += 0.003;
-      group.rotation.x += 0.001;
+      if (!dragging) {
+        velX *= 0.88;                               // decay X toward zero
+        velY  = velY * 0.88 + AUTO_Y * 0.12;       // ease Y back to auto-spin
+      }
+      group.rotation.y += velY;
+      group.rotation.x  = Math.max(-Math.PI / 3,
+                           Math.min( Math.PI / 3, group.rotation.x + velX));
       renderer.render(scene, camera);
       updateAxisLabels();
     })();
