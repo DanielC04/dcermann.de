@@ -112,15 +112,14 @@ section {
     letter-spacing: 3px;
     color: var(--text-color);
     text-align: center;
+    display: block;
     position: relative;
-    display: inline-block;
-    left: 50%;
-    transform: translateX(-50%);
 
     &::after {
       content: '';
       position: absolute;
-      left: 0;
+      left: 50%;
+      transform: translateX(-50%);
       bottom: 2px;
       height: 5px;
       width: 0;
@@ -138,6 +137,7 @@ section {
   section h2::after {
     animation: none;
     width: 55px;
+    transform: translateX(-50%);
   }
 }
 

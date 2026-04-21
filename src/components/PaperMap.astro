@@ -270,7 +270,7 @@ const baseUrl = import.meta.env.BASE_URL;
     var W = 480, H = 320;
 
     var renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true, antialias: true });
-    renderer.setSize(W, H);
+    renderer.setSize(W, H, false); // false = don't override CSS with inline styles
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.setClearColor(0x000000, 0);
 
@@ -493,18 +493,15 @@ const baseUrl = import.meta.env.BASE_URL;
       if (e.touches[0]) moveDrag(e.touches[0].clientX, e.touches[0].clientY);
       e.preventDefault();
     }, { passive: false });
-    canvas.addEventListener('touchend', endDrag);
-
-    // ── Click — navigate to paper detail page if one exists ───────────────
-    // Only fires when the pointer barely moved (dragDist < 6px), so dragging
-    // the scene doesn't accidentally trigger navigation.
+    // ── Navigate to paper detail page ─────────────────────────────────────
+    // Only when the pointer/finger barely moved (dragDist < 6px).
     var BASE = canvas.dataset.base || '/';
 
-    canvas.addEventListener('click', function (e) {
+    function tryNavigate(clientX, clientY) {
       if (dragDist >= 6) return;
       var rect = canvas.getBoundingClientRect();
-      mouse.x =  ((e.clientX - rect.left) / rect.width)  * 2 - 1;
-      mouse.y = -((e.clientY - rect.top)  / rect.height) * 2 + 1;
+      mouse.x =  ((clientX - rect.left) / rect.width)  * 2 - 1;
+      mouse.y = -((clientY - rect.top)  / rect.height) * 2 + 1;
       raycaster.setFromCamera(mouse, camera);
       var hits = raycaster.intersectObjects(meshes);
       if (hits.length > 0) {
@@ -513,6 +510,19 @@ const baseUrl = import.meta.env.BASE_URL;
           window.location.href = BASE + 'papers/' + p.slug;
         }
       }
+    }
+
+    // Mouse click (desktop)
+    canvas.addEventListener('click', function (e) {
+      tryNavigate(e.clientX, e.clientY);
+    });
+
+    // Tap (mobile) — touchstart calls e.preventDefault() which suppresses the
+    // synthetic click event, so we handle navigation on touchend directly.
+    canvas.addEventListener('touchend', function (e) {
+      var t = e.changedTouches[0];
+      if (t) tryNavigate(t.clientX, t.clientY);
+      endDrag();
     });
 
     // ── Render loop ────────────────────────────────────────────────────────

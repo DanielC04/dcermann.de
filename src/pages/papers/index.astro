@@ -50,26 +50,27 @@ import PaperMap from '../../components/PaperMap.astro';
     gap: 2.5rem;
     align-items: start;
 
-    @media (max-width: 860px) {
+    @media (max-width: 768px) {
       grid-template-columns: 1fr;
     }
   }
 
-  // ── Left column ───────────────────────────────────────────────────────
-  .left-col {
-    min-width: 0;  // prevent grid blowout
+  // ── Columns — min-width: 0 prevents grid items from forcing column wider than 1fr
+  .left-col,
+  .right-col {
+    min-width: 0;
   }
 
   .page-intro {
     margin-bottom: 1.5rem;
 
-    // h2 is globally centred with position tricks; override for inline context
     :global(h2) {
-      position: static;
-      transform: none;
       text-align: left;
-      display: block;
-      left: unset;
+    }
+
+    :global(h2::after) {
+      left: 0;
+      transform: none;
     }
   }
 
@@ -92,7 +93,7 @@ import PaperMap from '../../components/PaperMap.astro';
     position: sticky;
     top: 80px;
 
-    @media (max-width: 860px) {
+    @media (max-width: 768px) {
       position: static;
       // On mobile the aside comes after the list; bump it up so it appears
       // first in reading order (grid-row reorder)

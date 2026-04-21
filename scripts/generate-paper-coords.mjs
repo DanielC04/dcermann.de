@@ -57,7 +57,7 @@ if (papers.length === 0) {
 
 // How much louder tags speak relative to the TF-IDF block.
 // Raise to make category boundaries sharper; lower for more content-driven layout.
-const TAG_WEIGHT = 2.0;
+const TAG_WEIGHT = 0.8;
 
 const STOP_WORDS = new Set([
   'a','an','the','and','or','of','in','for','to','with','on','is','are',

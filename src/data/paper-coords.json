@@ -11,9 +11,9 @@
     "status": "reading",
     "year": 2025,
     "tldr": "",
-    "x": -0.41577148284590854,
-    "y": 0.7925133924910804,
-    "z": 0.2031867324620948
+    "x": -0.4343207285812011,
+    "y": 0.8211306161719855,
+    "z": 0.24525346071137816
   },
   {
     "title": "The Assistant Axis: Situating and Stabilizing the Default Persona of Language Models",
@@ -28,9 +28,9 @@
     "status": "read",
     "year": 2026,
     "tldr": "Language models develop a dominant 'Assistant Axis' in persona space during post-training. Steering along it reinforces helpful behaviour; constraining activations to it stabilises models against persona drift and jailbreak-style persona attacks.",
-    "x": -0.46480464249456627,
-    "y": 0.907729598338353,
-    "z": 0.24027365507029125
+    "x": -0.4697137612988803,
+    "y": 0.8783071116762394,
+    "z": 0.26831471545603575
   },
   {
     "title": "Attention Is All You Need",
@@ -45,9 +45,9 @@
     "status": "to-read",
     "year": 2017,
     "tldr": "Replaces recurrence and convolutions entirely with multi-head self-attention, achieving state-of-the-art translation quality at a fraction of the training cost.",
-    "x": -0.22908557406955204,
-    "y": -0.2663197382493412,
-    "z": -0.1767473114800236
+    "x": -0.21060307722164462,
+    "y": -0.21072133807086801,
+    "z": -0.20309227068899044
   },
   {
     "title": "BACH: Bridging Adjacency List and CSR Format Using LSM-Trees for HGTAP Workloads",
@@ -61,9 +61,9 @@
     "status": "reading",
     "year": 2025,
     "tldr": "Proposes BACH, a disk-based graph database storage engine that uses a graph-aware LSM-Tree to progressively transform graph layout from TP-friendly adjacency lists to AP-friendly CSR format across compaction levels. An elastic merge compaction policy handles skewed vertex degree distributions, achieving high throughput, data freshness, and snapshot isolation for hybrid transactional/analytical workloads.",
-    "x": 1.0230027836572233,
-    "y": 0.08038779625563043,
-    "z": 0.07871376622338072
+    "x": 1.0204203510196077,
+    "y": 0.09324141439067381,
+    "z": 0.08650824620934677
   },
   {
     "title": "One-step microwave synthesis of carbon dots for highly sensitive and selective detection of copper ions in aqueous solution",
@@ -77,9 +77,9 @@
     "status": "to-read",
     "year": 2019,
     "tldr": "N/S co-doped carbon dots (2.61 nm) synthesised in one microwave step from citric acid, L-cysteine and dextrin achieve 22% quantum yield and selectively detect Cu²⁺ down to 20 nM in aqueous solution — well below EPA drinking water limits — with demonstrated applicability in tap water samples.",
-    "x": -0.21065322513181034,
-    "y": -0.14007860921259407,
-    "z": -1.0656190452546945
+    "x": -0.20351862449912972,
+    "y": -0.12524557509292544,
+    "z": -1.1055286708332281
   },
   {
     "title": "Carbon Dots for Carbon Dummies: The Quantum and The Molecular Questions Among Some Others",
@@ -93,9 +93,9 @@
     "status": "reading",
     "year": 2022,
     "tldr": "",
-    "x": -0.21066233234309634,
-    "y": -0.14008721810145075,
-    "z": -1.0657054063410494
+    "x": -0.20383046255171178,
+    "y": -0.12551025816580952,
+    "z": -1.1085584001222408
   },
   {
     "title": "Community-based transmission networks of Staphylococcus aureus identified through hospital-based active surveillance and whole genome sequencing",
@@ -108,9 +108,9 @@
     "status": "to-read",
     "year": 2025,
     "tldr": "Uses whole genome sequencing of 8,567 S. aureus isolates combined with EHR demographic data to identify community-based MRSA transmission clusters, revealing distinct networks by social group, geography, and care setting — including substance use networks, Brooklyn nursing home clusters, and a neonatal/Orthodox Jewish community cluster.",
-    "x": -0.29515430022152495,
-    "y": -0.5580034894487772,
-    "z": 0.4681563897379097
+    "x": -0.2976462782244045,
+    "y": -0.6555993644462608,
+    "z": 0.48786182378354975
   },
   {
     "title": "Community-based transmission networks of Staphylococcus aureus identified through hospital-based active surveillance and whole genome sequencing",
@@ -123,9 +123,9 @@
     "status": "reading",
     "year": 2026,
     "tldr": "",
-    "x": -0.2957131914736683,
-    "y": -0.5578353645569089,
-    "z": 0.46794328077954955
+    "x": -0.3011150448849017,
+    "y": -0.6551431668037881,
+    "z": 0.4871138796300614
   },
   {
     "title": "Concrete Problems in AI Safety",
@@ -139,9 +139,9 @@
     "status": "to-read",
     "year": 2016,
     "tldr": "",
-    "x": -0.4157834685031317,
-    "y": 0.7925466750305695,
-    "z": 0.2031982562699563
+    "x": -0.4347722243513318,
+    "y": 0.8223378448076665,
+    "z": 0.2457326293044993
   },
   {
     "title": "A hybrid adjacency and time-based data structure for analysis of temporal networks",
@@ -155,9 +155,9 @@
     "status": "reading",
     "year": 2022,
     "tldr": "Proposes a hybrid data structure combining an adjacency dictionary with an interval tree to enable fast compound slicing of temporal networks by both node sets and time intervals — much faster than existing structures with only modest memory overhead.",
-    "x": 1.022648685413911,
-    "y": 0.07877689656748522,
-    "z": 0.08026438928840024
+    "x": 1.0182817279954728,
+    "y": 0.08188731405089401,
+    "z": 0.09642468136735
   },
   {
     "title": "NetworkX-Temporal: Building, manipulating, and analyzing dynamic graph structures",
@@ -172,9 +172,9 @@
     "status": "read",
     "year": 2025,
     "tldr": "NetworkX-Temporal is a Python library for working with temporal graphs, providing tools for building, manipulating, and analyzing dynamic graph structures.",
-    "x": 1.1351953575054339,
-    "y": 0.09177957406158534,
-    "z": 0.09142994781773112
+    "x": 1.1302862387011197,
+    "y": 0.10824260078196048,
+    "z": 0.09932042512867262
   },
   {
     "title": "Scaling Laws for Neural Language Models",
@@ -189,9 +189,9 @@
     "status": "to-read",
     "year": 2020,
     "tldr": "Language model loss follows clean power laws in compute, data, and parameters, with compute being the binding constraint — implying you should train larger models for fewer steps than is common practice.",
-    "x": -0.28159134264218993,
-    "y": -0.3891391115139846,
-    "z": -0.05938924823249675
+    "x": -0.2672061811709364,
+    "y": -0.3112343109760073,
+    "z": -0.09079211982419405
   },
   {
     "title": "Survival analysis for sepsis patients: A machine learning approach to feature selection and predictive modeling",
@@ -205,8 +205,8 @@
     "status": "read",
     "year": 2025,
     "tldr": "Compares Cox proportional hazards against XGBoost, GBM, and random survival forests for predicting sepsis patient survival. XGBoost consistently outperforms Cox, especially with feature selection methods (AEN, SCAD, MCP, IG) that identify the most relevant clinical features.",
-    "x": -0.36162726685111873,
-    "y": -0.6922704016616471,
-    "z": 0.5342945936589507
+    "x": -0.3462619349320587,
+    "y": -0.7216928883237607,
+    "z": 0.4914415998777593
   }
 ]

@@ -246,7 +246,9 @@ const cvSkills = skillCategories.filter((c) =>
     gap: 3rem;
     align-items: start;
 
-    @media (max-width: 720px) {
+    > * { min-width: 0; }
+
+    @media (max-width: 768px) {
       grid-template-columns: 1fr;
       gap: 0;
     }
@@ -259,13 +261,20 @@ const cvSkills = skillCategories.filter((c) =>
     border-right: 1px solid color-mix(in srgb, var(--text-color) 8%, transparent);
     padding-right: 2rem;
 
-    @media (max-width: 720px) {
+    @media (max-width: 768px) {
       position: static;
       border-right: none;
       border-bottom: 1px solid color-mix(in srgb, var(--text-color) 8%, transparent);
       padding-right: 0;
       padding-bottom: 2rem;
       margin-bottom: 2rem;
+      order: 2;
+    }
+  }
+
+  .cv-main {
+    @media (max-width: 768px) {
+      order: 1;
     }
   }
 
@@ -386,12 +395,8 @@ const cvSkills = skillCategories.filter((c) =>
     margin: 0 0 0;
     padding-bottom: 0.5rem;
     border-bottom: 1px solid color-mix(in srgb, var(--text-color-dim) 15%, transparent);
-    // Override global section h2 styles (these are h2 inside a section inside .cv-page,
-    // which has no section ancestor, so global section h2 rule doesn't apply here)
     display: block;
     position: static;
-    left: unset;
-    transform: none;
     text-align: left;
     letter-spacing: 3px;
   }
