@@ -4,162 +4,38 @@ import { getCollection } from 'astro:content';
 const allPapers = await getCollection('papers', ({ data }) => !data.draft);
 const readPapers = allPapers.filter((p) => p.data.status === 'read' && p.data.dateRead);
 
-// Use local calendar date as key (avoids UTC/local midnight mismatch)
-function localKey(d: Date) {
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-}
-
-// date → count of papers read that day
-const dateMap = new Map<string, number>();
+// Serialise date → count map for client-side use. dateRead is UTC midnight,
+// so use UTC parts to match the YYYY-MM-DD written in the file.
+const dateEntries: Record<string, number> = {};
 for (const paper of readPapers) {
-  // dateRead is coerced as UTC midnight; use UTC parts so the date matches what's written in the file
   const dr = paper.data.dateRead!;
   const key = `${dr.getUTCFullYear()}-${String(dr.getUTCMonth() + 1).padStart(2, '0')}-${String(dr.getUTCDate()).padStart(2, '0')}`;
-  dateMap.set(key, (dateMap.get(key) ?? 0) + 1);
+  dateEntries[key] = (dateEntries[key] ?? 0) + 1;
 }
 
-// Build a ~26-week grid ending today, rows = Mon–Sun
-const today = new Date();
-today.setHours(0, 0, 0, 0);
-
-const WEEKS = 26;
-const gridStart = new Date(today);
-gridStart.setDate(gridStart.getDate() - WEEKS * 7 + 1);
-// Align to Monday (getDay: 0=Sun, 1=Mon … 6=Sat)
-const startDow = (gridStart.getDay() + 6) % 7;
-gridStart.setDate(gridStart.getDate() - startDow);
-
-type Cell = { date: Date; count: number; future: boolean };
-const days: Cell[] = [];
-const cursor = new Date(gridStart);
-// Generate until today is included, then pad to complete the last week
-while (cursor <= today || days.length % 7 !== 0) {
-  const key = localKey(cursor);
-  days.push({ date: new Date(cursor), count: dateMap.get(key) ?? 0, future: cursor > today });
-  cursor.setDate(cursor.getDate() + 1);
-}
-
-// Group into week columns (oldest → newest)
-const weeks: Cell[][] = [];
-for (let i = 0; i < days.length; i += 7) weeks.push(days.slice(i, i + 7));
-
-// Stats — computed on the original chronological order
 const totalRead = readPapers.length;
 
-const weekHasRead = weeks.map((w) => w.some((d) => d.count > 0));
-
-// Current streak (consecutive weeks up to and including this week)
-const todayWeekIdx = weeks.findLastIndex((w) =>
-  w.some((d) => d.date <= today && d.date >= new Date(today.getTime() - 6 * 86400000)),
-);
-let currentStreak = 0;
-for (let i = todayWeekIdx; i >= 0; i--) {
-  if (weekHasRead[i]) currentStreak++;
-  else break;
-}
-
-// Longest streak
-let longestStreak = 0;
-let run = 0;
-for (const has of weekHasRead) {
-  if (has) { run++; longestStreak = Math.max(longestStreak, run); }
-  else run = 0;
-}
-
-// Reverse so today is on the left and older dates go right
-weeks.reverse();
-
-// Month labels — recomputed on the reversed order (left = recent)
-const monthLabels: { label: string; col: number }[] = [];
-let lastMonth = -1;
-weeks.forEach((week, col) => {
-  const m = week[0].date.getMonth();
-  if (m !== lastMonth) {
-    monthLabels.push({
-      label: week[0].date.toLocaleDateString('en-GB', { month: 'short' }),
-      col,
-    });
-    lastMonth = m;
-  }
-});
-
-const CELL = 9;  // px — cell size
-const GAP  = 2;  // px — gap between cells
-const step  = CELL + GAP;
-const LABEL_W = 22; // px — width of day-label column
-
-function fmt(d: Date) {
-  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
-}
+const CELL    = 9;   // px
+const GAP     = 2;   // px
+const LABEL_W = 22;  // px
 ---
 
 <div class="activity-widget">
-  <!-- header row: title + stats -->
   <div class="widget-header">
     <span class="widget-title">Reading Activity</span>
     <span class="widget-stats">
       <span class="stat">{totalRead} read</span>
       <span class="sep">·</span>
-      <span class="stat">{currentStreak}w streak</span>
+      <span class="stat" id="ra-streak"></span>
       <span class="sep">·</span>
-      <span class="stat">best&nbsp;{longestStreak}w</span>
+      <span class="stat" id="ra-best"></span>
     </span>
   </div>
 
-  <!-- scrollable grid area -->
   <div class="grid-scroll">
-    <div class="grid-inner" style={`width: ${LABEL_W + weeks.length * step}px`}>
-
-      <!-- month labels -->
-      <div class="month-row" style={`padding-left: ${LABEL_W}px`}>
-        {monthLabels.map(({ label, col }) => (
-          <span
-            class="month-label"
-            style={`left: ${LABEL_W + col * step}px`}
-          >{label}</span>
-        ))}
-      </div>
-
-      <!-- day labels + cell grid -->
-      <div class="grid-body">
-        <div class="day-labels">
-          {['Mon','','Wed','','Fri','',''].map((d) => (
-            <span>{d}</span>
-          ))}
-        </div>
-
-        <div class="week-columns">
-          {weeks.map((week) => (
-            <div class="week-col">
-              {week.map((cell) => (
-                <div
-                  class:list={[
-                    'cell',
-                    cell.count > 0 && 'active',
-                    cell.count > 1 && 'multi',
-                    cell.future  && 'future',
-                  ]}
-                  title={
-                    cell.count > 0
-                      ? `${cell.count} paper${cell.count > 1 ? 's' : ''} · ${fmt(cell.date)}`
-                      : fmt(cell.date)
-                  }
-                  aria-label={
-                    cell.count > 0
-                      ? `${cell.count} paper${cell.count > 1 ? 's' : ''} read on ${fmt(cell.date)}`
-                      : `No papers on ${fmt(cell.date)}`
-                  }
-                />
-              ))}
-            </div>
-          ))}
-        </div>
-      </div>
-
-    </div>
+    <div class="grid-inner" id="ra-grid"></div>
   </div>
 
-  <!-- legend -->
   <div class="legend">
     <span class="legend-label">Less</span>
     <div class="cell legend-cell"></div>
@@ -169,7 +45,135 @@ function fmt(d: Date) {
   </div>
 </div>
 
-<style lang="scss" define:vars={{ cellPx: `${CELL}px`, gapPx: `${GAP}px`, labelW: `${LABEL_W}px` }}>
+<script define:vars={{ dateEntries, CELL, GAP, LABEL_W }}>
+(function () {
+  const WEEKS = 26;
+  const step  = CELL + GAP;
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  function localKey(d) {
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  }
+
+  function fmt(d) {
+    return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  // Build 26-week grid aligned to Monday
+  const gridStart = new Date(today);
+  gridStart.setDate(gridStart.getDate() - WEEKS * 7 + 1);
+  const startDow = (gridStart.getDay() + 6) % 7; // 0=Mon … 6=Sun
+  gridStart.setDate(gridStart.getDate() - startDow);
+
+  const days = [];
+  const cursor = new Date(gridStart);
+  while (cursor <= today || days.length % 7 !== 0) {
+    const key = localKey(cursor);
+    days.push({ date: new Date(cursor), count: dateEntries[key] ?? 0, future: cursor > today });
+    cursor.setDate(cursor.getDate() + 1);
+  }
+
+  // Group into week columns (oldest first)
+  const weeks = [];
+  for (let i = 0; i < days.length; i += 7) weeks.push(days.slice(i, i + 7));
+
+  const weekHasRead = weeks.map(w => w.some(d => d.count > 0));
+
+  const todayWeekIdx = weeks.findLastIndex(w =>
+    w.some(d => d.date <= today && d.date >= new Date(today.getTime() - 6 * 86400000))
+  );
+
+  let currentStreak = 0;
+  for (let i = todayWeekIdx; i >= 0; i--) {
+    if (weekHasRead[i]) currentStreak++;
+    else break;
+  }
+
+  let longestStreak = 0, run = 0;
+  for (const has of weekHasRead) {
+    if (has) { run++; longestStreak = Math.max(longestStreak, run); }
+    else run = 0;
+  }
+
+  document.getElementById('ra-streak').textContent = `${currentStreak}w streak`;
+  document.getElementById('ra-best').textContent    = `best ${longestStreak}w`;
+
+  // Reverse so today is on the left
+  weeks.reverse();
+
+  // Month labels — skip if within 3 columns of the previous label to prevent overlap
+  const monthLabels = [];
+  let lastMonth = -1;
+  let lastLabelCol = -99;
+  weeks.forEach((week, col) => {
+    const m = week[0].date.getMonth();
+    if (m !== lastMonth && col - lastLabelCol >= 3) {
+      monthLabels.push({ label: week[0].date.toLocaleDateString('en-GB', { month: 'short' }), col });
+      lastMonth = m;
+      lastLabelCol = col;
+    }
+  });
+
+  // Build DOM
+  const gridInner = document.getElementById('ra-grid');
+  gridInner.style.width = `${LABEL_W + weeks.length * step}px`;
+  gridInner.style.display = 'inline-block';
+  gridInner.style.paddingBottom = '2px';
+
+  const monthRow = document.createElement('div');
+  monthRow.className = 'month-row';
+  monthRow.style.paddingLeft = `${LABEL_W}px`;
+  monthLabels.forEach(({ label, col }) => {
+    const span = document.createElement('span');
+    span.className = 'month-label';
+    span.style.left = `${LABEL_W + col * step}px`;
+    span.textContent = label;
+    monthRow.appendChild(span);
+  });
+  gridInner.appendChild(monthRow);
+
+  const gridBody = document.createElement('div');
+  gridBody.className = 'grid-body';
+
+  const dayLabels = document.createElement('div');
+  dayLabels.className = 'day-labels';
+  ['Mon', '', 'Wed', '', 'Fri', '', ''].forEach(d => {
+    const span = document.createElement('span');
+    span.textContent = d;
+    dayLabels.appendChild(span);
+  });
+  gridBody.appendChild(dayLabels);
+
+  const weekColumns = document.createElement('div');
+  weekColumns.className = 'week-columns';
+  weeks.forEach(week => {
+    const col = document.createElement('div');
+    col.className = 'week-col';
+    week.forEach(cell => {
+      const div = document.createElement('div');
+      const cls = ['cell'];
+      if (cell.count > 0) cls.push('active');
+      if (cell.count > 1) cls.push('multi');
+      if (cell.future)    cls.push('future');
+      div.className = cls.join(' ');
+      div.title = cell.count > 0
+        ? `${cell.count} paper${cell.count > 1 ? 's' : ''} · ${fmt(cell.date)}`
+        : fmt(cell.date);
+      div.setAttribute('aria-label', cell.count > 0
+        ? `${cell.count} paper${cell.count > 1 ? 's' : ''} read on ${fmt(cell.date)}`
+        : `No papers on ${fmt(cell.date)}`);
+      col.appendChild(div);
+    });
+    weekColumns.appendChild(col);
+  });
+  gridBody.appendChild(weekColumns);
+  gridInner.appendChild(gridBody);
+})();
+</script>
+
+<style lang="scss" is:global define:vars={{ cellPx: `${CELL}px`, gapPx: `${GAP}px`, labelW: `${LABEL_W}px` }}>
   .activity-widget {
     margin-bottom: 3rem;
     padding: 1.1rem 1.25rem 1rem;
