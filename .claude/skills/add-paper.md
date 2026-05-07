@@ -12,7 +12,7 @@ url:      string        — canonical URL (arXiv, DOI, PMC, etc.)
 tags:     string[]     — lowercase hyphenated topic tags
 status:   "to-read" | "reading" | "read"
 dateRead: date          — optional; set when status is "read" (YYYY-MM-DD)
-tldr:     string        — optional one-sentence summary
+tldr:     string        — optional one-sentence summary; shown in the 3D Paper Topics tooltip (truncated to 100 chars)
 draft:    boolean       — optional; omit to publish
 ```
 
@@ -68,3 +68,14 @@ Only papers with a body get a detail page at /papers/[slug].
 3. Set `status` based on context ("add to reading list" → `to-read`; "I just finished" → `read` + `dateRead`).
 4. Write the file to `src/content/papers/<slug>.md`.
 5. Do not add body content unless the user provides notes.
+
+## Tooltip display (PaperMap)
+
+Every paper appears as a node in the 3D Paper Topics visualiser (`src/components/PaperMap.astro`). Hovering shows a `position: fixed` tooltip (viewport-relative, not clipped by the canvas) with:
+
+- **Title** — truncated to 60 chars
+- **Year · status**
+- **Tags** — joined with `, `
+- **tldr** — shown in italic if present, truncated to 100 chars
+
+The tooltip flips left/right based on which half of the viewport the cursor is in.

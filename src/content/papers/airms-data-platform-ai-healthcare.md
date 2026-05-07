@@ -4,6 +4,7 @@ authors: ["Pablo Guerrero", "Morten Ernebjerg", "Thomas Holst", "David Weese", "
 year: 2025
 url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC12629540/"
 tags: ["ehr", "clinical-ai", "data-platform", "healthcare", "federated-learning", "omop"]
-status: "to-read"
+status: "read"
+dateRead: 2026-05-07
 tldr: "Presents AIR·MS, a unified platform giving researchers access to clinical datasets from 12M+ patients at Mount Sinai Health System, with demos across disease phenotyping, cardiovascular risk discovery, and federated learning."
 ---
