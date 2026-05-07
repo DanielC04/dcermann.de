@@ -12,6 +12,7 @@ tags:
   - graph-theory
   - network-analysis
   - software
-status: reading
+status: read
+dateRead: 2026-05-02
 tldr: "Proposes BACH, a disk-based graph database storage engine that uses a graph-aware LSM-Tree to progressively transform graph layout from TP-friendly adjacency lists to AP-friendly CSR format across compaction levels. An elastic merge compaction policy handles skewed vertex degree distributions, achieving high throughput, data freshness, and snapshot isolation for hybrid transactional/analytical workloads."
 ---
