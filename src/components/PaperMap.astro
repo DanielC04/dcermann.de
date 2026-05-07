@@ -203,7 +203,7 @@ const baseUrl = import.meta.env.BASE_URL;
   // ── Hover tooltip ─────────────────────────────────────────────────────
   .pm-tooltip {
     display: none;
-    position: absolute;
+    position: fixed;
     max-width: 230px;
     padding: 0.5rem 0.65rem;
     background: color-mix(in srgb, var(--background-color) 94%, transparent);
@@ -436,8 +436,9 @@ const baseUrl = import.meta.env.BASE_URL;
 
         tooltip.style.display = 'block';
         var tipW = 234;
-        tooltip.style.left = (cx > rect.width / 2 ? cx - tipW - 8 : cx + 14) + 'px';
-        tooltip.style.top  = Math.max(4, Math.min(cy - 24, rect.height - 110)) + 'px';
+        var vx = e.clientX, vy = e.clientY;
+        tooltip.style.left = (vx > window.innerWidth / 2 ? vx - tipW - 8 : vx + 14) + 'px';
+        tooltip.style.top  = Math.max(8, Math.min(vy - 24, window.innerHeight - 160)) + 'px';
       } else {
         tooltip.style.display = 'none';
         if (!dragging) canvas.style.cursor = 'grab';
