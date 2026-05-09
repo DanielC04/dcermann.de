@@ -1,3 +1,7 @@
+---
+description: Add a paper to the reading list with typed frontmatter
+---
+
 # Add Paper to Reading List
 
 Add a paper to `src/content/papers/` as a Markdown file with typed frontmatter.
