@@ -11,9 +11,10 @@
     "status": "reading",
     "year": 2025,
     "tldr": "",
-    "x": -0.5043487640359624,
-    "y": 0.7619751788268485,
-    "z": -0.18418504999501695
+    "url": "https://www.aisafetybook.com/",
+    "x": -0.6144872911841729,
+    "y": 0.7448294832925648,
+    "z": -0.09502618649133551
   },
   {
     "title": "The AIR·MS Data Platform for Artificial Intelligence in Healthcare",
@@ -30,9 +31,10 @@
     "status": "read",
     "year": 2025,
     "tldr": "Presents AIR·MS, a unified platform giving researchers access to clinical datasets from 12M+ patients at Mount Sinai Health System, with demos across disease phenotyping, cardiovascular risk discovery, and federated learning.",
-    "x": -0.08968213056363039,
-    "y": -0.21211162029197422,
-    "z": 0.32457951904741217
+    "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12629540/",
+    "x": -0.08568763215181621,
+    "y": -0.46472976373431824,
+    "z": 0.34571586346528305
   },
   {
     "title": "The Assistant Axis: Situating and Stabilizing the Default Persona of Language Models",
@@ -47,9 +49,10 @@
     "status": "read",
     "year": 2026,
     "tldr": "Language models develop a dominant 'Assistant Axis' in persona space during post-training. Steering along it reinforces helpful behaviour; constraining activations to it stabilises models against persona drift and jailbreak-style persona attacks.",
-    "x": -0.5396238310881072,
-    "y": 0.8064135623815176,
-    "z": -0.2002500309000707
+    "url": "https://arxiv.org/abs/2601.10387",
+    "x": -0.5756918032645625,
+    "y": 0.7130427244056654,
+    "z": -0.1376708157343883
   },
   {
     "title": "Attention Is All You Need",
@@ -64,9 +67,10 @@
     "status": "to-read",
     "year": 2017,
     "tldr": "Replaces recurrence and convolutions entirely with multi-head self-attention, achieving state-of-the-art translation quality at a fraction of the training cost.",
-    "x": -0.11531476554851072,
-    "y": -0.31684950890894786,
-    "z": 0.20748627000004544
+    "url": "https://arxiv.org/abs/1706.03762",
+    "x": 0.034235293260971716,
+    "y": -0.7744398954682181,
+    "z": 0.4943086824683034
   },
   {
     "title": "BACH: Bridging Adjacency List and CSR Format Using LSM-Trees for HGTAP Workloads",
@@ -77,12 +81,13 @@
       "network-analysis",
       "software"
     ],
-    "status": "reading",
+    "status": "read",
     "year": 2025,
     "tldr": "Proposes BACH, a disk-based graph database storage engine that uses a graph-aware LSM-Tree to progressively transform graph layout from TP-friendly adjacency lists to AP-friendly CSR format across compaction levels. An elastic merge compaction policy handles skewed vertex degree distributions, achieving high throughput, data freshness, and snapshot isolation for hybrid transactional/analytical workloads.",
-    "x": 0.961811706523543,
-    "y": 0.28063296483681993,
-    "z": -0.09623334874289902
+    "url": "https://dl.acm.org/doi/10.14778/3718057.3718076",
+    "x": 0.8993134830766291,
+    "y": 0.5762910501593848,
+    "z": -0.0001141014415465269
   },
   {
     "title": "One-step microwave synthesis of carbon dots for highly sensitive and selective detection of copper ions in aqueous solution",
@@ -96,9 +101,10 @@
     "status": "to-read",
     "year": 2019,
     "tldr": "N/S co-doped carbon dots (2.61 nm) synthesised in one microwave step from citric acid, L-cysteine and dextrin achieve 22% quantum yield and selectively detect Cu²⁺ down to 20 nM in aqueous solution — well below EPA drinking water limits — with demonstrated applicability in tap water samples.",
-    "x": -0.11637765689319796,
-    "y": -0.25948520544557324,
-    "z": 1.025744735497521
+    "url": "https://pubs.rsc.org/en/content/articlelanding/2019/nj/c9nj02986e",
+    "x": 0.03794121069530729,
+    "y": -0.8442045421110114,
+    "z": -0.9901771823653976
   },
   {
     "title": "Carbon Dots for Carbon Dummies: The Quantum and The Molecular Questions Among Some Others",
@@ -112,9 +118,10 @@
     "status": "reading",
     "year": 2022,
     "tldr": "",
-    "x": -0.11451772778588576,
-    "y": -0.26314896703799245,
-    "z": 1.0291336322676294
+    "url": "https://doi.org/10.1002/chem.202200748",
+    "x": 0.04008433752795712,
+    "y": -0.8486845875108372,
+    "z": -0.992283321562154
   },
   {
     "title": "Community-based transmission networks of Staphylococcus aureus identified through hospital-based active surveillance and whole genome sequencing",
@@ -127,24 +134,10 @@
     "status": "to-read",
     "year": 2025,
     "tldr": "Uses whole genome sequencing of 8,567 S. aureus isolates combined with EHR demographic data to identify community-based MRSA transmission clusters, revealing distinct networks by social group, geography, and care setting — including substance use networks, Brooklyn nursing home clusters, and a neonatal/Orthodox Jewish community cluster.",
-    "x": -0.150317435865021,
-    "y": -0.7129445447689764,
-    "z": -0.566673589448762
-  },
-  {
-    "title": "Community-based transmission networks of Staphylococcus aureus identified through hospital-based active surveillance and whole genome sequencing",
-    "slug": "community-transmission-s-aureus",
-    "hasPage": false,
-    "tags": [
-      "epidemiology",
-      "biomedical"
-    ],
-    "status": "reading",
-    "year": 2026,
-    "tldr": "",
-    "x": -0.15317505958876626,
-    "y": -0.7139265043846569,
-    "z": -0.5662896701245759
+    "url": "https://www.ncbi.nlm.nih.gov/pmc/articles/PMC12791468/",
+    "x": -0.05766398371339446,
+    "y": -0.3655998763657253,
+    "z": 0.29552244625712576
   },
   {
     "title": "Concrete Problems in AI Safety",
@@ -158,9 +151,10 @@
     "status": "to-read",
     "year": 2016,
     "tldr": "",
-    "x": -0.5048431190166499,
-    "y": 0.7629723813111391,
-    "z": -0.18453353851260673
+    "url": "https://arxiv.org/abs/1606.06565",
+    "x": -0.5546971784202587,
+    "y": 0.6923902978009693,
+    "z": -0.13509795113173714
   },
   {
     "title": "A hybrid adjacency and time-based data structure for analysis of temporal networks",
@@ -174,9 +168,10 @@
     "status": "reading",
     "year": 2022,
     "tldr": "Proposes a hybrid data structure combining an adjacency dictionary with an interval tree to enable fast compound slicing of temporal networks by both node sets and time intervals — much faster than existing structures with only modest memory overhead.",
-    "x": 0.9618318597985744,
-    "y": 0.2691834742535137,
-    "z": -0.10854650440534219
+    "url": "https://link.springer.com/article/10.1007/s41109-022-00489-5",
+    "x": 0.9007082646952945,
+    "y": 0.5726633290268417,
+    "z": 0.005273294043839166
   },
   {
     "title": "NetworkX-Temporal: Building, manipulating, and analyzing dynamic graph structures",
@@ -191,9 +186,10 @@
     "status": "read",
     "year": 2025,
     "tldr": "NetworkX-Temporal is a Python library for working with temporal graphs, providing tools for building, manipulating, and analyzing dynamic graph structures.",
-    "x": 1.060376168911893,
-    "y": 0.3212301157354948,
-    "z": -0.11184013885983973
+    "url": "https://doi.org/10.1016/j.softx.2025.102277",
+    "x": 0.9855127088158272,
+    "y": 0.6579754999043492,
+    "z": -0.005561509518225843
   },
   {
     "title": "Strengthening nucleic acid biosecurity screening against generative protein design tools",
@@ -208,9 +204,28 @@
     "status": "read",
     "year": 2025,
     "tldr": "AI-powered protein design tools can generate variants of dangerous proteins that evade biosecurity screening at nucleic acid synthesis providers; the authors identify this gap and deploy patches to three major screening systems, substantially improving detection rates.",
-    "x": -0.3642692777133889,
-    "y": 0.4927652467262326,
-    "z": -0.08085459537773337
+    "url": "https://www.science.org/doi/10.1126/science.adu8578",
+    "x": -0.39362781350464493,
+    "y": 0.41057196143080416,
+    "z": -0.1015239673244138
+  },
+  {
+    "title": "Reason and Responsibility as a Path Toward Ethical AI for (Global) Public Health",
+    "slug": "reason-and-responsibility-as-a-path-toward-ethical-ai-for-global-public-health",
+    "hasPage": false,
+    "tags": [
+      "ai-safety",
+      "ethics",
+      "healthcare",
+      "epidemiology"
+    ],
+    "status": "read",
+    "year": 2025,
+    "tldr": "Framework for embedding ethical principles throughout the AI lifecycle to ensure accountable, responsible AI in public health.",
+    "url": "https://doi.org/10.1038/s41746-025-01707-x",
+    "x": -0.5563775604422722,
+    "y": 0.3379062646599778,
+    "z": 0.23964057841687605
   },
   {
     "title": "Scaling Laws for Neural Language Models",
@@ -225,9 +240,10 @@
     "status": "to-read",
     "year": 2020,
     "tldr": "Language model loss follows clean power laws in compute, data, and parameters, with compute being the binding constraint — implying you should train larger models for fewer steps than is common practice.",
-    "x": -0.1507240787619099,
-    "y": -0.4231201356149626,
-    "z": 0.08332867728660948
+    "url": "https://arxiv.org/abs/2001.08361",
+    "x": 0.014241715500077107,
+    "y": -0.8551705167074353,
+    "z": 0.607716678437846
   },
   {
     "title": "Survival analysis for sepsis patients: A machine learning approach to feature selection and predictive modeling",
@@ -241,8 +257,9 @@
     "status": "read",
     "year": 2025,
     "tldr": "Compares Cox proportional hazards against XGBoost, GBM, and random survival forests for predicting sepsis patient survival. XGBoost consistently outperforms Cox, especially with feature selection methods (AEN, SCAD, MCP, IG) that identify the most relevant clinical features.",
-    "x": -0.18082588837298025,
-    "y": -0.7935864376184825,
-    "z": -0.5708663677323706
+    "url": "https://www.nature.com/articles/s41598-025-20881-0",
+    "x": -0.07380375089094185,
+    "y": -0.5528414287830116,
+    "z": 0.4692774924799257
   }
 ]

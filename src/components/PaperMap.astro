@@ -58,6 +58,10 @@ const baseUrl = import.meta.env.BASE_URL;
     <span>shape&nbsp;= reading status</span>
     <span class="pm-key-sep">·</span>
     <span>drag to rotate</span>
+    <span class="pm-key-sep">·</span>
+    <span>scroll to zoom</span>
+    <span class="pm-key-sep">·</span>
+    <span>right-drag to pan</span>
   </p>
 
   <div class="pm-wrap">
@@ -217,10 +221,11 @@ const baseUrl = import.meta.env.BASE_URL;
   }
 </style>
 
-<!-- Load Three.js r128 from CDN, then initialise the 3D scene -->
+<!-- Load Three.js r128 + OrbitControls from CDN, then initialise the 3D scene -->
 <script is:inline>
 (function () {
   var THREE_CDN = 'https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js';
+  var ORBIT_CDN = 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js';
 
   // ── Topic color palette ────────────────────────────────────────────────
   // One color per research tag.  The same hue is used for all papers that
@@ -280,13 +285,34 @@ const baseUrl = import.meta.env.BASE_URL;
     var camera = new THREE.PerspectiveCamera(55, W / H, 0.1, 100);
     camera.position.z = 2.8;
 
-    // Everything lives in one group so drag-rotation affects papers + axes together.
+    // Everything lives in one group so the static initial tilt affects papers + axes together.
     var group = new THREE.Group();
     scene.add(group);
 
     // Start at a slight tilt so the 3D structure is immediately apparent.
+    // OrbitControls orbits the camera around this fixed group.
     group.rotation.x = 0.28;
     group.rotation.y = 0.55;
+
+    // ── OrbitControls — zoom, pan, rotate ─────────────────────────────────
+    var controls = new THREE.OrbitControls(camera, canvas);
+    controls.enableDamping  = true;
+    controls.dampingFactor  = 0.08;
+    controls.enableZoom     = true;
+    controls.zoomSpeed      = 0.8;
+    controls.minDistance    = 1.0;
+    controls.maxDistance    = 8.0;
+    controls.enablePan      = true;
+    controls.panSpeed       = 0.8;
+    controls.mouseButtons   = {
+      LEFT:   THREE.MOUSE.ROTATE,
+      MIDDLE: THREE.MOUSE.DOLLY,
+      RIGHT:  THREE.MOUSE.PAN,
+    };
+    controls.touches = {
+      ONE: THREE.TOUCH.ROTATE,
+      TWO: THREE.TOUCH.DOLLY_PAN,
+    };
 
     // ── Coordinate axes (PC1, PC2, PC3) ───────────────────────────────────
     // Each axis is a Three.js ArrowHelper spanning [-AXIS_LEN, +AXIS_LEN].
@@ -412,8 +438,8 @@ const baseUrl = import.meta.env.BASE_URL;
         var p     = hits[0].object.userData;
         var title = p.title.length > 60 ? p.title.slice(0, 60) + '…' : p.title;
         var status = STATUS_LABEL[p.status] || p.status;
-        // Show pointer cursor only when the paper has a detail page.
-        if (!dragging) canvas.style.cursor = p.hasPage ? 'pointer' : 'grab';
+        // All papers are navigable (notes page or external url).
+        canvas.style.cursor = 'pointer';
 
         var tldr = p.tldr
           ? '<span style="display:block;font-size:0.74rem;color:var(--text-color-dim);'
@@ -441,61 +467,41 @@ const baseUrl = import.meta.env.BASE_URL;
         tooltip.style.top  = Math.max(8, Math.min(vy - 24, window.innerHeight - 160)) + 'px';
       } else {
         tooltip.style.display = 'none';
-        if (!dragging) canvas.style.cursor = 'grab';
+        canvas.style.cursor = 'grab';
       }
     }
 
     canvas.addEventListener('mousemove', onMove);
     canvas.addEventListener('mouseleave', function () {
       tooltip.style.display = 'none';
-      if (!dragging) canvas.style.cursor = 'grab';
+      canvas.style.cursor = 'grab';
     });
 
-    // ── Drag-to-rotate with inertia ────────────────────────────────────────
-    // No auto-rotation — the scene is static until the user drags.
-    // On release, velocity decays to rest (exponential damping).
-    var velX = 0, velY = 0;
-    var dragging = false;
-    var lastMX = 0, lastMY = 0;
-    var dragDist = 0;  // total pixels moved since mousedown — used to distinguish clicks from drags
-
-    function startDrag(x, y) {
-      dragging = true;
-      dragDist = 0;
-      lastMX = x; lastMY = y;
-      velX = 0; velY = 0;
-    }
-    function moveDrag(x, y) {
-      if (!dragging) return;
-      var dx = x - lastMX, dy = y - lastMY;
-      dragDist += Math.abs(dx) + Math.abs(dy);
-      velY = dx * 0.007;
-      velX = dy * 0.007;
-      group.rotation.y += velY;
-      // Clamp X rotation to ±60° so the scene never flips upside-down.
-      group.rotation.x = Math.max(-Math.PI / 3,
-                          Math.min( Math.PI / 3, group.rotation.x + velX));
-      lastMX = x; lastMY = y;
-      canvas.style.cursor = 'grabbing';
-    }
-    function endDrag() { dragging = false; canvas.style.cursor = 'grab'; }
+    // ── Click detection — track drag distance separately from OrbitControls ──
+    // OrbitControls owns the rotation/pan/zoom interactions. We track mouse
+    // movement distance in parallel just to distinguish a click from a drag.
+    var dragDist = 0, _dragX = 0, _dragY = 0;
 
     canvas.addEventListener('mousedown', function (e) {
-      startDrag(e.clientX, e.clientY); e.preventDefault();
+      dragDist = 0; _dragX = e.clientX; _dragY = e.clientY;
     });
-    window.addEventListener('mousemove', function (e) { moveDrag(e.clientX, e.clientY); });
-    window.addEventListener('mouseup',   endDrag);
+    window.addEventListener('mousemove', function (e) {
+      dragDist += Math.abs(e.clientX - _dragX) + Math.abs(e.clientY - _dragY);
+      _dragX = e.clientX; _dragY = e.clientY;
+    });
 
+    // Touch: single-finger drag distance for tap detection.
     canvas.addEventListener('touchstart', function (e) {
-      if (e.touches[0]) startDrag(e.touches[0].clientX, e.touches[0].clientY);
-      e.preventDefault();
-    }, { passive: false });
+      if (e.touches[0]) { dragDist = 0; _dragX = e.touches[0].clientX; _dragY = e.touches[0].clientY; }
+    }, { passive: true });
     canvas.addEventListener('touchmove', function (e) {
-      if (e.touches[0]) moveDrag(e.touches[0].clientX, e.touches[0].clientY);
-      e.preventDefault();
-    }, { passive: false });
-    // ── Navigate to paper detail page ─────────────────────────────────────
-    // Only when the pointer/finger barely moved (dragDist < 6px).
+      if (e.touches[0]) {
+        dragDist += Math.abs(e.touches[0].clientX - _dragX) + Math.abs(e.touches[0].clientY - _dragY);
+        _dragX = e.touches[0].clientX; _dragY = e.touches[0].clientY;
+      }
+    }, { passive: true });
+
+    // ── Navigate to paper detail page or external URL ─────────────────────
     var BASE = canvas.dataset.base || '/';
 
     function tryNavigate(clientX, clientY) {
@@ -509,6 +515,8 @@ const baseUrl = import.meta.env.BASE_URL;
         var p = hits[0].object.userData;
         if (p.hasPage && p.slug) {
           window.location.href = BASE + '/papers/' + p.slug;
+        } else if (p.url) {
+          window.open(p.url, '_blank', 'noopener noreferrer');
         }
       }
     }
@@ -518,26 +526,19 @@ const baseUrl = import.meta.env.BASE_URL;
       tryNavigate(e.clientX, e.clientY);
     });
 
-    // Tap (mobile) — touchstart calls e.preventDefault() which suppresses the
-    // synthetic click event, so we handle navigation on touchend directly.
+    // Tap (mobile) — OrbitControls uses passive touch listeners; we handle
+    // navigation on touchend directly since synthetic click may not fire.
     canvas.addEventListener('touchend', function (e) {
       var t = e.changedTouches[0];
       if (t) tryNavigate(t.clientX, t.clientY);
-      endDrag();
     });
 
     // ── Render loop ────────────────────────────────────────────────────────
     (function animate() {
       requestAnimationFrame(animate);
 
-      // Decay drag velocity when not held — comes to rest naturally.
-      if (!dragging) {
-        velX *= 0.85;
-        velY *= 0.85;
-      }
-      group.rotation.y += velY;
-      group.rotation.x  = Math.max(-Math.PI / 3,
-                           Math.min( Math.PI / 3, group.rotation.x + velX));
+      // OrbitControls needs update each frame for damping to work.
+      controls.update();
 
       // Expanding shell animation for "reading" papers.
       // progress 0→1 over SHELL_PERIOD: scale grows, opacity fades to 0.
@@ -553,20 +554,26 @@ const baseUrl = import.meta.env.BASE_URL;
     })();
   }
 
-  // Inject the Three.js CDN bundle once, then initialise.
-  if (window.THREE) {
+  // Load Three.js then OrbitControls sequentially (OrbitControls extends THREE).
+  function loadScript(src, attr, cb) {
+    var el = document.querySelector('script[' + attr + ']');
+    if (el && el._pmLoaded) { cb(); return; }
+    if (el) { el.addEventListener('load', cb); return; }
+    var s = document.createElement('script');
+    s.setAttribute(attr, '1');
+    s.src = src;
+    s.onload = function () { s._pmLoaded = true; cb(); };
+    document.head.appendChild(s);
+  }
+
+  if (window.THREE && window.THREE.OrbitControls) {
     initScene();
+  } else if (window.THREE) {
+    loadScript(ORBIT_CDN, 'data-pm-orbit', initScene);
   } else {
-    var existing = document.querySelector('script[data-pm-three]');
-    if (!existing) {
-      var s = document.createElement('script');
-      s.setAttribute('data-pm-three', '1');
-      s.src = THREE_CDN;
-      s.onload = initScene;
-      document.head.appendChild(s);
-    } else {
-      existing.addEventListener('load', initScene);
-    }
+    loadScript(THREE_CDN, 'data-pm-three', function () {
+      loadScript(ORBIT_CDN, 'data-pm-orbit', initScene);
+    });
   }
 })();
 </script>

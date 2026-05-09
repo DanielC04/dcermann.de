@@ -42,6 +42,7 @@ const papers = files
       status:  data.status ?? 'to-read',
       year:    data.year   ?? 0,
       tldr:    data.tldr   ?? '',
+      url:     data.url    ?? '',
       draft:   data.draft  ?? false,
     };
   })
@@ -209,6 +210,7 @@ const result = papers.map((p, i) => ({
   status:  p.status,
   year:    p.year,
   tldr:    p.tldr,
+  url:     p.url,
   x: ((raw2d[i].x - xMin) / xRange) * 1.6 - 0.8,
   y: ((raw2d[i].y - yMin) / yRange) * 1.6 - 0.8,
   z: ((raw2d[i].z - zMin) / zRange) * 1.6 - 0.8,
