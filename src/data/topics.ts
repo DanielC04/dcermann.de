@@ -73,6 +73,7 @@ export const tagToTopic: Record<string, string | null> = {
   'chemistry':     'chemistry',
   'nanomaterials': 'chemistry',
   'quantum-dots':  'chemistry',
+  'nanoparticle-synthesis': 'chemistry',
 
   // Finance
   'finance':              'finance',
