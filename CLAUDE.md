@@ -21,8 +21,7 @@ No React. No SSR. No i18n framework. Interactive elements (theme toggle, skill b
 ```
 src/
   content/
-    config.ts              # Astro content collection schema (blog)
-    blog/                  # Markdown blog posts with typed frontmatter
+    config.ts              # Astro content collection schema (papers)
   data/                    # Typed TypeScript data — projects, skills, experience, site info
   layouts/
     BaseLayout.astro       # HTML shell: fonts, global SCSS, Header, Footer, scroll-reveal
@@ -30,17 +29,15 @@ src/
     Header.astro           # Sticky top nav, theme toggle, hamburger
     Footer.astro           # Social links
     MatrixRain.astro       # Canvas rain animation (about page banner)
-    BlogPostCard.astro     # Card used on / and /blog
     ProjectCard.astro      # Card used on /projects
     SkillCategory.astro    # Proficiency bars, animated on scroll
     TimelineItem.astro     # Single experience entry
     ContactForm.astro      # EmailJS contact form (vanilla JS)
-    ReadingList.astro      # Papers reading list with tag filter
+    ReadingList.astro      # Reading list: search, status/type/topic/tag filters, sort, URL state
+    ReadingItem.astro      # One reading-list entry (filter data on data-* attributes)
+    TopicMap.astro         # Topic network + interest bars on /papers; draggable, linked to ReadingList via DOM events
   pages/
-    index.astro            # Home: hero + latest posts
-    blog/
-      index.astro          # Blog post listing with tag filter
-      [slug].astro         # Dynamic post page (SSG via getStaticPaths)
+    index.astro            # Home: CV-style landing page
     papers/
       index.astro          # Reading list page
       [slug].astro         # Paper detail/notes page (only for papers with a body)
@@ -49,6 +46,7 @@ src/
   styles/
     global.scss            # Theme vars, base styles, section h2, scroll-reveal, prose
   utils/
+    topicLayout.ts         # d3-force layout shared by TopicMap's build pass and live drag
     url.ts                 # url() helper — prefixes paths with BASE_URL for GitHub Pages
 public/
   dc-logo.svg
@@ -68,17 +66,7 @@ All site content lives in `src/data/` as plain TypeScript files with exported ty
 | `projects.ts` | `projects: Project[]` | `/projects` |
 | `skills.ts` | `skillCategories: SkillCategory[]` | `/about` |
 | `experience.ts` | `experiences: ExperienceItem[]` | `/about` |
-
-Blog posts are Markdown files in `src/content/blog/` with frontmatter:
-```md
----
-title: "Post title"
-description: "One-sentence summary"
-pubDate: 2026-01-15
-tags: ["web", "astro"]
-draft: false          # omit or set false to publish
----
-```
+| `topics.ts` | `topics`, `tagToTopic`, `statusWeight` | `/papers` (TopicMap) |
 
 ## Theming
 
@@ -107,7 +95,7 @@ falls back to `/` for local dev.
 
 ```ts
 import { url } from '../utils/url';
-// <a href={url('/blog')}>  →  /dcermann.de/blog  (CI)  or  /blog  (local)
+// <a href={url('/papers')}>  →  /dcermann.de/papers  (CI)  or  /papers  (local)
 // <img src={url('/images/foo.jpg')}>
 ```
 

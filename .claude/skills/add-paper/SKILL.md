@@ -10,13 +10,14 @@ Add a paper to `src/content/papers/` as a Markdown file with typed frontmatter.
 
 ```
 title:    string        — full paper title (quoted)
+type:     "paper" | "book" — optional, default "paper"
 authors:  string[]     — list of author full names
 year:     number        — publication year
 url:      string        — canonical URL (arXiv, DOI, PMC, etc.)
 tags:     string[]     — lowercase hyphenated topic tags
 status:   "to-read" | "reading" | "read"
 dateRead: date          — optional; set when status is "read" (YYYY-MM-DD)
-tldr:     string        — optional one-sentence summary; shown in the 3D Paper Topics tooltip (truncated to 100 chars)
+tldr:     string        — optional one-sentence summary
 draft:    boolean       — optional; omit to publish
 ```
 
@@ -73,13 +74,9 @@ Only papers with a body get a detail page at /papers/[slug].
 4. Write the file to `src/content/papers/<slug>.md`.
 5. Do not add body content unless the user provides notes.
 
-## Tooltip display (PaperMap)
+## Topic map (TopicMap)
 
-Every paper appears as a node in the 3D Paper Topics visualiser (`src/components/PaperMap.astro`). Hovering shows a `position: fixed` tooltip (viewport-relative, not clipped by the canvas) with:
+Every paper appears as a dot in the "What I read about" map (`src/components/TopicMap.astro`), linked to the broad topics its tags map to in `src/data/topics.ts`.
 
-- **Title** — truncated to 60 chars
-- **Year · status**
-- **Tags** — joined with `, `
-- **tldr** — shown in italic if present, truncated to 100 chars
-
-The tooltip flips left/right based on which half of the viewport the cursor is in.
+- **New tag?** Add it to `tagToTopic` in `src/data/topics.ts` (or map it to `null` to ignore it). Unmapped tags print a `[TopicMap]` build warning and don't count toward any topic.
+- Hovering a dot shows the title, year · status, and its topics. `tldr` is not shown there.

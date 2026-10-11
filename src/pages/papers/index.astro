@@ -2,7 +2,7 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ReadingList from '../../components/ReadingList.astro';
 import ReadingActivity from '../../components/ReadingActivity.astro';
-import PaperMap from '../../components/PaperMap.astro';
+import TopicMap from '../../components/TopicMap.astro';
 ---
 
 <BaseLayout
@@ -19,16 +19,16 @@ import PaperMap from '../../components/PaperMap.astro';
           <div class="page-intro">
             <h2>Reading List</h2>
             <p class="page-desc">
-              Papers I'm reading or have read. Entries marked <span class="note-mark">✦</span> have reading notes.
+              Papers and books I'm reading or have read. Entries marked <span class="note-mark">✦</span> have reading notes.
             </p>
           </div>
           <ReadingList />
         </div>
 
-        <!-- Right: reading activity heatmap + Paper Topics 3-D map (sticky) -->
+        <!-- Right: reading activity heatmap + topic map -->
         <aside class="right-col">
           <ReadingActivity />
-          <PaperMap />
+          <TopicMap />
         </aside>
 
       </div>
@@ -41,6 +41,9 @@ import PaperMap from '../../components/PaperMap.astro';
     background-color: var(--background-color);
     min-height: calc(100vh - 60px);
     padding-bottom: 5rem;
+    // Global `section { overflow: hidden }` would turn this into a scroll
+    // container and break the sticky topic map; `clip` clips without that.
+    overflow: clip;
   }
 
   // ── Two-column layout ─────────────────────────────────────────────────
@@ -88,13 +91,12 @@ import PaperMap from '../../components/PaperMap.astro';
     font-size: 0.8em;
   }
 
-  // ── Right column — sticky Paper Topics ───────────────────────────────
+  // ── Right column — activity scrolls away, the topic map (TopicMap) sticks.
+  // Stretch to the full row height so the sticky map has room to travel.
   .right-col {
-    position: sticky;
-    top: 80px;
+    align-self: stretch;
 
     @media (max-width: 768px) {
-      position: static;
       // On mobile the aside comes after the list; bump it up so it appears
       // first in reading order (grid-row reorder)
       order: -1;

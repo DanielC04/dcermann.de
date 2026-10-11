@@ -1,192 +1,135 @@
 ---
+/**
+ * Reading list with search, status / type / topic / tag filters and sorting.
+ *
+ * Everything is rendered at build time and fully visible without JS; the
+ * client script hides non-matching entries, collapses long sections, keeps
+ * the filters in the URL (?q=&status=&type=&topic=&tag=&sort=), and talks to
+ * TopicMap:
+ *   dispatched  readinglist:change  { topic, visible: slugs[] | null }
+ *   dispatched  readinglist:hover   { slug | null }
+ *   listened    topicmap:select     { topic }   — toggles the topic filter
+ *   listened    topicmap:ready                  — resend readinglist:change
+ */
 import { getCollection } from 'astro:content';
-import { url } from '../utils/url';
+import ReadingItem from './ReadingItem.astro';
+import { topics, topicIdsForTags } from '../data/topics';
 
 const allPapers = await getCollection('papers', ({ data }) => !data.draft);
 
-// A paper has a detail page if it has a non-empty body
-function hasBody(paper: (typeof allPapers)[number]): boolean {
-  return (paper.body ?? '').trim().length > 0;
-}
+const byYear = (a: (typeof allPapers)[number], b: (typeof allPapers)[number]) => b.data.year - a.data.year;
 
-const current = allPapers
-  .filter((p) => p.data.status === 'reading')
-  .sort((a, b) => b.data.year - a.data.year);
-
-const queue = allPapers
-  .filter((p) => p.data.status === 'to-read')
-  .sort((a, b) => b.data.year - a.data.year);
-
+const current = allPapers.filter((p) => p.data.status === 'reading').sort(byYear);
+const queue = allPapers.filter((p) => p.data.status === 'to-read').sort(byYear);
 const read = allPapers
   .filter((p) => p.data.status === 'read')
-  .sort((a, b) => {
-    const da = a.data.dateRead?.getTime() ?? 0;
-    const db = b.data.dateRead?.getTime() ?? 0;
-    return db - da;
-  });
+  .sort((a, b) => (b.data.dateRead?.getTime() ?? 0) - (a.data.dateRead?.getTime() ?? 0));
 
-const allTags = [...new Set(allPapers.flatMap((p) => p.data.tags))].sort();
+// Finished entries grouped by the year I read them, newest first.
+const readGroups: { label: string; papers: typeof read }[] = [];
+for (const p of read) {
+  const label = p.data.dateRead ? String(p.data.dateRead.getUTCFullYear()) : 'Undated';
+  const group = readGroups.at(-1);
+  if (group?.label === label) group.papers.push(p);
+  else readGroups.push({ label, papers: [p] });
+}
+
+const usedTopics = new Set(allPapers.flatMap((p) => topicIdsForTags(p.data.tags)));
+const topicChips = topics.filter((t) => usedTopics.has(t.id));
+
+const sections = [
+  { id: 'reading', title: 'Currently Reading', count: current.length },
+  { id: 'to-read', title: 'Reading Queue',     count: queue.length },
+  { id: 'read',    title: 'Read',              count: read.length },
+];
 ---
 
-<div class="reading-list">
-  <!-- Tag filter -->
-  {allTags.length > 0 && (
-    <div class="tag-bar" role="list" aria-label="Filter by tag">
-      {allTags.map((tag) => (
-        <button class="tag-btn" data-tag={tag} type="button" role="listitem">
-          {tag}
+<div class="reading-list" id="rl">
+  <!-- Filters: shown only once the script has taken over -->
+  <div class="rl-toolbar" hidden>
+    <div class="rl-search">
+      <svg class="rl-search-icon" width="14" height="14" viewBox="0 0 16 16" aria-hidden="true">
+        <circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" stroke-width="1.6" />
+        <path d="M11 11l3.5 3.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+      </svg>
+      <input
+        type="search"
+        id="rl-q"
+        placeholder="Search titles, authors, summaries, tags…"
+        aria-label="Search the reading list"
+        autocomplete="off"
+      />
+      <kbd class="rl-kbd" aria-hidden="true">/</kbd>
+    </div>
+
+    <div class="rl-row">
+      <div class="rl-seg" role="group" aria-label="Status">
+        <button type="button" data-filter="status" data-value="">All <span class="n"></span></button>
+        <button type="button" data-filter="status" data-value="reading">Reading <span class="n"></span></button>
+        <button type="button" data-filter="status" data-value="to-read">To read <span class="n"></span></button>
+        <button type="button" data-filter="status" data-value="read">Read <span class="n"></span></button>
+      </div>
+
+      <div class="rl-seg" role="group" aria-label="Type">
+        <button type="button" data-filter="type" data-value="">All</button>
+        <button type="button" data-filter="type" data-value="paper">Papers <span class="n"></span></button>
+        <button type="button" data-filter="type" data-value="book">Books <span class="n"></span></button>
+      </div>
+
+      <label class="rl-sort">
+        <span>Sort</span>
+        <select id="rl-sort">
+          <option value="">Recently read</option>
+          <option value="year">Publication year</option>
+          <option value="title">Title A–Z</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="rl-topics" role="group" aria-label="Topic">
+      {topicChips.map((t) => (
+        <button type="button" class="chip" data-filter="topic" data-value={t.id}>
+          {t.label} <span class="n"></span>
         </button>
       ))}
     </div>
+
+    <div class="rl-summary" aria-live="polite">
+      <span id="rl-count"></span>
+      <button type="button" class="chip chip-tag" id="rl-tag" hidden></button>
+      <button type="button" class="rl-clear" id="rl-clear" hidden>Clear filters</button>
+    </div>
+  </div>
+
+  {sections.map((s) =>
+    s.count > 0 && (
+      <section class="list-section" data-section={s.id} aria-labelledby={`rl-h-${s.id}`}>
+        <h3 class="list-heading" id={`rl-h-${s.id}`}>
+          {s.title} <span class="list-count">{s.count}</span>
+        </h3>
+        <ol class="paper-list">
+          {s.id === 'reading' && current.map((p) => <ReadingItem paper={p} />)}
+          {s.id === 'to-read' && queue.map((p) => <ReadingItem paper={p} />)}
+          {s.id === 'read' && readGroups.map((g) => (
+            <>
+              <li class="group-head" aria-hidden="true">
+                <span>{g.label}</span>
+                <span class="group-count">{g.papers.length}</span>
+              </li>
+              {g.papers.map((p) => <ReadingItem paper={p} />)}
+            </>
+          ))}
+        </ol>
+        <button type="button" class="show-more" hidden></button>
+      </section>
+    ),
   )}
 
-  <!-- Currently reading -->
-  {current.length > 0 && (
-    <section class="list-section" aria-label="Currently reading">
-      <h3 class="list-heading">Currently Reading</h3>
-      <ol class="paper-list" role="list">
-        {current.map((paper) => (
-          <li
-            class="paper-item"
-            data-tags={JSON.stringify(paper.data.tags)}
-          >
-            <div class="paper-main">
-              <a
-                class="paper-title"
-                href={paper.data.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {paper.data.title}
-              </a>
-              <span class="paper-meta">
-                {paper.data.authors.slice(0, 3).join(', ')}
-                {paper.data.authors.length > 3 && ' et al.'}
-                {' · '}
-                {paper.data.year}
-              </span>
-              <span class="reading-indicator" aria-label="Currently reading">↻</span>
-            </div>
-            {paper.data.tldr && (
-              <p class="paper-tldr">{paper.data.tldr}</p>
-            )}
-            {paper.data.tags.length > 0 && (
-              <ul class="inline-tags" role="list">
-                {paper.data.tags.map((t) => (
-                  <li class="tag">{t}</li>
-                ))}
-              </ul>
-            )}
-          </li>
-        ))}
-      </ol>
-    </section>
-  )}
+  <p class="empty" id="rl-empty" hidden>
+    Nothing matches these filters. <button type="button" class="rl-clear" data-clear>Clear filters</button>
+  </p>
 
-  <!-- Reading queue -->
-  {queue.length > 0 && (
-    <section class="list-section" aria-label="Reading queue">
-      <h3 class="list-heading">Reading Queue</h3>
-      <ol class="paper-list" role="list">
-        {queue.map((paper) => (
-          <li
-            class="paper-item"
-            data-tags={JSON.stringify(paper.data.tags)}
-          >
-            <div class="paper-main">
-              <a
-                class="paper-title"
-                href={paper.data.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {paper.data.title}
-              </a>
-              <span class="paper-meta">
-                {paper.data.authors.slice(0, 3).join(', ')}
-                {paper.data.authors.length > 3 && ' et al.'}
-                {' · '}
-                {paper.data.year}
-              </span>
-            </div>
-            {paper.data.tags.length > 0 && (
-              <ul class="inline-tags" role="list">
-                {paper.data.tags.map((t) => (
-                  <li class="tag">{t}</li>
-                ))}
-              </ul>
-            )}
-          </li>
-        ))}
-      </ol>
-    </section>
-  )}
-
-  <!-- Read -->
-  {read.length > 0 && (
-    <section class="list-section" aria-label="Papers read">
-      <h3 class="list-heading">Read</h3>
-      <ol class="paper-list" role="list">
-        {read.map((paper) => (
-          <li
-            class="paper-item"
-            data-tags={JSON.stringify(paper.data.tags)}
-          >
-            <div class="paper-main">
-              {hasBody(paper) ? (
-                <a class="paper-title" href={url(`/papers/${paper.slug}`)}>
-                  {paper.data.title}
-                </a>
-              ) : (
-                <a
-                  class="paper-title"
-                  href={paper.data.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {paper.data.title}
-                </a>
-              )}
-              <span class="paper-meta">
-                {paper.data.authors.slice(0, 3).join(', ')}
-                {paper.data.authors.length > 3 && ' et al.'}
-                {' · '}
-                {paper.data.year}
-                {paper.data.dateRead && (
-                  <>
-                    {' · read '}
-                    <time datetime={paper.data.dateRead.toISOString()}>
-                      {paper.data.dateRead.toLocaleDateString('en-GB', {
-                        month: 'short',
-                        year: 'numeric',
-                      })}
-                    </time>
-                  </>
-                )}
-              </span>
-              {hasBody(paper) && (
-                <span class="has-notes" title="Has reading notes">✦</span>
-              )}
-            </div>
-            {paper.data.tldr && (
-              <p class="paper-tldr">{paper.data.tldr}</p>
-            )}
-            {paper.data.tags.length > 0 && (
-              <ul class="inline-tags" role="list">
-                {paper.data.tags.map((t) => (
-                  <li class="tag">{t}</li>
-                ))}
-              </ul>
-            )}
-          </li>
-        ))}
-      </ol>
-    </section>
-  )}
-
-  {current.length === 0 && queue.length === 0 && read.length === 0 && (
-    <p class="empty">No papers yet.</p>
-  )}
+  {allPapers.length === 0 && <p class="empty">Nothing here yet.</p>}
 </div>
 
 <style lang="scss">
@@ -194,40 +137,187 @@ const allTags = [...new Set(allPapers.flatMap((p) => p.data.tags))].sort();
     max-width: 72ch;
   }
 
-  // ── Tag filter bar ─────────────────────────────────��──────────────────
-  .tag-bar {
+  // ── Toolbar ───────────────────────────────────────────────────────────
+  .rl-toolbar {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    margin-bottom: 2.5rem;
+    flex-direction: column;
+    gap: 0.7rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid color-mix(in srgb, var(--text-color-dim) 20%, transparent);
+
+    &[hidden] { display: none; }
   }
 
-  .tag-btn {
-    background: none;
-    border: 1px solid color-mix(in srgb, var(--text-color-dim) 40%, transparent);
+  .rl-search {
+    position: relative;
+    display: flex;
+    align-items: center;
+
+    input {
+      width: 100%;
+      padding: 0.55rem 2.2rem 0.55rem 2.1rem;
+      font: inherit;
+      font-size: 0.9rem;
+      color: var(--text-color);
+      background: var(--background-color-1);
+      border: 1px solid color-mix(in srgb, var(--text-color-dim) 30%, transparent);
+      border-radius: 8px;
+      outline: none;
+      transition: border-color 0.15s;
+
+      &::placeholder { color: var(--text-color-dim); }
+      &:focus { border-color: var(--contrast-color); }
+    }
+  }
+
+  .rl-search-icon {
+    position: absolute;
+    left: 0.75rem;
     color: var(--text-color-dim);
+    pointer-events: none;
+  }
+
+  .rl-kbd {
+    position: absolute;
+    right: 0.6rem;
+    font-family: 'Space Mono', 'Courier New', monospace;
+    font-size: 0.7rem;
+    color: var(--text-color-dim);
+    border: 1px solid color-mix(in srgb, var(--text-color-dim) 35%, transparent);
+    border-radius: 4px;
+    padding: 0 0.35em;
+    pointer-events: none;
+  }
+
+  .rl-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem 1rem;
+  }
+
+  // Segmented control
+  .rl-seg {
+    display: inline-flex;
+    border: 1px solid color-mix(in srgb, var(--text-color-dim) 30%, transparent);
+    border-radius: 7px;
+    overflow: hidden;
+
+    button {
+      font: inherit;
+      font-size: 0.78rem;
+      padding: 0.3rem 0.65rem;
+      color: var(--text-color-dim);
+      background: none;
+      border: 0;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+
+      & + button { border-left: 1px solid color-mix(in srgb, var(--text-color-dim) 30%, transparent); }
+
+      &:hover { color: var(--contrast-color); }
+
+      &[aria-pressed='true'] {
+        background: var(--contrast-color);
+        color: var(--background-color);
+      }
+
+      &:disabled { opacity: 0.4; cursor: default; }
+    }
+  }
+
+  .n {
+    font-family: 'Space Mono', 'Courier New', monospace;
+    font-size: 0.68rem;
+    opacity: 0.75;
+  }
+
+  .rl-sort {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    margin-left: auto;
+    font-size: 0.78rem;
+    color: var(--text-color-dim);
+
+    select {
+      font: inherit;
+      color: var(--text-color);
+      background: var(--background-color-1);
+      border: 1px solid color-mix(in srgb, var(--text-color-dim) 30%, transparent);
+      border-radius: 6px;
+      padding: 0.25rem 0.4rem;
+    }
+  }
+
+  .rl-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .chip {
+    font: inherit;
+    font-size: 0.78rem;
+    color: var(--text-color-dim);
+    background: none;
+    border: 1px solid color-mix(in srgb, var(--text-color-dim) 35%, transparent);
     border-radius: 999px;
     padding: 0.2em 0.75em;
-    font-size: 0.8rem;
     cursor: pointer;
-    font-family: 'Raleway', sans-serif;
-    transition: border-color 0.15s, color 0.15s, background 0.15s;
+    transition: border-color 0.15s, color 0.15s, background 0.15s, opacity 0.15s;
 
     &:hover {
       border-color: var(--contrast-color);
       color: var(--contrast-color);
     }
 
-    &.active {
+    &[aria-pressed='true'] {
       background: var(--contrast-color);
       border-color: var(--contrast-color);
-      color: #fff;
+      color: var(--background-color);
     }
+
+    &.empty-facet { opacity: 0.45; }
   }
 
-  // ── Section headings ─────────────────────────────────────────────────
+  .rl-summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 0.75rem;
+    min-height: 1.5rem;
+    font-size: 0.8rem;
+    color: var(--text-color-dim);
+  }
+
+  .chip-tag {
+    background: var(--contrast-color);
+    border-color: var(--contrast-color);
+    color: var(--background-color);
+    font-size: 0.72rem;
+
+    &:hover { color: var(--background-color); opacity: 0.85; }
+  }
+
+  .rl-clear {
+    font: inherit;
+    font-size: 0.8rem;
+    color: var(--contrast-color);
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  // ── Sections ──────────────────────────────────────────────────────────
   .list-section {
-    margin-bottom: 3rem;
+    margin-bottom: 2.75rem;
+
+    &[hidden] { display: none; }
   }
 
   .list-heading {
@@ -237,122 +327,305 @@ const allTags = [...new Set(allPapers.flatMap((p) => p.data.tags))].sort();
     text-transform: uppercase;
     letter-spacing: 2px;
     color: var(--contrast-color);
-    margin: 0 0 1.25rem;
+    margin: 0 0 0.75rem;
   }
 
-  // ── Paper list ────────────────────────────────────────────────────────
+  .list-count {
+    font-family: 'Space Mono', 'Courier New', monospace;
+    font-weight: 400;
+    letter-spacing: 0;
+    color: var(--text-color-dim);
+    margin-left: 0.3rem;
+  }
+
   .paper-list {
     list-style: none;
     margin: 0;
     padding: 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--text-color-dim) 20%, transparent);
   }
 
-  .paper-item {
-    padding: 1rem 0;
-    border-top: 1px solid color-mix(in srgb, var(--text-color-dim) 20%, transparent);
-
-    &:last-child {
-      border-bottom: 1px solid color-mix(in srgb, var(--text-color-dim) 20%, transparent);
-    }
-
-    &.hidden {
-      display: none;
-    }
-  }
-
-  .paper-main {
+  .group-head {
     display: flex;
-    flex-wrap: wrap;
     align-items: baseline;
-    gap: 0.5rem 0.75rem;
-  }
-
-  .paper-title {
-    font-size: 1rem;
-    font-weight: 600;
+    gap: 0.5rem;
+    padding: 1.1rem 0 0.35rem;
+    font-family: 'Space Mono', 'Courier New', monospace;
+    font-size: 0.78rem;
+    font-weight: 700;
     color: var(--text-color);
-    text-decoration: none;
-    font-family: 'Space Grotesk', sans-serif;
 
-    &:hover {
-      color: var(--contrast-color);
-      text-decoration: none;
-    }
+    &:first-child { padding-top: 0.2rem; }
+    &[hidden] { display: none; }
   }
 
-  .paper-meta {
+  .group-count {
+    font-weight: 400;
+    color: var(--text-color-dim);
+  }
+
+  .show-more {
+    margin-top: 0.75rem;
+    font: inherit;
     font-size: 0.82rem;
-    color: var(--text-color-dim);
-    flex-shrink: 0;
-  }
-
-  .has-notes {
-    font-size: 0.75rem;
+    font-weight: 600;
     color: var(--contrast-color);
-    flex-shrink: 0;
-  }
+    background: none;
+    border: 1px dashed color-mix(in srgb, var(--contrast-color) 50%, transparent);
+    border-radius: 6px;
+    padding: 0.4rem 0.9rem;
+    cursor: pointer;
+    width: 100%;
 
-  .reading-indicator {
-    font-size: 0.8rem;
-    color: var(--contrast-color);
-    flex-shrink: 0;
-  }
-
-  .paper-tldr {
-    margin: 0.4rem 0 0.5rem;
-    font-size: 0.9rem;
-    color: var(--text-color-dim);
-    line-height: 1.6;
-    font-style: italic;
-  }
-
-  // ── Inline tags ───────────────────────────────────────────────────────
-  .inline-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.35rem;
-    list-style: none;
-    margin: 0.4rem 0 0;
-    padding: 0;
-  }
-
-  .tag {
-    font-size: 0.72rem;
-    color: var(--text-color-dim);
-    border: 1px solid color-mix(in srgb, var(--text-color-dim) 35%, transparent);
-    border-radius: 999px;
-    padding: 0.1em 0.6em;
+    &:hover { background: color-mix(in srgb, var(--contrast-color) 8%, transparent); }
+    &[hidden] { display: none; }
   }
 
   .empty {
     color: var(--text-color-dim);
+    font-size: 0.9rem;
+
+    &[hidden] { display: none; }
   }
 </style>
 
 <script>
-  const tagBtns = document.querySelectorAll<HTMLButtonElement>('.tag-btn');
-  const items   = document.querySelectorAll<HTMLElement>('.paper-item');
+  type Section = 'reading' | 'to-read' | 'read';
+  interface State {
+    q: string;
+    status: string;   // '' = all
+    type: string;     // '' = all
+    topic: string;    // '' = all
+    tag: string;      // '' = all
+    sort: string;     // '' = recently read
+  }
 
-  let active: string | null = null;
+  // Collapsed sections show this many entries until expanded or filtered.
+  const LIMIT = 8;
+  const KEYS: (keyof State)[] = ['q', 'status', 'type', 'topic', 'tag', 'sort'];
 
-  tagBtns.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const tag = btn.dataset.tag!;
+  const root = document.getElementById('rl');
 
-      if (active === tag) {
-        active = null;
-        tagBtns.forEach((b) => b.classList.remove('active'));
-        items.forEach((item) => item.classList.remove('hidden'));
-      } else {
-        active = tag;
-        tagBtns.forEach((b) =>
-          b.classList.toggle('active', b.dataset.tag === tag),
-        );
-        items.forEach((item) => {
-          const tags: string[] = JSON.parse(item.dataset.tags ?? '[]');
-          item.classList.toggle('hidden', !tags.includes(tag));
-        });
+  if (root) {
+    const toolbar = root.querySelector<HTMLElement>('.rl-toolbar')!;
+    const input = root.querySelector<HTMLInputElement>('#rl-q')!;
+    const sortSel = root.querySelector<HTMLSelectElement>('#rl-sort')!;
+    const countEl = root.querySelector<HTMLElement>('#rl-count')!;
+    const tagChip = root.querySelector<HTMLButtonElement>('#rl-tag')!;
+    const clearBtn = root.querySelector<HTMLButtonElement>('#rl-clear')!;
+    const emptyEl = root.querySelector<HTMLElement>('#rl-empty')!;
+    const facetBtns = [...root.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+    const items = [...root.querySelectorAll<HTMLLIElement>('.paper-item')];
+    const sections = [...root.querySelectorAll<HTMLElement>('[data-section]')].map((el) => {
+      const list = el.querySelector('ol')!;
+      return {
+        el,
+        id: el.dataset.section as Section,
+        list,
+        more: el.querySelector<HTMLButtonElement>('.show-more')!,
+        original: [...list.children] as HTMLLIElement[],   // build order incl. year heads
+        expanded: false,
+      };
+    });
+
+    toolbar.hidden = false;
+
+    // ── State ↔ URL ────────────────────────────────────────────────────────
+    const params = new URLSearchParams(location.search);
+    const state: State = Object.fromEntries(KEYS.map((k) => [k, params.get(k) ?? ''])) as State;
+    input.value = state.q;
+    sortSel.value = state.sort;
+
+    function writeUrl() {
+      const p = new URLSearchParams();
+      KEYS.forEach((k) => state[k] && p.set(k, state[k]));
+      const qs = p.toString();
+      history.replaceState(null, '', qs ? `?${qs}` : location.pathname);
+    }
+
+    const isFiltered = () => !!(state.q || state.status || state.type || state.topic || state.tag);
+
+    // ── Matching ───────────────────────────────────────────────────────────
+    function matches(li: HTMLElement, ignore?: keyof State) {
+      const d = li.dataset;
+      if (ignore !== 'status' && state.status && d.status !== state.status) return false;
+      if (ignore !== 'type' && state.type && d.type !== state.type) return false;
+      if (ignore !== 'topic' && state.topic && !d.topics!.split(' ').includes(state.topic)) return false;
+      if (ignore !== 'tag' && state.tag && !d.tags!.split(' ').includes(state.tag)) return false;
+      if (ignore !== 'q' && state.q) {
+        const words = state.q.toLowerCase().split(/\s+/).filter(Boolean);
+        if (!words.every((w) => d.search!.includes(w))) return false;
+      }
+      return true;
+    }
+
+    const sorters: Record<string, (a: HTMLElement, b: HTMLElement) => number> = {
+      year: (a, b) => Number(b.dataset.year) - Number(a.dataset.year) || a.dataset.title!.localeCompare(b.dataset.title!),
+      title: (a, b) => a.dataset.title!.localeCompare(b.dataset.title!),
+    };
+
+    // ── Render ─────────────────────────────────────────────────────────────
+    function apply() {
+      const visible = new Set<string>();
+      const filtered = isFiltered();
+
+      for (const s of sections) {
+        // Order: build order (with year heads) for "recently read", else sorted flat.
+        const sorter = sorters[state.sort];
+        const ordered = sorter
+          ? s.original.filter((li) => li.classList.contains('paper-item')).sort(sorter)
+          : s.original;
+        s.list.replaceChildren(...(sorter ? [...ordered, ...s.original.filter((li) => li.classList.contains('group-head'))] : ordered));
+
+        const sectionHidden = !!state.status && state.status !== s.id;
+        let shown = 0;
+        let matched = 0;
+        let head: HTMLLIElement | null = null;
+        let headHasItems = false;
+
+        const closeHead = () => { if (head) head.hidden = !headHasItems; };
+
+        for (const li of [...s.list.children] as HTMLLIElement[]) {
+          if (li.classList.contains('group-head')) {
+            closeHead();
+            head = sorter ? null : li;
+            headHasItems = false;
+            li.hidden = true;
+            continue;
+          }
+          const ok = !sectionHidden && matches(li);
+          if (ok) {
+            matched++;
+            visible.add(li.dataset.slug!);
+          }
+          const within = filtered || s.expanded || shown < LIMIT;
+          li.hidden = !(ok && within);
+          if (!li.hidden) {
+            shown++;
+            headHasItems = true;
+          }
+        }
+        closeHead();
+
+        s.el.hidden = sectionHidden || matched === 0;
+        s.more.hidden = matched <= shown;
+        s.more.textContent = `Show all ${matched} (${matched - shown} more)`;
+        s.el.querySelector('.list-count')!.textContent = filtered ? `${matched} of ${s.original.filter((li) => li.classList.contains('paper-item')).length}` : String(matched);
+      }
+
+      // Facet counts: each facet counts matches under every *other* filter.
+      for (const btn of facetBtns) {
+        const key = btn.dataset.filter as keyof State;
+        const value = btn.dataset.value!;
+        const n = items.filter((li) => {
+          if (!matches(li, key)) return false;
+          if (!value) return true;
+          if (key === 'topic') return li.dataset.topics!.split(' ').includes(value);
+          return li.dataset[key] === value;
+        }).length;
+        const nEl = btn.querySelector('.n');
+        if (nEl) nEl.textContent = String(n);
+        btn.setAttribute('aria-pressed', String(state[key] === value));
+        btn.classList.toggle('empty-facet', n === 0 && state[key] !== value);
+      }
+
+      // Inline tag buttons mirror the tag filter.
+      root!.querySelectorAll<HTMLButtonElement>('.tag').forEach((b) => b.classList.toggle('active', b.dataset.tag === state.tag));
+      tagChip.hidden = !state.tag;
+      tagChip.textContent = `#${state.tag} ✕`;
+      tagChip.title = 'Remove tag filter';
+
+      countEl.textContent = filtered
+        ? `${visible.size} of ${items.length} ${items.length === 1 ? 'entry' : 'entries'}`
+        : `${items.length} ${items.length === 1 ? 'entry' : 'entries'}`;
+      clearBtn.hidden = !filtered;
+      emptyEl.hidden = !filtered || visible.size > 0;
+
+      writeUrl();
+      lastVisible = filtered ? [...visible] : null;
+      announce();
+    }
+
+    let lastVisible: string[] | null = null;
+    const announce = () => document.dispatchEvent(new CustomEvent('readinglist:change', {
+      detail: { topic: state.topic || null, visible: lastVisible },
+    }));
+    // The map may initialise after us; resend the state once it's listening.
+    document.addEventListener('topicmap:ready', announce);
+
+    function set(patch: Partial<State>) {
+      Object.assign(state, patch);
+      apply();
+    }
+
+    function clearAll() {
+      input.value = '';
+      set({ q: '', status: '', type: '', topic: '', tag: '' });
+    }
+
+    // ── Wiring ─────────────────────────────────────────────────────────────
+    let typing: number | undefined;
+    input.addEventListener('input', () => {
+      clearTimeout(typing);
+      typing = window.setTimeout(() => set({ q: input.value.trim() }), 120);
+    });
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        input.value = '';
+        set({ q: '' });
+        input.blur();
       }
     });
-  });
+
+    // "/" jumps to search, unless already typing somewhere.
+    document.addEventListener('keydown', (e) => {
+      const t = e.target as HTMLElement;
+      if (e.key !== '/' || e.metaKey || e.ctrlKey || e.altKey) return;
+      if (t.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(t.tagName)) return;
+      e.preventDefault();
+      input.focus();
+    });
+
+    sortSel.addEventListener('change', () => set({ sort: sortSel.value }));
+
+    facetBtns.forEach((btn) => btn.addEventListener('click', () => {
+      const key = btn.dataset.filter as keyof State;
+      const value = btn.dataset.value!;
+      // Topic chips toggle; status/type segments always select.
+      set({ [key]: key === 'topic' && state.topic === value ? '' : value });
+    }));
+
+    root.addEventListener('click', (e) => {
+      const tag = (e.target as Element).closest<HTMLButtonElement>('.tag');
+      if (tag) set({ tag: state.tag === tag.dataset.tag ? '' : tag.dataset.tag! });
+      if ((e.target as Element).closest('[data-clear]')) clearAll();
+    });
+    tagChip.addEventListener('click', () => set({ tag: '' }));
+    clearBtn.addEventListener('click', clearAll);
+
+    sections.forEach((s) => s.more.addEventListener('click', () => {
+      s.expanded = true;
+      apply();
+    }));
+
+    // Hovering an entry highlights its dot in the topic map.
+    items.forEach((li) => {
+      const send = (slug: string | null) =>
+        document.dispatchEvent(new CustomEvent('readinglist:hover', { detail: { slug } }));
+      li.addEventListener('mouseenter', () => send(li.dataset.slug!));
+      li.addEventListener('mouseleave', () => send(null));
+    });
+
+    // Clicking a topic in the map toggles the topic filter.
+    document.addEventListener('topicmap:select', (e) => {
+      const { topic } = (e as CustomEvent).detail;
+      set({ topic: state.topic === topic ? '' : topic });
+      // If the list's top has scrolled out of view, bring the filters back.
+      if (toolbar.getBoundingClientRect().top < 0) {
+        toolbar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+
+    apply();
+  }
 </script>
