@@ -22,6 +22,7 @@ export const topics: Topic[] = [
   { id: 'networks',  label: 'Graphs & Networks'  },
   { id: 'software',  label: 'Software & Systems' },
   { id: 'chemistry', label: 'Chemistry'          },
+  { id: 'finance',   label: 'Finance'            },
   { id: 'fiction',   label: 'Fiction'            },
 ];
 
@@ -72,6 +73,13 @@ export const tagToTopic: Record<string, string | null> = {
   'chemistry':     'chemistry',
   'nanomaterials': 'chemistry',
   'quantum-dots':  'chemistry',
+
+  // Finance
+  'finance':              'finance',
+  'quantitative-finance': 'finance',
+  'options-pricing':      'finance',
+  'market-efficiency':    'finance',
+  'stochastic-calculus':  'finance',
 
   // Fiction
   'fiction':            'fiction',
