@@ -7,6 +7,13 @@ export interface ExperienceItem {
 
 export const experiences: ExperienceItem[] = [
   {
+    title: 'Student Research Assistant @ HPI',
+    description:
+      'Worked on the Multiple Myeloma risk factor project, where we tried to improve the Pangea model for the All of Us dataset.',
+    years: 'Jun 2026 – Aug 2026',
+    logo: '/images/logos/logo_hpi.png',
+  },
+  {
     title: 'Working student @ Engie',
     description:
       'At Engie GEMS I worked as Lead-Engineer on two large projects: a 7/7 electricity booking tool processing multiple gigawatt-hours daily, and a system for automated PPA contract generation for the Legal team.',
