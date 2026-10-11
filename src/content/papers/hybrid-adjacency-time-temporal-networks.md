@@ -10,6 +10,6 @@ tags:
   - network-analysis
   - graph-theory
   - software
-status: reading
+status: to-read
 tldr: "Proposes a hybrid data structure combining an adjacency dictionary with an interval tree to enable fast compound slicing of temporal networks by both node sets and time intervals — much faster than existing structures with only modest memory overhead."
 ---
