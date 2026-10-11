@@ -2,18 +2,12 @@
 import { Image } from 'astro:assets';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import CVEntry from '../components/CVEntry.astro';
-import { getCollection } from 'astro:content';
 import { siteInfo } from '../data/site';
 import { experiences } from '../data/experience';
 import { skillCategories } from '../data/skills';
 import { projects } from '../data/projects';
 import { url } from '../utils/url';
 import profilePhoto from '../assets/images/myProfile.png';
-
-const allPosts = await getCollection('blog', ({ data }) => !data.draft);
-const latestPosts = allPosts
-  .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
-  .slice(0, 2);
 
 // Only show spoken languages in sidebar
 const cvSkills = skillCategories.filter((c) =>
@@ -23,7 +17,7 @@ const cvSkills = skillCategories.filter((c) =>
 
 <BaseLayout
   title="Daniel Cermann"
-  description="Software Engineer & maker from Germany — blog, projects, and more."
+  description="Software Engineer & maker from Germany — projects, papers, and more."
 >
   <div class="cv-page">
 
@@ -75,7 +69,6 @@ const cvSkills = skillCategories.filter((c) =>
         <nav aria-label="Quick navigation">
           <h3 class="sidebar-heading">Navigate</h3>
           <ul class="sidebar-nav">
-            <li><a href={url('/blog')}>Blog</a></li>
             <li><a href={url('/projects')}>Projects</a></li>
             <li><a href={url('/papers')}>Reading list</a></li>
           </ul>
@@ -154,30 +147,6 @@ const cvSkills = skillCategories.filter((c) =>
           <a class="see-all" href={url('/projects')}>See all projects →</a>
         </section>
 
-        <!-- Recent writing -->
-        {latestPosts.length > 0 && (
-          <section class="cv-section">
-            <h2 class="cv-section-heading">Recent Writing</h2>
-            <div class="post-list">
-              {latestPosts.map((post) => (
-                <a class="post-entry" href={url(`/blog/${post.slug}`)}>
-                  <span class="post-title">{post.data.title}</span>
-                  <time
-                    class="post-date"
-                    datetime={post.data.pubDate.toISOString()}
-                  >
-                    {post.data.pubDate.toLocaleDateString('en-GB', {
-                      month: 'short',
-                      year: 'numeric',
-                    })}
-                  </time>
-                  <span class="post-desc">{post.data.description}</span>
-                </a>
-              ))}
-            </div>
-            <a class="see-all" href={url('/blog')}>All posts →</a>
-          </section>
-        )}
       </main>
     </div>
   </div>
@@ -477,53 +446,6 @@ const cvSkills = skillCategories.filter((c) =>
     color: var(--text-color-dim);
     line-height: 1.6;
     margin: 0;
-  }
-
-  // ── Recent writing ────────────────────────────────────────────────────
-  .post-list { display: flex; flex-direction: column; }
-
-  .post-entry {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    column-gap: 1rem;
-    row-gap: 0.15rem;
-    padding: 0.9rem 0;
-    border-top: 1px solid color-mix(in srgb, var(--text-color-dim) 12%, transparent);
-    text-decoration: none;
-
-    &:last-child {
-      border-bottom: 1px solid color-mix(in srgb, var(--text-color-dim) 12%, transparent);
-    }
-
-    &:hover .post-title { color: var(--contrast-color); }
-  }
-
-  .post-title {
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: var(--text-color);
-    grid-column: 1;
-    grid-row: 1;
-    transition: color 0.2s;
-  }
-
-  .post-date {
-    font-family: 'Space Mono', 'Courier New', monospace;
-    font-size: 0.72rem;
-    color: var(--contrast-color);
-    grid-column: 2;
-    grid-row: 1;
-    white-space: nowrap;
-    align-self: center;
-  }
-
-  .post-desc {
-    font-size: 0.87rem;
-    color: var(--text-color-dim);
-    line-height: 1.55;
-    grid-column: 1 / -1;
-    grid-row: 2;
   }
 
   // ── Shared ───────────────────────────────────────────────────────────

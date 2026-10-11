@@ -1,20 +1,10 @@
 import { defineCollection, z } from 'astro:content';
 
-const blog = defineCollection({
-  type: 'content',
-  schema: z.object({
-    title: z.string(),
-    description: z.string(),
-    pubDate: z.coerce.date(),
-    tags: z.array(z.string()).optional().default([]),
-    draft: z.boolean().optional().default(false),
-  }),
-});
-
 const papers = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
+    type: z.enum(['paper', 'book']).default('paper'),
     authors: z.array(z.string()),
     year: z.number(),
     url: z.string().url(),
@@ -26,4 +16,4 @@ const papers = defineCollection({
   }),
 });
 
-export const collections = { blog, papers };
+export const collections = { papers };
