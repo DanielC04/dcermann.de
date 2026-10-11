@@ -186,10 +186,10 @@ const entries = (n: number) => `${n} ${n === 1 ? 'entry' : 'entries'}`;
     <p class="tm-hint js-only" hidden>Click a topic to filter the list · drag to rearrange</p>
   </header>
 
-  <!-- Map and ranking share one panel so the (sticky) card stays short -->
+  <!-- Map and interest bars share one panel so the (sticky) card stays short -->
   <div class="tm-tabs js-only" role="tablist" aria-label="View" hidden>
-    <button type="button" role="tab" id="tm-tab-map" aria-controls="tm-panel-map" aria-selected="true">Map</button>
-    <button type="button" role="tab" id="tm-tab-bars" aria-controls="tm-panel-bars" aria-selected="false">Ranking</button>
+    <button type="button" role="tab" id="tm-tab-map" aria-controls="tm-panel-map" aria-selected="true">Topic map</button>
+    <button type="button" role="tab" id="tm-tab-bars" aria-controls="tm-panel-bars" aria-selected="false">Interest by topic</button>
   </div>
 
   <div class="tm-map" id="tm-panel-map" role="tabpanel" aria-labelledby="tm-tab-map">
@@ -273,7 +273,7 @@ const entries = (n: number) => `${n} ${n === 1 ? 'entry' : 'entries'}`;
     <div class="tm-tip" role="tooltip" hidden></div>
   </div>
 
-  <div class="tm-bars" id="tm-panel-bars" role="tabpanel" aria-labelledby="tm-bars-title">
+  <div class="tm-bars" id="tm-panel-bars" role="tabpanel" aria-labelledby="tm-tab-bars">
     <h3 id="tm-bars-title" class="tm-subtitle">Interest by topic</h3>
     <ol>
       {ranked.map((t) => (
@@ -569,10 +569,14 @@ const entries = (n: number) => `${n} ${n === 1 ? 'entry' : 'entries'}`;
     padding-top: 0.9rem;
     border-top: 1px solid color-mix(in srgb, var(--tm-ink-dim) 15%, transparent);
 
+    // With tabs, the tab itself is the heading.
     .has-tabs & {
       margin-top: 0.75rem;
       padding-top: 0;
       border-top: 0;
+
+      .tm-subtitle { display: none; }
+      ol { margin-top: 0; }
     }
 
     ol {
