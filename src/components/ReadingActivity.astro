@@ -4,13 +4,13 @@ import { getCollection } from 'astro:content';
 const allPapers = await getCollection('papers', ({ data }) => !data.draft);
 const readPapers = allPapers.filter((p) => p.data.status === 'read' && p.data.dateRead);
 
-// Serialise date → count map for client-side use. dateRead is UTC midnight,
+// Serialise date → titles map for client-side use. dateRead is UTC midnight,
 // so use UTC parts to match the YYYY-MM-DD written in the file.
-const dateEntries: Record<string, number> = {};
+const dateEntries: Record<string, string[]> = {};
 for (const paper of readPapers) {
   const dr = paper.data.dateRead!;
   const key = `${dr.getUTCFullYear()}-${String(dr.getUTCMonth() + 1).padStart(2, '0')}-${String(dr.getUTCDate()).padStart(2, '0')}`;
-  dateEntries[key] = (dateEntries[key] ?? 0) + 1;
+  (dateEntries[key] ??= []).push(paper.data.title);
 }
 
 const totalRead = readPapers.length;
@@ -35,6 +35,8 @@ const LABEL_W = 22;  // px
   <div class="grid-scroll">
     <div class="grid-inner" id="ra-grid"></div>
   </div>
+
+  <div class="ra-tip" id="ra-tip" role="tooltip" hidden></div>
 
   <div class="legend">
     <span class="legend-label">Less</span>
@@ -71,7 +73,8 @@ const LABEL_W = 22;  // px
   const cursor = new Date(gridStart);
   while (cursor <= today || days.length % 7 !== 0) {
     const key = localKey(cursor);
-    days.push({ date: new Date(cursor), count: dateEntries[key] ?? 0, future: cursor > today });
+    const titles = dateEntries[key] ?? [];
+    days.push({ date: new Date(cursor), titles, count: titles.length, future: cursor > today });
     cursor.setDate(cursor.getDate() + 1);
   }
 
@@ -146,6 +149,7 @@ const LABEL_W = 22;  // px
   });
   gridBody.appendChild(dayLabels);
 
+  const cellData = new WeakMap();
   const weekColumns = document.createElement('div');
   weekColumns.className = 'week-columns';
   weeks.forEach(week => {
@@ -158,18 +162,55 @@ const LABEL_W = 22;  // px
       if (cell.count > 1) cls.push('multi');
       if (cell.future)    cls.push('future');
       div.className = cls.join(' ');
-      div.title = cell.count > 0
-        ? `${cell.count} paper${cell.count > 1 ? 's' : ''} · ${fmt(cell.date)}`
-        : fmt(cell.date);
       div.setAttribute('aria-label', cell.count > 0
-        ? `${cell.count} paper${cell.count > 1 ? 's' : ''} read on ${fmt(cell.date)}`
+        ? `Read on ${fmt(cell.date)}: ${cell.titles.join('; ')}`
         : `No papers on ${fmt(cell.date)}`);
+      cellData.set(div, cell);
       col.appendChild(div);
     });
     weekColumns.appendChild(col);
   });
   gridBody.appendChild(weekColumns);
   gridInner.appendChild(gridBody);
+
+  // ── Tooltip: date + titles read that day ──────────────────────────────
+  const tip    = document.getElementById('ra-tip');
+  const widget = tip.parentElement;
+
+  function line(cls, text) {
+    const span = document.createElement('span');
+    span.className = cls;
+    span.textContent = text;
+    return span;
+  }
+
+  function showTip(el) {
+    const cell = cellData.get(el);
+    if (!cell) return;
+    tip.replaceChildren(
+      line('tip-meta', cell.count > 0
+        ? `${fmt(cell.date)} · ${cell.count} read`
+        : fmt(cell.date)),
+      ...cell.titles.map(t => line('tip-title', t)),
+    );
+    tip.hidden = false;
+
+    // Above the cell, clamped inside the card; flip below if no room on top.
+    const box = widget.getBoundingClientRect();
+    const r   = el.getBoundingClientRect();
+    const w   = tip.offsetWidth;
+    const h   = tip.offsetHeight;
+    const cx  = r.left + r.width / 2 - box.left;
+    tip.style.left = `${Math.max(4, Math.min(box.width - w - 4, cx - w / 2))}px`;
+    const above = r.top - box.top - h - 6;
+    tip.style.top = `${above >= 4 ? above : r.bottom - box.top + 6}px`;
+  }
+
+  weekColumns.addEventListener('mouseover', e => {
+    if (e.target.classList.contains('cell')) showTip(e.target);
+  });
+  weekColumns.addEventListener('mouseleave', () => { tip.hidden = true; });
+  gridInner.parentElement.addEventListener('scroll', () => { tip.hidden = true; }, { passive: true });
 })();
 </script>
 
@@ -317,6 +358,39 @@ const LABEL_W = 22;  // px
 
     &.multi {
       background: var(--contrast-color);
+    }
+  }
+
+  // ── Tooltip ───────────────────────────────────────────────────────────────
+
+  .ra-tip {
+    position: absolute;
+    z-index: 2;
+    max-width: 220px;
+    padding: 0.45rem 0.6rem;
+    border: 1px solid color-mix(in srgb, var(--text-color-dim) 25%, transparent);
+    border-radius: 6px;
+    background: var(--background-color);
+    box-shadow: 0 4px 14px rgb(0 0 0 / 0.15);
+    pointer-events: none;
+    line-height: 1.35;
+
+    &[hidden] { display: none; }
+
+    .tip-title {
+      display: block;
+      margin-top: 0.2rem;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-color);
+    }
+
+    .tip-meta {
+      display: block;
+      font-family: 'Space Mono', 'Courier New', monospace;
+      font-size: 0.64rem;
+      color: var(--text-color-dim);
     }
   }
 
