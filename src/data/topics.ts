@@ -33,6 +33,7 @@ export const tagToTopic: Record<string, string | null> = {
   'ethics':           'ai-safety',
   'interpretability': 'ai-safety',
   'existential-risk': 'ai-safety',
+  'multi-agent-systems': 'ai-safety',
 
   // Machine learning
   'machine-learning':       'ml',
