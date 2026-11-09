@@ -12,26 +12,32 @@ import TopicMap from '../../components/TopicMap.astro';
   <section id="papers">
     <div class="section-container">
 
+      <!--
+        One grid, four areas. DOM order is the mobile reading and tab order:
+        intro → activity → list → topic map. On desktop the activity and the
+        (sticky) topic map sit in a right column beside the list.
+      -->
       <div class="page-layout">
+        <div class="area-intro page-intro">
+          <h2>Reading List</h2>
+          <p class="page-desc">
+            Papers and books I'm reading or have read. Entries marked <span class="note-mark">✦</span> have reading notes.
+          </p>
+        </div>
 
-        <!-- Left: intro + reading list -->
-        <div class="left-col">
-          <div class="page-intro">
-            <h2>Reading List</h2>
-            <p class="page-desc">
-              Papers and books I'm reading or have read. Entries marked <span class="note-mark">✦</span> have reading notes.
-            </p>
-          </div>
+        <aside class="area-activity" aria-label="Reading activity">
+          <ReadingActivity />
+        </aside>
+
+        <div class="area-list">
           <ReadingList />
         </div>
 
-        <!-- Right: reading activity heatmap + topic map -->
-        <aside class="right-col">
-          <ReadingActivity />
+        <aside class="area-map" aria-label="Topic map">
           <TopicMap />
         </aside>
-
       </div>
+
     </div>
   </section>
 </BaseLayout>
@@ -46,22 +52,46 @@ import TopicMap from '../../components/TopicMap.astro';
     overflow: clip;
   }
 
-  // ── Two-column layout ─────────────────────────────────────────────────
+  // ── Layout ────────────────────────────────────────────────────────────
+  // Mobile: a single column in DOM order (no visual reordering, so focus
+  // order matches what you see). Desktop: the list on the left; on the right
+  // the activity widget next to the intro, then the topic map, whose area
+  // stretches to the bottom of the list so the card inside can stay sticky.
   .page-layout {
     display: grid;
-    grid-template-columns: 1fr 340px;
-    gap: 2.5rem;
-    align-items: start;
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 2rem;
 
-    @media (max-width: 768px) {
-      grid-template-columns: 1fr;
+    @media (min-width: 769px) {
+      grid-template-columns: minmax(0, 1fr) 340px;
+      grid-template-rows: auto auto 1fr;
+      grid-template-areas:
+        'intro activity'
+        'list  activity'
+        'list  map';
+      column-gap: 2.5rem;
+      row-gap: 0;
     }
   }
 
-  // ── Columns — min-width: 0 prevents grid items from forcing column wider than 1fr
-  .left-col,
-  .right-col {
-    min-width: 0;
+  .area-intro,
+  .area-activity,
+  .area-list,
+  .area-map {
+    min-width: 0;   // don't let content force a column wider than its track
+  }
+
+  @media (min-width: 769px) {
+    .area-intro    { grid-area: intro; }
+    .area-activity { grid-area: activity; align-self: start; }
+    .area-list     { grid-area: list; }
+    .area-map      { grid-area: map; align-self: stretch; }
+  }
+
+  // On mobile the grid gap does the spacing.
+  @media (max-width: 768px) {
+    .area-intro { margin-bottom: 0; }
+    .area-activity :global(.activity-widget) { margin-bottom: 0; }
   }
 
   .page-intro {
@@ -89,17 +119,5 @@ import TopicMap from '../../components/TopicMap.astro';
   .note-mark {
     color: var(--contrast-color);
     font-size: 0.8em;
-  }
-
-  // ── Right column — activity scrolls away, the topic map (TopicMap) sticks.
-  // Stretch to the full row height so the sticky map has room to travel.
-  .right-col {
-    align-self: stretch;
-
-    @media (max-width: 768px) {
-      // On mobile the aside comes after the list; bump it up so it appears
-      // first in reading order (grid-row reorder)
-      order: -1;
-    }
   }
 </style>

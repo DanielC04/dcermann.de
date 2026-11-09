@@ -1,7 +1,19 @@
 ---
 /**
- * One entry in the reading list. All filter/sort inputs live on data-*
- * attributes so ReadingList's client script never needs a second data copy.
+ * One entry in the reading list.
+ *
+ * Kept deliberately lean — the list may hold ~1000 of these. Filter inputs
+ * that aren't visible text live on data-* attributes (status, type, topics,
+ * tags, year); everything searchable (title, authors, year, summary, tags) is
+ * read from the rendered text by ReadingList's client script, so there is no
+ * second copy of it in the markup. When the byline is truncated with
+ * "et al.", the full author list sits in its `title` (hover tooltip + search).
+ *
+ * Styles are global (scoped under `.paper-item`) so Astro doesn't stamp a
+ * scoping attribute on every element of every entry.
+ *
+ * Inline tags form one roving-tabindex toolbar: Tab reaches the group once,
+ * arrow keys move between tags (wired in ReadingList).
  */
 import type { CollectionEntry } from 'astro:content';
 import { topicIdsForTags } from '../data/topics';
@@ -14,13 +26,11 @@ interface Props {
 const { paper } = Astro.props;
 const d = paper.data;
 
+const AUTHORS_SHOWN = 3;
 const hasNotes = (paper.body ?? '').trim().length > 0;
 const href = hasNotes ? url(`/papers/${paper.slug}`) : d.url;
-const authors = d.authors.slice(0, 3).join(', ') + (d.authors.length > 3 ? ' et al.' : '');
-
-const search = [d.title, d.authors.join(' '), d.tldr ?? '', d.tags.join(' '), String(d.year)]
-  .join(' ')
-  .toLowerCase();
+const truncated = d.authors.length > AUTHORS_SHOWN;
+const authors = d.authors.slice(0, AUTHORS_SHOWN).join(', ') + (truncated ? ' et al.' : '');
 ---
 
 <li
@@ -31,9 +41,6 @@ const search = [d.title, d.authors.join(' '), d.tldr ?? '', d.tags.join(' '), St
   data-topics={topicIdsForTags(d.tags).join(' ')}
   data-tags={d.tags.join(' ')}
   data-year={d.year}
-  data-read={d.dateRead?.getTime() ?? 0}
-  data-title={d.title.toLowerCase()}
-  data-search={search}
 >
   <div class="paper-main">
     <a
@@ -41,126 +48,118 @@ const search = [d.title, d.authors.join(' '), d.tldr ?? '', d.tags.join(' '), St
       href={href}
       target={hasNotes ? undefined : '_blank'}
       rel={hasNotes ? undefined : 'noopener noreferrer'}
-    >
-      {d.title}
-    </a>
+    >{d.title}</a>
     {d.type === 'book' && <span class="type-badge">Book</span>}
     {hasNotes && <span class="has-notes" title="Has reading notes">✦</span>}
     {d.status === 'reading' && <span class="reading-indicator" title="Currently reading">↻</span>}
   </div>
-  <span class="paper-meta">
-    {authors} · {d.year}
-    {d.dateRead && (
-      <>
-        {' · read '}
-        <time datetime={d.dateRead.toISOString()}>
-          {d.dateRead.toLocaleDateString('en-GB', { month: 'short', year: 'numeric', timeZone: 'UTC' })}
-        </time>
-      </>
-    )}
-  </span>
+  <span class="paper-meta"><span class="paper-authors" title={truncated ? d.authors.join(', ') : undefined}>{authors}</span> · {d.year}{d.dateRead && (
+      <> · read <time datetime={d.dateRead.toISOString().slice(0, 10)}>{d.dateRead.toLocaleDateString('en-GB', { month: 'short', year: 'numeric', timeZone: 'UTC' })}</time></>
+    )}</span>
   {d.tldr && <p class="paper-tldr">{d.tldr}</p>}
   {d.tags.length > 0 && (
-    <ul class="inline-tags">
-      {d.tags.map((t) => (
-        <li><button class="tag" type="button" data-tag={t} title={`Show only #${t}`}>{t}</button></li>
-      ))}
-    </ul>
+    <div class="inline-tags" role="toolbar" aria-label="Filter by tag">
+      {d.tags.map((t, i) => <button class="tag" type="button" tabindex={i === 0 ? undefined : '-1'}>{t}</button>)}
+    </div>
   )}
 </li>
 
-<style lang="scss">
+<style lang="scss" is:global>
   .paper-item {
     padding: 0.85rem 0;
     border-top: 1px solid color-mix(in srgb, var(--text-color-dim) 20%, transparent);
-  }
+    // Skip layout/paint for off-screen entries (matters with JS off, when
+    // every entry is shown).
+    content-visibility: auto;
+    contain-intrinsic-size: auto 7rem;
 
-  .paper-main {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    gap: 0.25rem 0.6rem;
-  }
+    .paper-main {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 0.25rem 0.6rem;
+    }
 
-  .paper-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--text-color);
-    text-decoration: none;
-    font-family: 'Space Grotesk', sans-serif;
-
-    &:hover {
-      color: var(--contrast-color);
+    .paper-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-color);
       text-decoration: none;
+      font-family: 'Space Grotesk', sans-serif;
+
+      &:hover {
+        color: var(--contrast-color);
+        text-decoration: none;
+      }
     }
-  }
 
-  .type-badge {
-    font-family: 'Space Mono', 'Courier New', monospace;
-    font-size: 0.62rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: var(--contrast-color);
-    border: 1px solid color-mix(in srgb, var(--contrast-color) 50%, transparent);
-    border-radius: 3px;
-    padding: 0 0.35em;
-  }
+    .type-badge {
+      font-family: 'Space Mono', 'Courier New', monospace;
+      font-size: 0.62rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--contrast-color);
+      border: 1px solid color-mix(in srgb, var(--contrast-color) 50%, transparent);
+      border-radius: 3px;
+      padding: 0 0.35em;
+    }
 
-  .has-notes,
-  .reading-indicator {
-    font-size: 0.78rem;
-    color: var(--contrast-color);
-  }
-
-  .paper-meta {
-    display: block;
-    margin-top: 0.15rem;
-    font-size: 0.8rem;
-    color: var(--text-color-dim);
-  }
-
-  // Long lists stay scannable: summaries are capped at two lines.
-  .paper-tldr {
-    margin: 0.35rem 0 0;
-    font-size: 0.86rem;
-    color: var(--text-color-dim);
-    line-height: 1.55;
-    font-style: italic;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .inline-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.3rem;
-    list-style: none;
-    margin: 0.45rem 0 0;
-    padding: 0;
-  }
-
-  .tag {
-    font: inherit;
-    font-size: 0.7rem;
-    color: var(--text-color-dim);
-    background: none;
-    border: 1px solid color-mix(in srgb, var(--text-color-dim) 35%, transparent);
-    border-radius: 999px;
-    padding: 0.05em 0.6em;
-    cursor: pointer;
-    transition: border-color 0.15s, color 0.15s, background 0.15s;
-
-    &:hover {
-      border-color: var(--contrast-color);
+    .has-notes,
+    .reading-indicator {
+      font-size: 0.78rem;
       color: var(--contrast-color);
     }
 
-    &.active {
-      background: var(--contrast-color);
-      border-color: var(--contrast-color);
-      color: var(--background-color);
+    .paper-meta {
+      display: block;
+      margin-top: 0.15rem;
+      font-size: 0.8rem;
+      color: var(--text-color-dim);
+    }
+
+    .paper-authors[title] { cursor: help; }
+
+    // Long lists stay scannable: summaries are capped at two lines.
+    .paper-tldr {
+      margin: 0.35rem 0 0;
+      font-size: 0.86rem;
+      color: var(--text-color-dim);
+      line-height: 1.55;
+      font-style: italic;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .inline-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+      margin: 0.45rem 0 0;
+    }
+
+    .tag {
+      font: inherit;
+      font-size: 0.7rem;
+      color: var(--text-color-dim);
+      background: none;
+      border: 1px solid color-mix(in srgb, var(--text-color-dim) 35%, transparent);
+      border-radius: 999px;
+      padding: 0.05em 0.6em;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s, background 0.15s;
+
+      &:hover {
+        border-color: var(--contrast-color);
+        color: var(--contrast-color);
+      }
+
+      &[aria-pressed='true'] {
+        background: var(--contrast-color);
+        border-color: var(--contrast-color);
+        color: var(--background-color);
+      }
     }
   }
 </style>
