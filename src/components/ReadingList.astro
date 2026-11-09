@@ -3,9 +3,9 @@
  * Reading list with search, status / type / topic / tag filters and sorting.
  *
  * Everything is rendered at build time and fully visible without JS; the
- * client script hides non-matching entries, collapses long sections, keeps
- * the filters in the URL (?q=&status=&type=&topic=&tag=&sort=), and talks to
- * TopicMap:
+ * client script hides non-matching entries, pages each section in steps
+ * ("Show 20 more"), keeps the filters in the URL
+ * (?q=&status=&type=&topic=&tag=&sort=), and talks to TopicMap:
  *   dispatched  readinglist:change  { topic, visible: slugs[] | null }
  *   dispatched  readinglist:hover   { slug | null }
  *   listened    topicmap:select     { topic }   — toggles the topic filter
@@ -16,14 +16,20 @@ import ReadingItem from './ReadingItem.astro';
 import { topics, topicIdsForTags } from '../data/topics';
 
 const allPapers = await getCollection('papers', ({ data }) => !data.draft);
+type Paper = (typeof allPapers)[number];
 
-const byYear = (a: (typeof allPapers)[number], b: (typeof allPapers)[number]) => b.data.year - a.data.year;
+// Every order ends in a title comparison so ties never depend on file order.
+// (The client's "year" / "title" sorters use the same collation.)
+const collator = new Intl.Collator('en', { sensitivity: 'base', numeric: true });
+const byTitle = (a: Paper, b: Paper) => collator.compare(a.data.title, b.data.title);
+const byYear = (a: Paper, b: Paper) => b.data.year - a.data.year || byTitle(a, b);
+// Most recently read first; undated entries last (their own "Undated" group).
+const byDateRead = (a: Paper, b: Paper) =>
+  (b.data.dateRead?.getTime() ?? -Infinity) - (a.data.dateRead?.getTime() ?? -Infinity) || byTitle(a, b);
 
 const current = allPapers.filter((p) => p.data.status === 'reading').sort(byYear);
 const queue = allPapers.filter((p) => p.data.status === 'to-read').sort(byYear);
-const read = allPapers
-  .filter((p) => p.data.status === 'read')
-  .sort((a, b) => (b.data.dateRead?.getTime() ?? 0) - (a.data.dateRead?.getTime() ?? 0));
+const read = allPapers.filter((p) => p.data.status === 'read').sort(byDateRead);
 
 // Finished entries grouped by the year I read them, newest first.
 const readGroups: { label: string; papers: typeof read }[] = [];
@@ -36,6 +42,18 @@ for (const p of read) {
 
 const usedTopics = new Set(allPapers.flatMap((p) => topicIdsForTags(p.data.tags)));
 const topicChips = topics.filter((t) => usedTopics.has(t.id));
+
+// Topics may carry an optional `group`; if any do, chips are shown in groups
+// (in first-appearance order), otherwise as one flat row.
+type ChipTopic = (typeof topics)[number] & { group?: string };
+const chipGroups: { label: string; topics: ChipTopic[] }[] = [];
+for (const t of topicChips as ChipTopic[]) {
+  const label = t.group ?? 'Other';
+  const g = chipGroups.find((x) => x.label === label);
+  if (g) g.topics.push(t);
+  else chipGroups.push({ label, topics: [t] });
+}
+const groupedChips = (topicChips as ChipTopic[]).some((t) => t.group);
 
 const sections = [
   { id: 'reading', title: 'Currently Reading', count: current.length },
@@ -86,13 +104,28 @@ const sections = [
       </label>
     </div>
 
-    <div class="rl-topics" role="group" aria-label="Topic">
-      {topicChips.map((t) => (
-        <button type="button" class="chip" data-filter="topic" data-value={t.id}>
-          {t.label} <span class="n"></span>
-        </button>
-      ))}
-    </div>
+    {groupedChips ? (
+      <div class="rl-topics rl-topics-grouped" role="group" aria-label="Topic">
+        {chipGroups.map((g) => (
+          <div class="rl-topic-group" role="group" aria-label={g.label}>
+            <span class="rl-topic-group-label" aria-hidden="true">{g.label}</span>
+            {g.topics.map((t) => (
+              <button type="button" class="chip" data-filter="topic" data-value={t.id}>
+                {t.label} <span class="n"></span>
+              </button>
+            ))}
+          </div>
+        ))}
+      </div>
+    ) : (
+      <div class="rl-topics" role="group" aria-label="Topic">
+        {topicChips.map((t) => (
+          <button type="button" class="chip" data-filter="topic" data-value={t.id}>
+            {t.label} <span class="n"></span>
+          </button>
+        ))}
+      </div>
+    )}
 
     <div class="rl-summary" aria-live="polite">
       <span id="rl-count"></span>
@@ -120,7 +153,10 @@ const sections = [
             </>
           ))}
         </ol>
-        <button type="button" class="show-more" hidden></button>
+        <div class="show-more-row" hidden>
+          <button type="button" class="show-more"></button>
+          <button type="button" class="show-all"></button>
+        </div>
       </section>
     ),
   )}
@@ -257,6 +293,27 @@ const sections = [
     gap: 0.4rem;
   }
 
+  .rl-topics-grouped {
+    flex-direction: column;
+    gap: 0.45rem;
+  }
+
+  .rl-topic-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.4rem;
+  }
+
+  .rl-topic-group-label {
+    min-width: 7.5rem;
+    font-family: 'Space Mono', 'Courier New', monospace;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--text-color-dim);
+  }
+
   .chip {
     font: inherit;
     font-size: 0.78rem;
@@ -364,8 +421,17 @@ const sections = [
     color: var(--text-color-dim);
   }
 
-  .show-more {
+  .show-more-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
     margin-top: 0.75rem;
+
+    &[hidden] { display: none; }
+  }
+
+  .show-more {
+    flex: 1;
     font: inherit;
     font-size: 0.82rem;
     font-weight: 600;
@@ -375,9 +441,23 @@ const sections = [
     border-radius: 6px;
     padding: 0.4rem 0.9rem;
     cursor: pointer;
-    width: 100%;
 
     &:hover { background: color-mix(in srgb, var(--contrast-color) 8%, transparent); }
+  }
+
+  .show-all {
+    font: inherit;
+    font-size: 0.78rem;
+    color: var(--text-color-dim);
+    background: none;
+    border: 0;
+    padding: 0.4rem 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    white-space: nowrap;
+
+    &:hover { color: var(--contrast-color); }
     &[hidden] { display: none; }
   }
 
@@ -390,7 +470,7 @@ const sections = [
 </style>
 
 <script>
-  type Section = 'reading' | 'to-read' | 'read';
+  type SectionId = 'reading' | 'to-read' | 'read';
   interface State {
     q: string;
     status: string;   // '' = all
@@ -400,8 +480,31 @@ const sections = [
     sort: string;     // '' = recently read
   }
 
-  // Collapsed sections show this many entries until expanded or filtered.
-  const LIMIT = 8;
+  /** One entry, parsed once from its data-* attributes. */
+  interface Item {
+    kind: 'item';
+    li: HTMLLIElement;
+    link: HTMLAnchorElement;
+    slug: string;
+    status: string;
+    type: string;
+    topics: Set<string>;
+    tags: Set<string>;
+    year: number;
+    title: string;
+    hay: string;      // lowercase search text, filled on first search
+    ok: boolean;      // matches every active filter (last apply)
+  }
+  interface Head {
+    kind: 'head';
+    li: HTMLLIElement;
+    count: HTMLElement;
+  }
+
+  // Each section starts with a short page and grows in PAGE steps.
+  const FIRST = 10;            // unfiltered
+  const FIRST_FILTERED = 20;   // filtered results deserve a longer first look
+  const PAGE = 20;
   const KEYS: (keyof State)[] = ['q', 'status', 'type', 'topic', 'tag', 'sort'];
 
   const root = document.getElementById('rl');
@@ -414,17 +517,61 @@ const sections = [
     const tagChip = root.querySelector<HTMLButtonElement>('#rl-tag')!;
     const clearBtn = root.querySelector<HTMLButtonElement>('#rl-clear')!;
     const emptyEl = root.querySelector<HTMLElement>('#rl-empty')!;
-    const facetBtns = [...root.querySelectorAll<HTMLButtonElement>('[data-filter]')];
-    const items = [...root.querySelectorAll<HTMLLIElement>('.paper-item')];
+    const facetBtns = [...root.querySelectorAll<HTMLButtonElement>('[data-filter]')].map((btn) => ({
+      btn,
+      key: btn.dataset.filter as 'status' | 'type' | 'topic',
+      value: btn.dataset.value!,
+      n: btn.querySelector<HTMLElement>('.n'),
+    }));
+
+    const items: Item[] = [];
+    const itemByLi = new Map<Element, Item>();
+    const parse = (li: HTMLLIElement): Item => {
+      const d = li.dataset;
+      const link = li.querySelector<HTMLAnchorElement>('.paper-title')!;
+      const it: Item = {
+        kind: 'item',
+        li,
+        link,
+        slug: d.slug!,
+        status: d.status!,
+        type: d.type!,
+        topics: new Set(d.topics ? d.topics.split(' ') : []),
+        tags: new Set(d.tags ? d.tags.split(' ') : []),
+        year: Number(d.year),
+        title: link.textContent!.trim(),
+        hay: '',
+        ok: true,
+      };
+      items.push(it);
+      itemByLi.set(li, it);
+      return it;
+    };
+
     const sections = [...root.querySelectorAll<HTMLElement>('[data-section]')].map((el) => {
       const list = el.querySelector('ol')!;
+      // Build order, incl. year heads ("recently read").
+      const original: (Item | Head)[] = ([...list.children] as HTMLLIElement[]).map((li) =>
+        li.classList.contains('group-head')
+          ? { kind: 'head', li, count: li.querySelector<HTMLElement>('.group-count')! }
+          : parse(li),
+      );
+      const row = el.querySelector<HTMLElement>('.show-more-row')!;
       return {
         el,
-        id: el.dataset.section as Section,
+        id: el.dataset.section as SectionId,
         list,
-        more: el.querySelector<HTMLButtonElement>('.show-more')!,
-        original: [...list.children] as HTMLLIElement[],   // build order incl. year heads
-        expanded: false,
+        countEl: el.querySelector<HTMLElement>('.list-count')!,
+        row,
+        more: row.querySelector<HTMLButtonElement>('.show-more')!,
+        all: row.querySelector<HTMLButtonElement>('.show-all')!,
+        original,
+        entries: original.filter((x): x is Item => x.kind === 'item'),
+        heads: original.filter((x): x is Head => x.kind === 'head'),
+        order: original,
+        sortedBy: '',
+        limit: FIRST,
+        shown: [] as Item[],
       };
     });
 
@@ -435,6 +582,7 @@ const sections = [
     const state: State = Object.fromEntries(KEYS.map((k) => [k, params.get(k) ?? ''])) as State;
     input.value = state.q;
     sortSel.value = state.sort;
+    if (sortSel.value !== state.sort) state.sort = '';   // unknown ?sort= value
 
     function writeUrl() {
       const p = new URLSearchParams();
@@ -445,104 +593,146 @@ const sections = [
 
     const isFiltered = () => !!(state.q || state.status || state.type || state.topic || state.tag);
 
-    // ── Matching ───────────────────────────────────────────────────────────
-    function matches(li: HTMLElement, ignore?: keyof State) {
-      const d = li.dataset;
-      if (ignore !== 'status' && state.status && d.status !== state.status) return false;
-      if (ignore !== 'type' && state.type && d.type !== state.type) return false;
-      if (ignore !== 'topic' && state.topic && !d.topics!.split(' ').includes(state.topic)) return false;
-      if (ignore !== 'tag' && state.tag && !d.tags!.split(' ').includes(state.tag)) return false;
-      if (ignore !== 'q' && state.q) {
-        const words = state.q.toLowerCase().split(/\s+/).filter(Boolean);
-        if (!words.every((w) => d.search!.includes(w))) return false;
+    // Search text = everything the entry shows (title, byline, year, summary,
+    // tags) plus the full author list from the byline's tooltip. Built once,
+    // on the first search.
+    let hayReady = false;
+    function ensureHay() {
+      if (hayReady) return;
+      for (const it of items) {
+        const authors = it.li.querySelector<HTMLElement>('.paper-authors')?.title ?? '';
+        it.hay = `${it.li.textContent} ${authors}`.toLowerCase().replace(/\s+/g, ' ');
       }
-      return true;
+      hayReady = true;
     }
 
-    const sorters: Record<string, (a: HTMLElement, b: HTMLElement) => number> = {
-      year: (a, b) => Number(b.dataset.year) - Number(a.dataset.year) || a.dataset.title!.localeCompare(b.dataset.title!),
-      title: (a, b) => a.dataset.title!.localeCompare(b.dataset.title!),
+    const collator = new Intl.Collator('en', { sensitivity: 'base', numeric: true });
+    const sorters: Record<string, (a: Item, b: Item) => number> = {
+      year: (a, b) => b.year - a.year || collator.compare(a.title, b.title),
+      title: (a, b) => collator.compare(a.title, b.title) || b.year - a.year,
     };
+
+    // ── Tag buttons (roving tabindex, pressed state) ─────────────────────────
+    let tagIndex: Map<string, HTMLButtonElement[]> | null = null;
+    function tagButtons(tag: string) {
+      if (!tagIndex) {
+        tagIndex = new Map();
+        root!.querySelectorAll<HTMLButtonElement>('.paper-item .tag').forEach((b) => {
+          const t = b.textContent!.trim();
+          const list = tagIndex!.get(t);
+          if (list) list.push(b);
+          else tagIndex!.set(t, [b]);
+        });
+      }
+      return tagIndex.get(tag) ?? [];
+    }
+    let pressedTag = '';
+    function syncTagButtons() {
+      if (pressedTag === state.tag) return;
+      if (pressedTag) tagButtons(pressedTag).forEach((b) => b.removeAttribute('aria-pressed'));
+      if (state.tag) tagButtons(state.tag).forEach((b) => b.setAttribute('aria-pressed', 'true'));
+      pressedTag = state.tag;
+    }
 
     // ── Render ─────────────────────────────────────────────────────────────
     function apply() {
-      const visible = new Set<string>();
       const filtered = isFiltered();
+      const words = state.q.toLowerCase().split(/\s+/).filter(Boolean);
+      if (words.length) ensureHay();
 
+      // One pass: whether each entry matches, plus facet counts. A facet
+      // value counts entries that pass every *other* filter.
+      const counts = { status: new Map<string, number>(), type: new Map<string, number>(), topic: new Map<string, number>() };
+      const inc = (m: Map<string, number>, k: string) => m.set(k, (m.get(k) ?? 0) + 1);
+      for (const it of items) {
+        const fStatus = !!state.status && it.status !== state.status;
+        const fType = !!state.type && it.type !== state.type;
+        const fTopic = !!state.topic && !it.topics.has(state.topic);
+        const fRest = (!!state.tag && !it.tags.has(state.tag)) || (words.length > 0 && !words.every((w) => it.hay.includes(w)));
+        it.ok = !(fStatus || fType || fTopic || fRest);
+        if (fRest || +fStatus + +fType + +fTopic > 1) continue;
+        if (!fType && !fTopic) { inc(counts.status, ''); inc(counts.status, it.status); }
+        if (!fStatus && !fTopic) { inc(counts.type, ''); inc(counts.type, it.type); }
+        if (!fStatus && !fType) { inc(counts.topic, ''); it.topics.forEach((t) => inc(counts.topic, t)); }
+      }
+
+      const visible: string[] = [];
       for (const s of sections) {
-        // Order: build order (with year heads) for "recently read", else sorted flat.
-        const sorter = sorters[state.sort];
-        const ordered = sorter
-          ? s.original.filter((li) => li.classList.contains('paper-item')).sort(sorter)
-          : s.original;
-        s.list.replaceChildren(...(sorter ? [...ordered, ...s.original.filter((li) => li.classList.contains('group-head'))] : ordered));
+        // Reorder the DOM only when the sort actually changed.
+        if (s.sortedBy !== state.sort) {
+          const sorter = sorters[state.sort];
+          s.order = sorter ? [...s.entries].sort(sorter) : s.original;
+          s.list.replaceChildren(...s.order.map((x) => x.li), ...(sorter ? s.heads.map((h) => h.li) : []));
+          if (sorter) s.heads.forEach((h) => (h.li.hidden = true));
+          s.sortedBy = state.sort;
+        }
 
         const sectionHidden = !!state.status && state.status !== s.id;
-        let shown = 0;
         let matched = 0;
-        let head: HTMLLIElement | null = null;
-        let headHasItems = false;
+        let head: Head | null = null;
+        let headMatched = 0;
+        let headShown = 0;
+        const closeHead = () => {
+          if (!head) return;
+          head.li.hidden = headShown === 0;
+          head.count.textContent = String(headMatched);
+        };
+        s.shown = [];
 
-        const closeHead = () => { if (head) head.hidden = !headHasItems; };
-
-        for (const li of [...s.list.children] as HTMLLIElement[]) {
-          if (li.classList.contains('group-head')) {
+        for (const x of s.order) {
+          if (x.kind === 'head') {
             closeHead();
-            head = sorter ? null : li;
-            headHasItems = false;
-            li.hidden = true;
+            head = x;
+            headMatched = headShown = 0;
             continue;
           }
-          const ok = !sectionHidden && matches(li);
+          const ok = !sectionHidden && x.ok;
+          const show = ok && s.shown.length < s.limit;
           if (ok) {
             matched++;
-            visible.add(li.dataset.slug!);
+            headMatched++;
+            visible.push(x.slug);
           }
-          const within = filtered || s.expanded || shown < LIMIT;
-          li.hidden = !(ok && within);
-          if (!li.hidden) {
-            shown++;
-            headHasItems = true;
+          if (show) {
+            s.shown.push(x);
+            headShown++;
           }
+          if (x.li.hidden === show) x.li.hidden = !show;
         }
         closeHead();
 
+        const remaining = matched - s.shown.length;
         s.el.hidden = sectionHidden || matched === 0;
-        s.more.hidden = matched <= shown;
-        s.more.textContent = `Show all ${matched} (${matched - shown} more)`;
-        s.el.querySelector('.list-count')!.textContent = filtered ? `${matched} of ${s.original.filter((li) => li.classList.contains('paper-item')).length}` : String(matched);
+        s.row.hidden = remaining <= 0;
+        if (remaining > 0) {
+          const step = Math.min(PAGE, remaining);
+          s.more.textContent = remaining > step ? `Show ${step} more (${remaining} remaining)` : `Show ${step} more`;
+          s.all.hidden = remaining <= step;
+          s.all.textContent = `Show all ${matched}`;
+        }
+        s.countEl.textContent = filtered ? `${matched} of ${s.entries.length}` : String(matched);
       }
 
-      // Facet counts: each facet counts matches under every *other* filter.
-      for (const btn of facetBtns) {
-        const key = btn.dataset.filter as keyof State;
-        const value = btn.dataset.value!;
-        const n = items.filter((li) => {
-          if (!matches(li, key)) return false;
-          if (!value) return true;
-          if (key === 'topic') return li.dataset.topics!.split(' ').includes(value);
-          return li.dataset[key] === value;
-        }).length;
-        const nEl = btn.querySelector('.n');
-        if (nEl) nEl.textContent = String(n);
-        btn.setAttribute('aria-pressed', String(state[key] === value));
-        btn.classList.toggle('empty-facet', n === 0 && state[key] !== value);
+      for (const f of facetBtns) {
+        const n = counts[f.key].get(f.value) ?? 0;
+        if (f.n) f.n.textContent = String(n);
+        const pressed = state[f.key] === f.value;
+        f.btn.setAttribute('aria-pressed', String(pressed));
+        f.btn.classList.toggle('empty-facet', n === 0 && !pressed);
       }
 
-      // Inline tag buttons mirror the tag filter.
-      root!.querySelectorAll<HTMLButtonElement>('.tag').forEach((b) => b.classList.toggle('active', b.dataset.tag === state.tag));
+      syncTagButtons();
       tagChip.hidden = !state.tag;
       tagChip.textContent = `#${state.tag} ✕`;
       tagChip.title = 'Remove tag filter';
 
-      countEl.textContent = filtered
-        ? `${visible.size} of ${items.length} ${items.length === 1 ? 'entry' : 'entries'}`
-        : `${items.length} ${items.length === 1 ? 'entry' : 'entries'}`;
+      const total = `${items.length} ${items.length === 1 ? 'entry' : 'entries'}`;
+      countEl.textContent = filtered ? `${visible.length} of ${total}` : total;
       clearBtn.hidden = !filtered;
-      emptyEl.hidden = !filtered || visible.size > 0;
+      emptyEl.hidden = !filtered || visible.length > 0;
 
       writeUrl();
-      lastVisible = filtered ? [...visible] : null;
+      lastVisible = filtered ? visible : null;
       announce();
     }
 
@@ -553,8 +743,11 @@ const sections = [
     // The map may initialise after us; resend the state once it's listening.
     document.addEventListener('topicmap:ready', announce);
 
+    /** Change filters / sort; every section goes back to its first page. */
     function set(patch: Partial<State>) {
       Object.assign(state, patch);
+      const first = isFiltered() ? FIRST_FILTERED : FIRST;
+      sections.forEach((s) => (s.limit = first));
       apply();
     }
 
@@ -571,6 +764,7 @@ const sections = [
     });
     input.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
+        clearTimeout(typing);
         input.value = '';
         set({ q: '' });
         input.blur();
@@ -588,33 +782,68 @@ const sections = [
 
     sortSel.addEventListener('change', () => set({ sort: sortSel.value }));
 
-    facetBtns.forEach((btn) => btn.addEventListener('click', () => {
-      const key = btn.dataset.filter as keyof State;
-      const value = btn.dataset.value!;
+    facetBtns.forEach(({ btn, key, value }) => btn.addEventListener('click', () => {
       // Topic chips toggle; status/type segments always select.
       set({ [key]: key === 'topic' && state.topic === value ? '' : value });
     }));
 
     root.addEventListener('click', (e) => {
-      const tag = (e.target as Element).closest<HTMLButtonElement>('.tag');
-      if (tag) set({ tag: state.tag === tag.dataset.tag ? '' : tag.dataset.tag! });
-      if ((e.target as Element).closest('[data-clear]')) clearAll();
+      const target = e.target as Element;
+      const tag = target.closest<HTMLButtonElement>('.paper-item .tag');
+      if (tag) {
+        rove(tag);
+        const t = tag.textContent!.trim();
+        set({ tag: state.tag === t ? '' : t });
+      }
+      if (target.closest('[data-clear]')) clearAll();
     });
     tagChip.addEventListener('click', () => set({ tag: '' }));
     clearBtn.addEventListener('click', clearAll);
 
-    sections.forEach((s) => s.more.addEventListener('click', () => {
-      s.expanded = true;
-      apply();
-    }));
-
-    // Hovering an entry highlights its dot in the topic map.
-    items.forEach((li) => {
-      const send = (slug: string | null) =>
-        document.dispatchEvent(new CustomEvent('readinglist:hover', { detail: { slug } }));
-      li.addEventListener('mouseenter', () => send(li.dataset.slug!));
-      li.addEventListener('mouseleave', () => send(null));
+    // Inline tags: one tab stop per entry, arrow keys move within it.
+    function rove(to: HTMLButtonElement) {
+      to.parentElement!.querySelectorAll<HTMLButtonElement>('.tag').forEach((b) => (b.tabIndex = b === to ? 0 : -1));
+    }
+    root.addEventListener('keydown', (e) => {
+      const tag = (e.target as Element).closest<HTMLButtonElement>('.paper-item .tag');
+      if (!tag) return;
+      const all = [...tag.parentElement!.querySelectorAll<HTMLButtonElement>('.tag')];
+      const i = all.indexOf(tag);
+      const keys: Record<string, number> = { ArrowRight: i + 1, ArrowDown: i + 1, ArrowLeft: i - 1, ArrowUp: i - 1, Home: 0, End: all.length - 1 };
+      const j = keys[e.key];
+      if (j === undefined) return;
+      e.preventDefault();
+      const next = all[(j + all.length) % all.length];
+      rove(next);
+      next.focus();
     });
+
+    // Paging: reveal the next step and move focus to the first new entry, so
+    // keyboard users continue where the list grew (viewport stays put).
+    sections.forEach((s) => {
+      const grow = (to: number) => {
+        const before = s.shown.length;
+        s.limit = to;
+        apply();
+        s.shown[before]?.link.focus({ preventScroll: true });
+      };
+      s.more.addEventListener('click', () => grow(s.shown.length + PAGE));
+      s.all.addEventListener('click', () => grow(Infinity));
+    });
+
+    // Hovering (or focusing) an entry highlights its dot in the topic map.
+    let hovered: string | null = null;
+    const hover = (el: EventTarget | null) => {
+      const li = el instanceof Element ? el.closest('.paper-item') : null;
+      const slug = (li && itemByLi.get(li)?.slug) ?? null;
+      if (slug === hovered) return;
+      hovered = slug;
+      document.dispatchEvent(new CustomEvent('readinglist:hover', { detail: { slug } }));
+    };
+    root.addEventListener('mouseover', (e) => hover(e.target));
+    root.addEventListener('mouseleave', () => hover(null));
+    root.addEventListener('focusin', (e) => hover(e.target));
+    root.addEventListener('focusout', (e) => hover(e.relatedTarget));
 
     // Clicking a topic in the map toggles the topic filter.
     document.addEventListener('topicmap:select', (e) => {
@@ -626,6 +855,6 @@ const sections = [
       }
     });
 
-    apply();
+    set({});
   }
 </script>
