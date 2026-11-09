@@ -3,7 +3,7 @@ title: "Attention Is All You Need"
 authors: ["Ashish Vaswani", "Noam Shazeer", "Niki Parmar", "Jakob Uszkoreit", "Llion Jones", "Aidan N. Gomez", "Łukasz Kaiser", "Illia Polosukhin"]
 year: 2017
 url: "https://arxiv.org/abs/1706.03762"
-tags: ["deep-learning", "nlp", "transformers", "attention"]
+tags: ["deep-learning", "transformers"]
 status: "read"
 dateRead: 2026-03-15
 tldr: "Replaces recurrence and convolutions entirely with multi-head self-attention, achieving state-of-the-art translation quality at a fraction of the training cost."

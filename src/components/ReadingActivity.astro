@@ -4,11 +4,22 @@ import { getCollection } from 'astro:content';
 const allPapers = await getCollection('papers', ({ data }) => !data.draft);
 const readPapers = allPapers.filter((p) => p.data.status === 'read' && p.data.dateRead);
 
+// The client shows the last WEEKS weeks relative to the viewer's "today", so
+// only ship entries from roughly that window. The extra margin keeps the grid
+// correct when the static build is a few weeks older than the visit.
+const WEEKS        = 26;
+const MARGIN_WEEKS = 4;
+const windowStart  = Date.now() - (WEEKS + MARGIN_WEEKS) * 7 * 86_400_000;
+
 // Serialise date → titles map for client-side use. dateRead is UTC midnight,
-// so use UTC parts to match the YYYY-MM-DD written in the file.
+// so use UTC parts to match the YYYY-MM-DD written in the file. Approximate
+// dates (dateReadApprox, e.g. backfilled entries) count toward the "N read"
+// total but stay out of the heatmap and streaks.
 const dateEntries: Record<string, string[]> = {};
 for (const paper of readPapers) {
+  if (paper.data.dateReadApprox) continue;
   const dr = paper.data.dateRead!;
+  if (dr.getTime() < windowStart) continue;
   const key = `${dr.getUTCFullYear()}-${String(dr.getUTCMonth() + 1).padStart(2, '0')}-${String(dr.getUTCDate()).padStart(2, '0')}`;
   (dateEntries[key] ??= []).push(paper.data.title);
 }
@@ -47,9 +58,8 @@ const LABEL_W = 22;  // px
   </div>
 </div>
 
-<script define:vars={{ dateEntries, CELL, GAP, LABEL_W }}>
+<script define:vars={{ dateEntries, WEEKS, CELL, GAP, LABEL_W }}>
 (function () {
-  const WEEKS = 26;
   const step  = CELL + GAP;
 
   const today = new Date();

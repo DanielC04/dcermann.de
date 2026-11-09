@@ -6,7 +6,7 @@ authors:
   - "Salvatore Trani"
 year: 2025
 url: "https://doi.org/10.1016/j.softx.2025.102277"
-tags: ["graph-theory", "network-analysis", "python", "software"]
+tags: ["temporal-networks", "software"]
 status: "read"
 dateRead: 2026-04-20
 tldr: "NetworkX-Temporal is a Python library for working with temporal graphs, providing tools for building, manipulating, and analyzing dynamic graph structures."

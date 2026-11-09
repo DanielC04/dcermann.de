@@ -4,7 +4,7 @@ type: "book"
 authors: ["Dan Hendrycks"]
 year: 2025
 url: "https://www.aisafetybook.com/"
-tags: ["ai-safety", "alignment", "ethics"]
+tags: ["alignment", "ethics", "ai-risk"]
 status: "read"
 dateRead: 2026-10-11
 ---

@@ -8,7 +8,7 @@ authors:
   - "Jack Lindsey"
 year: 2026
 url: "https://arxiv.org/abs/2601.10387"
-tags: ["ai-safety", "alignment", "interpretability", "llm"]
+tags: ["alignment", "interpretability", "llm"]
 status: "read"
 dateRead: 2026-04-19
 tldr: "Language models develop a dominant 'Assistant Axis' in persona space during post-training. Steering along it reinforces helpful behaviour; constraining activations to it stabilises models against persona drift and jailbreak-style persona attacks."

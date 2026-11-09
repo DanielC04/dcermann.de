@@ -3,7 +3,7 @@ title: "Scaling Laws for Neural Language Models"
 authors: ["Jared Kaplan", "Sam McCandlish", "Tom Henighan", "Tom B. Brown", "Benjamin Chess", "Rewon Child", "Scott Gray", "Alec Radford", "Jeffrey Wu", "Dario Amodei"]
 year: 2020
 url: "https://arxiv.org/abs/2001.08361"
-tags: ["deep-learning", "nlp", "scaling", "empirical"]
+tags: ["llm", "scaling"]
 status: "to-read"
 dateRead: 2026-04-01
 tldr: "Language model loss follows clean power laws in compute, data, and parameters, with compute being the binding constraint — implying you should train larger models for fewer steps than is common practice."
