@@ -67,11 +67,6 @@ const allPapers = await getCollection('papers', ({ data }) => !data.draft);
 
 const papers = allPapers
   .map((p) => {
-    for (const tag of p.data.tags) {
-      if (tagToTopic[tag] === undefined) {
-        console.warn(`[TopicMap] tag "${tag}" (${p.slug}) has no topic — add it to src/data/topics.ts`);
-      }
-    }
     const hasNotes = (p.body ?? '').trim().length > 0;
     return {
       slug:     p.slug,

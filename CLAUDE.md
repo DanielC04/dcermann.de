@@ -66,7 +66,17 @@ All site content lives in `src/data/` as plain TypeScript files with exported ty
 | `projects.ts` | `projects: Project[]` | `/projects` |
 | `skills.ts` | `skillCategories: SkillCategory[]` | `/about` |
 | `experience.ts` | `experiences: ExperienceItem[]` | `/about` |
-| `topics.ts` | `topics`, `tagToTopic`, `statusWeight` | `/papers` (TopicMap) |
+| `topics.ts` | `topics`, `topicGroups`, `tagToTopic`, `knownTags`, `statusWeight` | `/papers` (TopicMap, ReadingList chips) |
+
+Paper tags are a closed vocabulary: `src/content/config.ts` rejects any tag not in
+`tagToTopic`, so a new tag must be mapped in `topics.ts` first. Set
+`dateReadApprox: true` on backfilled entries whose `dateRead` is only the date they
+were added; they are excluded from the reading-activity heatmap and streaks.
+
+`/papers` layout: one grid, page order intro → ReadingActivity → ReadingList → TopicMap
+(desktop: list left, activity + sticky map right). TopicMap draws every paper as a dot
+up to `DETAIL_LIMIT` (75) entries, above that a topic overview that reveals a topic's
+papers on selection.
 
 ## Theming
 
