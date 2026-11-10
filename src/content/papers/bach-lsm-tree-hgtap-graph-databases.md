@@ -1,15 +1,11 @@
 ---
 title: "BACH: Bridging Adjacency List and CSR Format Using LSM-Trees for HGTAP Workloads"
-authors:
-  - Jianfeng Huang
-  - Yihao Cao
-  - Shubing Ren
-  - Baohua Wu
-  - Dongjing Miao
+authors: ["Jianfeng Huang", "Yihao Cao", "Shubing Ren", "Baohua Wu", "Dongjing Miao"]
 year: 2025
-url: https://dl.acm.org/doi/10.14778/3718057.3718076
+url: "https://dl.acm.org/doi/10.14778/3718057.3718076"
 tags: ["graphs", "data-systems"]
-status: read
+status: "read"
 dateRead: 2026-05-02
 tldr: "Proposes BACH, a disk-based graph database storage engine that uses a graph-aware LSM-Tree to progressively transform graph layout from TP-friendly adjacency lists to AP-friendly CSR format across compaction levels. An elastic merge compaction policy handles skewed vertex degree distributions, achieving high throughput, data freshness, and snapshot isolation for hybrid transactional/analytical workloads."
+source: "obsidian"
 ---

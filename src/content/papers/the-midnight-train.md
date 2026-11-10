@@ -8,4 +8,5 @@ tags: ["fiction"]
 status: "read"
 dateRead: 2026-09-15
 tldr: "A lonely 81-year-old rides a ghostly train back through his own life — regret, ambition and love, from the world of The Midnight Library."
+source: "obsidian"
 ---

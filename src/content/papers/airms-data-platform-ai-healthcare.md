@@ -7,4 +7,5 @@ tags: ["ehr", "clinical-ai", "data-systems", "federated-learning"]
 status: "read"
 dateRead: 2026-05-07
 tldr: "Presents AIR·MS, a unified platform giving researchers access to clinical datasets from 12M+ patients at Mount Sinai Health System, with demos across disease phenotyping, cardiovascular risk discovery, and federated learning."
+source: "obsidian"
 ---

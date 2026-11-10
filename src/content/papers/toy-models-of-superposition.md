@@ -6,4 +6,5 @@ url: "https://transformer-circuits.pub/2022/toy_model/index.html"
 tags: ["interpretability", "deep-learning"]
 status: "to-read"
 tldr: "Small ReLU networks store more sparse features than they have dimensions by packing them in superposition, explaining polysemantic neurons."
+source: "obsidian"
 ---

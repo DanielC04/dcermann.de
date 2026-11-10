@@ -198,7 +198,7 @@ const papersHtml = papers
       `class="paper s-${p.status}"`,
       `data-slug="${esc(p.slug)}"`,
       `data-topics="${p.topicIds.join(' ')}"`,
-      `data-meta="${p.type === 'book' ? 'Book' : 'Paper'} · ${p.year} · ${STATUS_LABEL[p.status]}"`,
+      `data-meta="${p.type === 'book' ? 'Book' : p.type === 'blog' ? 'Blog post' : 'Paper'} · ${p.year} · ${STATUS_LABEL[p.status]}"`,
       'tabindex="-1"',   // the reading list already offers the same links
       n ? `transform="translate(${n.x} ${n.y})"` : '',
     ].filter(Boolean).join(' ');

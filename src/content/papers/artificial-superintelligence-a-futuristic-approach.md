@@ -7,4 +7,5 @@ url: "https://www.routledge.com/Artificial-Superintelligence-A-Futuristic-Approa
 tags: ["ai-risk", "ethics"]
 status: "reading"
 tldr: "Lays out AI safety engineering for superintelligent systems — self-improvement, machine ethics, AI confinement and tests for human-level intelligence."
+source: "obsidian"
 ---

@@ -5,4 +5,5 @@ year: 2016
 url: "https://link.springer.com/article/10.1007/s12274-016-1215-6"
 tags: ["nanomaterials", "nanoparticle-synthesis"]
 status: "to-read"
+source: "obsidian"
 ---

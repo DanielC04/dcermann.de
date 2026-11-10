@@ -50,6 +50,7 @@ const authors = d.authors.slice(0, AUTHORS_SHOWN).join(', ') + (truncated ? ' et
       rel={hasNotes ? undefined : 'noopener noreferrer'}
     >{d.title}</a>
     {d.type === 'book' && <span class="type-badge">Book</span>}
+    {d.type === 'blog' && <span class="type-badge">Blog</span>}
     {hasNotes && <span class="has-notes" title="Has reading notes">✦</span>}
     {d.status === 'reading' && <span class="reading-indicator" title="Currently reading">↻</span>}
   </div>

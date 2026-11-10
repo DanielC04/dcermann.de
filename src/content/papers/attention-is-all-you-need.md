@@ -7,6 +7,7 @@ tags: ["deep-learning", "transformers"]
 status: "read"
 dateRead: 2026-03-15
 tldr: "Replaces recurrence and convolutions entirely with multi-head self-attention, achieving state-of-the-art translation quality at a fraction of the training cost."
+source: "obsidian"
 ---
 
 The Transformer is one of those papers where the title is the whole thesis. After reading it, what struck me most is how *inevitable* the architecture feels in retrospect — and how much of that feeling is a lie.

@@ -8,4 +8,5 @@ tags: ["ethics"]
 status: "read"
 dateRead: 2026-10-29
 tldr: "A philosopher's introduction to AI ethics — moral status of AI, privacy, responsibility, bias, and policy beyond hype and doom."
+source: "obsidian"
 ---

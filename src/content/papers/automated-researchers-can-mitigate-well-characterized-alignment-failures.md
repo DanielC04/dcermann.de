@@ -7,4 +7,5 @@ tags: ["alignment", "ai-agents", "llm"]
 status: "read"
 dateRead: 2026-10-19
 tldr: "Claude-based automated alignment researchers find post-training fixes for ten known failures like deception and sycophancy, beating ideas from human researchers."
+source: "obsidian"
 ---

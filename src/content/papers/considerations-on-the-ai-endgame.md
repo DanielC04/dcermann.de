@@ -7,4 +7,5 @@ url: "https://www.routledge.com/Considerations-on-the-AI-Endgame-Ethics-Risks-an
 tags: ["alignment", "ethics", "ai-risk"]
 status: "reading"
 tldr: "Explores AI welfare, AI identity, value alignment and universal AI ethics as superintelligent AI approaches."
+source: "obsidian"
 ---

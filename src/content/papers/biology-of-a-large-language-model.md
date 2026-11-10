@@ -7,4 +7,5 @@ tags: ["interpretability", "llm"]
 status: "read"
 dateRead: 2026-09-25
 tldr: "Uses attribution graphs to trace Claude 3.5 Haiku's internal circuits for multi-step reasoning, poem planning, multilingual processing and refusals."
+source: "obsidian"
 ---

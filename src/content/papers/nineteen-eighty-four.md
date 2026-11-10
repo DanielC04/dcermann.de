@@ -8,4 +8,5 @@ tags: ["fiction"]
 status: "read"
 dateRead: 2026-09-28
 tldr: "Winston Smith rebels against a totalitarian Party that rules Oceania through surveillance, propaganda and the rewriting of history."
+source: "obsidian"
 ---

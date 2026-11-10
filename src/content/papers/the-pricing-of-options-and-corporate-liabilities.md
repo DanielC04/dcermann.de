@@ -7,4 +7,5 @@ tags: ["options-pricing", "stochastic-calculus"]
 status: "read"
 dateRead: 2026-06-21
 tldr: "Derives the Black-Scholes formula for pricing European options using a risk-neutral hedging argument and stochastic calculus."
+source: "obsidian"
 ---

@@ -8,4 +8,5 @@ tags: ["historical-fiction"]
 status: "read"
 dateRead: 2026-08-15
 tldr: "Historical novel about Hedy Lamarr — Hollywood star and the inventor behind frequency hopping."
+source: "obsidian"
 ---

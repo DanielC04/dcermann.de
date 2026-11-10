@@ -7,4 +7,5 @@ tags: ["biosecurity", "protein-design", "ai-risk"]
 status: "read"
 dateRead: 2026-04-27
 tldr: "AI-powered protein design tools can generate variants of dangerous proteins that evade biosecurity screening at nucleic acid synthesis providers; the authors identify this gap and deploy patches to three major screening systems, substantially improving detection rates."
+source: "obsidian"
 ---

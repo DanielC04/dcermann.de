@@ -7,4 +7,5 @@ tags: ["alignment", "ai-agents", "llm"]
 status: "read"
 dateRead: 2026-10-01
 tldr: "Autonomous Claude-based research agents tackle weak-to-strong supervision, recovering 0.97 of the performance gap in about five days."
+source: "obsidian"
 ---

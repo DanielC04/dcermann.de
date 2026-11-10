@@ -5,4 +5,5 @@ year: 2016
 url: "https://arxiv.org/abs/1606.06565"
 tags: ["alignment", "reinforcement-learning"]
 status: "to-read"
+source: "obsidian"
 ---

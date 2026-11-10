@@ -1,17 +1,13 @@
 ---
 title: "The Assistant Axis: Situating and Stabilizing the Default Persona of Language Models"
-authors:
-  - "Christina Lu"
-  - "Jack Gallagher"
-  - "Jonathan Michala"
-  - "Kyle Fish"
-  - "Jack Lindsey"
+authors: ["Christina Lu", "Jack Gallagher", "Jonathan Michala", "Kyle Fish", "Jack Lindsey"]
 year: 2026
 url: "https://arxiv.org/abs/2601.10387"
 tags: ["alignment", "interpretability", "llm"]
 status: "read"
 dateRead: 2026-04-19
 tldr: "Language models develop a dominant 'Assistant Axis' in persona space during post-training. Steering along it reinforces helpful behaviour; constraining activations to it stabilises models against persona drift and jailbreak-style persona attacks."
+source: "obsidian"
 ---
 
 ## Thoughts and learnings

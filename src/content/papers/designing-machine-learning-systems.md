@@ -8,4 +8,5 @@ tags: ["machine-learning", "mlops"]
 status: "read"
 dateRead: 2026-10-12
 tldr: "An iterative framework for designing reliable, scalable ML systems for production."
+source: "obsidian"
 ---

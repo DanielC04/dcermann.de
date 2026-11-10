@@ -68,6 +68,12 @@ All site content lives in `src/data/` as plain TypeScript files with exported ty
 | `experience.ts` | `experiences: ExperienceItem[]` | `/about` |
 | `topics.ts` | `topics`, `topicGroups`, `tagToTopic`, `knownTags`, `statusWeight` | `/papers` (TopicMap, ReadingList chips) |
 
+Papers are **generated from Obsidian notes** (Notes vault, `reading_sync/main.py sync`).
+Files with `source: "obsidian"` are owned by that sync: edit the vault note, not the file,
+or the next sync overwrites it. Only frontmatter metadata and text between
+`<!-- public -->` / `<!-- /public -->` in the note are published. Hand-written files
+without `source` are left alone.
+
 Paper tags are a closed vocabulary: `src/content/config.ts` rejects any tag not in
 `tagToTopic`, so a new tag must be mapped in `topics.ts` first. Set
 `dateReadApprox: true` on backfilled entries whose `dateRead` is only the date they

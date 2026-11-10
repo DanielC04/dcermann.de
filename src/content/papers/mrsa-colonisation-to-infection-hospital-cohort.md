@@ -7,4 +7,5 @@ tags: ["epidemiology", "infection-control"]
 status: "read"
 dateRead: 2026-05-17
 tldr: "14.4% of newly colonised MRSA hospital patients progressed to clinical infection, most within two months, with >5x higher 30-day mortality."
+source: "obsidian"
 ---

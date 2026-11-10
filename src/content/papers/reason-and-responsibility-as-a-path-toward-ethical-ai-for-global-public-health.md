@@ -7,4 +7,5 @@ tags: ["ethics", "healthcare"]
 status: "read"
 dateRead: 2026-05-09
 tldr: "Framework for embedding ethical principles throughout the AI lifecycle to ensure accountable, responsible AI in public health."
+source: "obsidian"
 ---

@@ -13,7 +13,7 @@ const papers = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
-    type: z.enum(['paper', 'book']).default('paper'),
+    type: z.enum(['paper', 'book', 'blog']).default('paper'),
     authors: z.array(z.string()),
     year: z.number(),
     url: z.string().url(),
@@ -26,6 +26,8 @@ const papers = defineCollection({
     dateReadApprox: z.boolean().default(false),
     tldr: z.string().optional(),
     draft: z.boolean().optional().default(false),
+    // 'obsidian' = generated from a vault note by reading_sync (Notes repo); edit the note, not this file.
+    source: z.literal('obsidian').optional(),
   }),
 });
 

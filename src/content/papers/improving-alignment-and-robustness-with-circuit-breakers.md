@@ -7,4 +7,5 @@ tags: ["alignment", "llm"]
 status: "read"
 dateRead: 2026-10-13
 tldr: "Uses representation engineering to reroute the internal representations behind harmful outputs, making LLMs, multimodal models and agents robust to unseen attacks without losing utility."
+source: "obsidian"
 ---

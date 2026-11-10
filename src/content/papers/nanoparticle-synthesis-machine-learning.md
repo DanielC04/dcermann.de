@@ -5,4 +5,5 @@ year: 2021
 url: "https://www.nature.com/articles/s41578-021-00337-5"
 tags: ["nanomaterials", "nanoparticle-synthesis", "machine-learning"]
 status: "reading"
+source: "obsidian"
 ---

@@ -6,4 +6,5 @@ url: "https://transformer-circuits.pub/2025/attribution-graphs/methods.html"
 tags: ["interpretability", "llm"]
 status: "reading"
 tldr: "Builds an interpretable replacement model from cross-layer transcoders to trace a language model's computation as attribution graphs, validated with perturbation experiments."
+source: "obsidian"
 ---

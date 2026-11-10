@@ -6,4 +6,5 @@ url: "https://arxiv.org/abs/2502.14143"
 tags: ["multi-agent-systems", "ai-risk"]
 status: "reading"
 tldr: "Taxonomy of risks from interacting advanced AI agents: three failure modes (miscoordination, conflict, collusion) driven by seven risk factors such as information asymmetries, network effects and emergent agency."
+source: "obsidian"
 ---

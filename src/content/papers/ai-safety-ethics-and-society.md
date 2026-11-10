@@ -7,4 +7,5 @@ url: "https://www.aisafetybook.com/"
 tags: ["alignment", "ethics", "ai-risk"]
 status: "read"
 dateRead: 2026-10-11
+source: "obsidian"
 ---
