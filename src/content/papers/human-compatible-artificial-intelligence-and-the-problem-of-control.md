@@ -5,7 +5,7 @@ authors: ["Stuart Russell"]
 year: 2019
 url: "https://www.penguinrandomhouse.com/books/566677/human-compatible-by-stuart-russell/"
 tags: ["alignment", "ai-risk"]
-status: "reading"
+status: "to-read"
 tldr: "Argues the standard model of AI — optimizing fixed objectives — is unsafe, and proposes machines that are uncertain about human preferences and learn them from behavior."
 source: "obsidian"
 ---
