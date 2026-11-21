@@ -4,7 +4,8 @@ authors: ["Chandler Smith", "Qi Guo", "Cecilia Elena Tilli", "Sophia Hatz", "Dav
 year: 2026
 url: "https://arxiv.org/abs/2611.04556"
 tags: ["multi-agent-systems", "alignment"]
-status: "reading"
+status: "read"
+dateRead: 2027-11-21
 tldr: "Tests whether frontier-model agents can steer other agents through persuasion, deception or coercion across five evaluation environments; every tested model moved an overseer from rejection to approval, and agents redirected a peer's safety research trajectory."
 source: "obsidian"
 ---
