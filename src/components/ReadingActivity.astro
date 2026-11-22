@@ -1,5 +1,6 @@
 ---
 import { getCollection } from 'astro:content';
+import { url } from '../utils/url';
 
 const allPapers = await getCollection('papers', ({ data }) => !data.draft);
 const readPapers = allPapers.filter((p) => p.data.status === 'read' && p.data.dateRead);
@@ -15,13 +16,21 @@ const windowStart  = Date.now() - (WEEKS + MARGIN_WEEKS) * 7 * 86_400_000;
 // so use UTC parts to match the YYYY-MM-DD written in the file. Approximate
 // dates (dateReadApprox, e.g. backfilled entries) count toward the "N read"
 // total but stay out of the heatmap and streaks.
-const dateEntries: Record<string, string[]> = {};
+// Each entry links like the reading list: notes page if the paper has a body,
+// otherwise the external URL.
+type Entry = { title: string; href: string; external: boolean };
+const dateEntries: Record<string, Entry[]> = {};
 for (const paper of readPapers) {
   if (paper.data.dateReadApprox) continue;
   const dr = paper.data.dateRead!;
   if (dr.getTime() < windowStart) continue;
   const key = `${dr.getUTCFullYear()}-${String(dr.getUTCMonth() + 1).padStart(2, '0')}-${String(dr.getUTCDate()).padStart(2, '0')}`;
-  (dateEntries[key] ??= []).push(paper.data.title);
+  const hasNotes = (paper.body ?? '').trim().length > 0;
+  (dateEntries[key] ??= []).push({
+    title: paper.data.title,
+    href: hasNotes ? url(`/papers/${paper.slug}`) : paper.data.url,
+    external: !hasNotes,
+  });
 }
 
 const totalRead = readPapers.length;
@@ -173,7 +182,7 @@ const LABEL_W = 22;  // px
       if (cell.future)    cls.push('future');
       div.className = cls.join(' ');
       div.setAttribute('aria-label', cell.count > 0
-        ? `Read on ${fmt(cell.date)}: ${cell.titles.join('; ')}`
+        ? `Read on ${fmt(cell.date)}: ${cell.titles.map(t => t.title).join('; ')}`
         : `No papers on ${fmt(cell.date)}`);
       cellData.set(div, cell);
       col.appendChild(div);
@@ -183,9 +192,14 @@ const LABEL_W = 22;  // px
   gridBody.appendChild(weekColumns);
   gridInner.appendChild(gridBody);
 
-  // ── Tooltip: date + titles read that day ──────────────────────────────
-  const tip    = document.getElementById('ra-tip');
-  const widget = tip.parentElement;
+  // ── Tooltip: date + clickable titles read that day ────────────────────
+  // Moved to <body> with position: fixed so the card's overflow: hidden (and
+  // any transformed ancestor from scroll-reveal) can't clip or misplace it.
+  const tip = document.getElementById('ra-tip');
+  document.body.appendChild(tip);
+
+  let hideTimer = 0;
+  let current   = null;
 
   function line(cls, text) {
     const span = document.createElement('span');
@@ -194,33 +208,77 @@ const LABEL_W = 22;  // px
     return span;
   }
 
+  function link(entry) {
+    const a = document.createElement('a');
+    a.className = 'tip-title';
+    a.href = entry.href;
+    a.textContent = entry.title;
+    if (entry.external) {
+      a.target = '_blank';
+      a.rel = 'noopener noreferrer';
+    }
+    return a;
+  }
+
+  function hideTip() {
+    clearTimeout(hideTimer);
+    tip.hidden = true;
+    current = null;
+  }
+
+  function scheduleHide() {
+    clearTimeout(hideTimer);
+    hideTimer = setTimeout(hideTip, 250);
+  }
+
   function showTip(el) {
+    clearTimeout(hideTimer);
+    if (el === current && !tip.hidden) return;
     const cell = cellData.get(el);
     if (!cell) return;
+    current = el;
     tip.replaceChildren(
       line('tip-meta', cell.count > 0
         ? `${fmt(cell.date)} · ${cell.count} read`
         : fmt(cell.date)),
-      ...cell.titles.map(t => line('tip-title', t)),
+      ...cell.titles.map(link),
     );
     tip.hidden = false;
 
-    // Above the cell, clamped inside the card; flip below if no room on top.
-    const box = widget.getBoundingClientRect();
-    const r   = el.getBoundingClientRect();
-    const w   = tip.offsetWidth;
-    const h   = tip.offsetHeight;
-    const cx  = r.left + r.width / 2 - box.left;
-    tip.style.left = `${Math.max(4, Math.min(box.width - w - 4, cx - w / 2))}px`;
-    const above = r.top - box.top - h - 6;
-    tip.style.top = `${above >= 4 ? above : r.bottom - box.top + 6}px`;
+    // Above the cell, clamped to the viewport; flip below if no room on top.
+    // The 6px offset overlaps the cell's hover area enough that moving the
+    // pointer into the tip doesn't trigger the hide.
+    const r  = el.getBoundingClientRect();
+    const vw = document.documentElement.clientWidth;
+    const vh = document.documentElement.clientHeight;
+    const w  = tip.offsetWidth;
+    const h  = tip.offsetHeight;
+    const cx = r.left + r.width / 2;
+    tip.style.left = `${Math.max(4, Math.min(vw - w - 4, cx - w / 2))}px`;
+    const above = r.top - h - 4;
+    const below = r.bottom + 4;
+    tip.style.top = `${above >= 4 || below + h > vh - 4 ? Math.max(4, above) : below}px`;
   }
 
   weekColumns.addEventListener('mouseover', e => {
     if (e.target.classList.contains('cell')) showTip(e.target);
   });
-  weekColumns.addEventListener('mouseleave', () => { tip.hidden = true; });
-  gridInner.parentElement.addEventListener('scroll', () => { tip.hidden = true; }, { passive: true });
+  weekColumns.addEventListener('mouseleave', scheduleHide);
+  tip.addEventListener('mouseenter', () => clearTimeout(hideTimer));
+  tip.addEventListener('mouseleave', scheduleHide);
+
+  // Touch / click: tap a cell to pin the tip, tap elsewhere to close it.
+  weekColumns.addEventListener('click', e => {
+    if (e.target.classList.contains('cell')) showTip(e.target);
+  });
+  document.addEventListener('click', e => {
+    if (!tip.hidden && !tip.contains(e.target) && !weekColumns.contains(e.target)) hideTip();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') hideTip(); });
+
+  gridInner.parentElement.addEventListener('scroll', hideTip, { passive: true });
+  window.addEventListener('scroll', hideTip, { passive: true });
+  window.addEventListener('resize', hideTip, { passive: true });
 })();
 </script>
 
@@ -374,15 +432,14 @@ const LABEL_W = 22;  // px
   // ── Tooltip ───────────────────────────────────────────────────────────────
 
   .ra-tip {
-    position: absolute;
-    z-index: 2;
-    max-width: 220px;
+    position: fixed;
+    z-index: 1000;
+    max-width: 260px;
     padding: 0.45rem 0.6rem;
     border: 1px solid color-mix(in srgb, var(--text-color-dim) 25%, transparent);
     border-radius: 6px;
     background: var(--background-color);
     box-shadow: 0 4px 14px rgb(0 0 0 / 0.15);
-    pointer-events: none;
     line-height: 1.35;
 
     &[hidden] { display: none; }
@@ -394,6 +451,13 @@ const LABEL_W = 22;  // px
       font-size: 0.8rem;
       font-weight: 700;
       color: var(--text-color);
+      text-decoration: none;
+
+      &:hover,
+      &:focus-visible {
+        color: var(--contrast-color);
+        text-decoration: underline;
+      }
     }
 
     .tip-meta {

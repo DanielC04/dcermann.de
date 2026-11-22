@@ -35,10 +35,11 @@
  *   dispatched  topicmap:ready      — once listening, so the list can resend its state
  */
 import { getCollection } from 'astro:content';
-import { topics, statusWeight, topicIdsForTags } from '../data/topics';
+import { topics, statusWeight, topicIdsForTags, minorTopicIds, OTHER_TOPIC, MIN_TOPIC_ENTRIES } from '../data/topics';
 import {
   createSimulation,
   clampToFrame,
+  resolveOverlaps,
   hash01,
   seedOffset,
   FRAME,
@@ -65,6 +66,27 @@ const DETAIL_LIMIT = 75;
 
 const allPapers = await getCollection('papers', ({ data }) => !data.draft);
 
+// Tiny topics fold into one "Other" circle (the list filters it the same way).
+const minor = minorTopicIds(allPapers.map((p) => p.data.tags));
+const mapTopicIds = (tags: string[]) => [
+  ...new Set(topicIdsForTags(tags).map((id) => (minor.has(id) ? OTHER_TOPIC.id : id))),
+];
+
+// Colour families on the map. AI-safety topics carry a `group` in
+// data/topics.ts; the rest are grouped here only, so the list's chip groups
+// stay as they are.
+const COLOR_GROUP: Record<string, string> = {
+  llm: 'ml', ml: 'ml',
+  health: 'science', chemistry: 'science', networks: 'science',
+};
+const COLOR_GROUPS = [
+  { id: 'ai-safety', label: 'AI safety' },
+  { id: 'ml',        label: 'ML & LLMs' },
+  { id: 'science',   label: 'Science' },
+  { id: 'other',     label: 'Other' },
+];
+const colorGroup = (t: { id: string; group?: string }) => t.group ?? COLOR_GROUP[t.id] ?? 'other';
+
 const papers = allPapers
   .map((p) => {
     const hasNotes = (p.body ?? '').trim().length > 0;
@@ -76,7 +98,7 @@ const papers = allPapers
       status:   p.data.status as Status,
       href:     hasNotes ? url(`/papers/${p.slug}`) : p.data.url,
       external: !hasNotes,
-      topicIds: topicIdsForTags(p.data.tags),
+      topicIds: mapTopicIds(p.data.tags),
     };
   })
   .filter((p) => p.topicIds.length > 0)
@@ -86,7 +108,17 @@ const detail = papers.length <= DETAIL_LIMIT;
 
 // ── Topic stats ──────────────────────────────────────────────────────────────
 
-const topicStats = topics
+const minorStats = topics
+  .filter((t) => minor.has(t.id))
+  .map((t) => ({ label: t.label, n: allPapers.filter((p) => topicIdsForTags(p.data.tags).includes(t.id)).length }))
+  .sort((a, b) => b.n - a.n);
+
+const mapTopics: { id: string; label: string; group?: string }[] = [
+  ...topics.filter((t) => !minor.has(t.id)),
+  ...(minor.size ? [{ ...OTHER_TOPIC, group: 'other' }] : []),
+];
+
+const topicStats = mapTopics
   .map((t) => {
     const members = papers.filter((p) => p.topicIds.includes(t.id));
     const count = (s: Status) => members.filter((p) => p.status === s).length;
@@ -95,7 +127,7 @@ const topicStats = topics
       counts['read'] * statusWeight['read'] +
       counts['reading'] * statusWeight['reading'] +
       counts['to-read'] * statusWeight['to-read'];
-    return { id: t.id, label: t.label, group: (t as { group?: string }).group, total: members.length, counts, score };
+    return { id: t.id, label: t.label, group: t.group, color: colorGroup(t), total: members.length, counts, score };
   })
   .filter((t) => t.total > 0);
 
@@ -104,11 +136,11 @@ const totalScore = topicStats.reduce((s, t) => s + t.score, 0) || 1;
 
 // Circle area ∝ the topic's share of all interest (not of the biggest topic),
 // so one dominant topic doesn't flatten everything else to the minimum size.
-// About 16% of the frame is shared out between topics, with bounds so tiny
+// About 10% of the frame is shared out between topics, with bounds so tiny
 // topics stay hoverable and a dominant one doesn't swallow the map.
 const R_MIN = 6;
-const R_MAX = 30;
-const AREA = FRAME.w * FRAME.h * 0.16;
+const R_MAX = 24;
+const AREA = FRAME.w * FRAME.h * 0.1;
 const radius = (score: number) =>
   Math.max(R_MIN, Math.min(R_MAX, Math.sqrt(((score / totalScore) * AREA) / Math.PI)));
 
@@ -120,11 +152,12 @@ const pid = (slug: string) => `p:${slug}`;
 // Topics start on a ring at an angle hashed from their id (or their group's id,
 // so related topics start together); adding a topic leaves the others in place.
 const topicNodes: LayoutNode[] = topicStats.map((t) => {
-  const a = t.group
-    ? (hash01(`g:${t.group}`) + (hash01(t.id) - 0.5) * 0.15) * Math.PI * 2
+  const a = t.color
+    ? (hash01(`g:${t.color}`) + (hash01(t.id) - 0.5) * 0.15) * Math.PI * 2
     : hash01(t.id) * Math.PI * 2;
   const d = 0.6 + 0.4 * hash01(`${t.id}#r`);
-  return { id: tid(t.id), kind: 'topic', r: radius(t.score), label: t.label, x: Math.cos(a) * 100 * d, y: Math.sin(a) * 75 * d };
+  // The label carries the count ("Alignment 17"); its width keeps the layout clear of it.
+  return { id: tid(t.id), kind: 'topic', r: radius(t.score), label: `${t.label} ${t.total}`, group: t.color, x: Math.cos(a) * 100 * d, y: Math.sin(a) * 75 * d };
 });
 const nodeById: Record<string, LayoutNode> = Object.fromEntries(topicNodes.map((n) => [n.id, n]));
 
@@ -168,6 +201,7 @@ const links: LayoutLinks = {
 };
 
 createSimulation(nodes, links).stop().tick(600);
+resolveOverlaps(nodes);
 
 const round = (v: number) => Math.round(v * 10) / 10;
 nodes.forEach((n) => { clampToFrame(n); n.x = round(n.x); n.y = round(n.y); });
@@ -175,9 +209,8 @@ nodes.forEach((n) => { clampToFrame(n); n.x = round(n.x); n.y = round(n.y); });
 const pos = (id: string) => nodeById[id];
 const svgTopics = topicStats.map((t) => ({ ...t, x: pos(tid(t.id)).x, y: pos(tid(t.id)).y, r: round(pos(tid(t.id)).r) }));
 const topicLabel = Object.fromEntries(topicStats.map((t) => [t.id, t.label]));
-
-// Count fits inside the circle (Space Mono ≈ 0.6em per digit at 9.5px)?
-const countFits = (t: { r: number; total: number }) => t.r > String(t.total).length * 2.9 + 2;
+const topicColor = Object.fromEntries(topicStats.map((t) => [t.id, t.color]));
+const usedColors = COLOR_GROUPS.filter((g) => topicStats.some((t) => t.color === g.id));
 
 // ── Paper and edge markup ────────────────────────────────────────────────────
 // Rendered as strings: with up to ~1000 papers, Astro's per-element scoping
@@ -197,15 +230,18 @@ const papersHtml = papers
       detail && p.external ? 'target="_blank" rel="noopener noreferrer"' : '',
       `class="paper s-${p.status}"`,
       `data-slug="${esc(p.slug)}"`,
+      `data-title="${esc(p.title)}"`,
+      `aria-label="${esc(`${p.title} (${STATUS_LABEL[p.status]})`)}"`,
       `data-topics="${p.topicIds.join(' ')}"`,
       `data-meta="${p.type === 'book' ? 'Book' : p.type === 'blog' ? 'Blog post' : 'Paper'} · ${p.year} · ${STATUS_LABEL[p.status]}"`,
       'tabindex="-1"',   // the reading list already offers the same links
       n ? `transform="translate(${n.x} ${n.y})"` : '',
     ].filter(Boolean).join(' ');
-    if (!detail) return `<a ${attrs}><title>${esc(p.title)}</title></a>`;
-    const r = p.status === 'reading' ? PAPER_R - 0.8 : PAPER_R;
+    if (!detail) return `<a ${attrs}></a>`;
+    // Read dots are a touch smaller so open and in-progress ones stand out.
+    const r = p.status === 'read' ? PAPER_R - 1 : p.status === 'reading' ? PAPER_R - 0.8 : PAPER_R;
     return (
-      `<a ${attrs}><title>${esc(p.title)} (${STATUS_LABEL[p.status]})</title>` +
+      `<a ${attrs}>` +
       `<circle class="hit" r="9"/>` +
       (p.status === 'reading' ? `<circle class="pulse" r="${PAPER_R}"/>` : '') +
       `<circle class="dot" r="${r}"/></a>`
@@ -219,7 +255,7 @@ const edgesHtml = detail
         const a = pos(pid(p.slug));
         return p.topicIds.map((t) => {
           const b = pos(tid(t));
-          return `<line x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" data-paper="${esc(p.slug)}" data-topic="${t}"/>`;
+          return `<line class="g-${topicColor[t]}" x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" data-paper="${esc(p.slug)}" data-topic="${t}"/>`;
         });
       })
       .join('')
@@ -239,51 +275,52 @@ const breakdown = (c: Record<Status, number>) =>
     c['reading'] && `${c['reading']} reading`,
     c['to-read'] && `${c['to-read']} to read`,
   ].filter(Boolean).join(' · ');
+const otherNote = minorStats.map((m) => `${m.label} ${m.n}`).join(', ');
 ---
 
 <div class="tm-card" id="tm">
   <header class="tm-head">
-    <span class="tm-title">What I read about</span>
+    <div class="tm-head-row">
+      <span class="tm-title">What I read about</span>
+      <button type="button" class="tm-reset" hidden>Reset layout</button>
+    </div>
     {detail ? (
       <p class="tm-desc">
-        Each <strong>circle is a topic</strong>, sized by how much I've read in it.
-        Each <strong>dot is a paper or book</strong>, linked to every topic it covers, so
-        dots sitting between circles mark where my interests overlap.
+        <strong>Circles</strong> are topics, sized by how much I've read.
+        <strong>Dots</strong> are entries, linked to every topic they cover.
       </p>
     ) : (
       <p class="tm-desc">
-        Each <strong>circle is a topic</strong>, sized by how much I've read in it.
-        <strong>Lines join topics that share entries</strong> — the thicker, the more
-        overlap. <span class="js-only" hidden>Select a topic to see its papers and books as dots.</span>
+        <strong>Circles</strong> are topics, sized by how much I've read.
+        <strong>Lines</strong> join topics that share entries.
       </p>
     )}
+    <ul class="tm-legend tm-groups" aria-label="Topic colours">
+      {usedColors.map((g) => (
+        <li><span class:list={['swatch', `g-${g.id}`]} aria-hidden="true"></span>{g.label}</li>
+      ))}
+    </ul>
     <ul class:list={['tm-legend', { 'js-only': !detail }]} aria-label="Legend" hidden={!detail}>
-      <li><svg width="10" height="10" aria-hidden="true"><circle cx="5" cy="5" r="4" class="leg-read" /></svg>read</li>
+      <li><svg width="10" height="10" aria-hidden="true"><circle cx="5" cy="5" r="3.4" class="leg-read" /></svg>read</li>
       <li><svg width="10" height="10" aria-hidden="true"><circle cx="5" cy="5" r="3.2" class="leg-reading" /></svg>reading now</li>
       <li><svg width="10" height="10" aria-hidden="true"><circle cx="5" cy="5" r="3.6" class="leg-toread" /></svg>to read</li>
     </ul>
-    <p class="tm-hint js-only" hidden>
-      {detail ? 'Click a topic to filter the list · drag to rearrange' : 'Click a topic to filter the list and show its entries · drag to rearrange'}
-    </p>
   </header>
 
   <!-- Map and interest bars share one panel so the (sticky) card stays short -->
   <div class="tm-tabs js-only" role="tablist" aria-label="View" hidden>
     <button type="button" role="tab" id="tm-tab-map" aria-controls="tm-panel-map" aria-selected="true">Topic map</button>
-    <button type="button" role="tab" id="tm-tab-bars" aria-controls="tm-panel-bars" aria-selected="false">Interest by topic</button>
+    <button type="button" role="tab" id="tm-tab-bars" aria-controls="tm-panel-bars" aria-selected="false">Ranked</button>
   </div>
 
   <div class="tm-map" id="tm-panel-map" role="tabpanel" aria-labelledby="tm-tab-map">
     <svg
       viewBox={VIEWBOX}
       role="group"
-      aria-labelledby="tm-svg-title"
+      aria-label={`Network of ${svgTopics.length} topics and the ${papers.length} papers and books that cover them`}
       class:list={['tm-svg', detail ? 'is-detail' : 'is-overview']}
       data-mode={detail ? 'detail' : 'overview'}
     >
-      <title id="tm-svg-title">
-        Network of {svgTopics.length} topics and the {papers.length} papers and books that cover them
-      </title>
 
       {!detail && (
         <g class="tlinks">
@@ -303,18 +340,19 @@ const breakdown = (c: Record<Status, number>) =>
       <g class="topics">
         {svgTopics.map((t) => (
           <g
-            class="topic"
+            class:list={['topic', `g-${t.color}`]}
             data-topic={t.id}
+            data-label={t.label}
+            data-group={t.color}
             data-tip={`${entries(t.total)} · ${breakdown(t.counts)}`}
+            data-note={t.id === 'other' ? otherNote : undefined}
             transform={`translate(${t.x} ${t.y})`}
             tabindex="0"
             role="button"
             aria-pressed="false"
             aria-label={`${t.label}: ${entries(t.total)}. Filter the list by this topic.`}
           >
-            <title>{t.label}: {entries(t.total)} ({breakdown(t.counts)})</title>
             <circle r={t.r} />
-            {countFits(t) && <text class="topic-count" dy="0.35em">{t.total}</text>}
           </g>
         ))}
       </g>
@@ -324,15 +362,20 @@ const breakdown = (c: Record<Status, number>) =>
       <g class="labels" aria-hidden="true">
         {svgTopics.map((t) => (
           <text
-            class="topic-label"
+            class:list={['topic-label', `g-${t.color}`]}
             data-topic={t.id}
             transform={`translate(${t.x} ${t.y})`}
             y={round(t.r + LABEL_FONT + 1.5)}
-          >{t.label}</text>
+          >{t.label}<tspan class="topic-n" dx="3">{t.total}</tspan></text>
         ))}
       </g>
     </svg>
     <div class="tm-tip" role="tooltip" hidden></div>
+    <p class="tm-hint js-only" hidden>
+      {detail
+        ? <><span class="on-hover">Hover to trace links · </span>Click a topic to filter the list</>
+        : 'Click a topic to filter the list and show its entries'}
+    </p>
   </div>
 
   <div class="tm-bars" id="tm-panel-bars" role="tabpanel" aria-labelledby="tm-tab-bars">
@@ -340,7 +383,7 @@ const breakdown = (c: Record<Status, number>) =>
     <ol>
       {ranked.map((t) => (
         <li>
-          <button class="bar-row" type="button" data-topic={t.id} aria-pressed="false" disabled>
+          <button class:list={['bar-row', `g-${t.color}`]} type="button" data-topic={t.id} aria-pressed="false" disabled>
             <span class="bar-label">{t.label}</span>
             <span class="bar-track" aria-hidden="true">
               {t.counts['read'] > 0 && (
@@ -362,6 +405,7 @@ const breakdown = (c: Record<Status, number>) =>
       Interest = entries in the topic, where a finished one counts {statusWeight['read']},
       one in progress {statusWeight['reading']}, and one on the to-read list {statusWeight['to-read']}.
       An entry counts toward every topic it covers.
+      {otherNote && <>Other groups topics with fewer than {MIN_TOPIC_ENTRIES} entries ({otherNote}).</>}
     </p>
   </div>
 </div>
@@ -373,7 +417,12 @@ const breakdown = (c: Record<Status, number>) =>
     --tm-ink:      var(--text-color);
     --tm-ink-dim:  var(--text-color-dim);
     --tm-surface:  var(--background-color-1);
-    --tm-topic-fill: color-mix(in srgb, var(--tm-accent) 16%, var(--tm-surface));
+
+    // Topic colour families (mid-luminance: readable on both themes).
+    --g-ai-safety: var(--contrast-color);
+    --g-ml:        #d18f45;
+    --g-science:   #4fa57c;
+    --g-other:     color-mix(in srgb, var(--text-color-dim) 70%, var(--background-color-1));
 
     border: 1px solid color-mix(in srgb, var(--tm-ink-dim) 20%, transparent);
     border-radius: 10px;
@@ -425,6 +474,43 @@ const breakdown = (c: Record<Status, number>) =>
   .tm-legend[hidden] { display: none; }
 
   // ── Header ────────────────────────────────────────────────────────────
+  .tm-head-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .tm-reset {
+    font-family: 'Space Mono', 'Courier New', monospace;
+    font-size: 0.62rem;
+    color: var(--tm-accent);
+    background: none;
+    border: 1px solid color-mix(in srgb, var(--tm-accent) 40%, transparent);
+    border-radius: 4px;
+    padding: 0.1rem 0.4rem;
+    cursor: pointer;
+
+    &:hover { background: color-mix(in srgb, var(--tm-accent) 12%, transparent); }
+    &[hidden] { display: none; }
+  }
+
+  .tm-groups {
+    margin-bottom: 0.35rem;
+  }
+
+  .swatch {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--gc) 78%, var(--tm-surface));
+  }
+
+  .g-ai-safety { --gc: var(--g-ai-safety); }
+  .g-ml        { --gc: var(--g-ml); }
+  .g-science   { --gc: var(--g-science); }
+  .g-other     { --gc: var(--g-other); }
+
   .tm-title,
   .tm-subtitle {
     font-family: 'Space Grotesk', sans-serif;
@@ -459,16 +545,21 @@ const breakdown = (c: Record<Status, number>) =>
     li { display: flex; align-items: center; gap: 0.35rem; }
   }
 
+  // Touch screens can't hover; the hint only mentions it where it works.
+  .on-hover { @media (hover: none) { display: none; } }
+
   .tm-hint {
-    margin: 0.45rem 0 0;
+    margin: 0.5rem 0 0;
+    text-align: center;
+    opacity: 0.8;
     font-family: 'Space Mono', 'Courier New', monospace;
     font-size: 0.62rem;
     color: var(--tm-accent);
   }
 
-  .leg-read    { fill: var(--tm-ink); }
+  .leg-read    { fill: color-mix(in srgb, var(--tm-ink-dim) 85%, var(--tm-surface)); }
   .leg-reading { fill: var(--tm-ink); stroke: var(--tm-accent); stroke-width: 1.6; }
-  .leg-toread  { fill: var(--tm-surface); stroke: var(--tm-ink-dim); stroke-width: 1.4; }
+  .leg-toread  { fill: var(--tm-surface); stroke: var(--tm-ink-dim); stroke-width: 1.2; stroke-dasharray: 1.8 1.4; }
 
   // ── Map ───────────────────────────────────────────────────────────────
   .tm-map {
@@ -603,9 +694,9 @@ const breakdown = (c: Record<Status, number>) =>
     &:last-child  { border-radius: 0 3px 3px 0; }
     &:only-child  { border-radius: 3px; }
 
-    &.s-read    { background: var(--tm-accent); }
-    &.s-reading { background: color-mix(in srgb, var(--tm-accent) 55%, var(--tm-surface)); }
-    &.s-to-read { background: color-mix(in srgb, var(--tm-accent) 25%, var(--tm-surface)); }
+    &.s-read    { background: var(--gc, var(--tm-accent)); }
+    &.s-reading { background: color-mix(in srgb, var(--gc, var(--tm-accent)) 55%, var(--tm-surface)); }
+    &.s-to-read { background: color-mix(in srgb, var(--gc, var(--tm-accent)) 25%, var(--tm-surface)); }
   }
 
   .tm-note {
@@ -622,11 +713,19 @@ const breakdown = (c: Record<Status, number>) =>
 -->
 <style lang="scss" is:global>
   #tm .tm-svg {
+    .g-ai-safety { --gc: var(--g-ai-safety); }
+    .g-ml        { --gc: var(--g-ml); }
+    .g-science   { --gc: var(--g-science); }
+    .g-other     { --gc: var(--g-other); }
+
+    // Faint by default: the dots' positions already show which topics they
+    // sit near. Hovering a topic or dot brings its links up (focus mode).
+    // Obsidian-style: thin neutral links, coloured only when lit.
     .edges line {
-      stroke: var(--tm-accent);
-      stroke-width: 1;
-      opacity: 0.4;
-      transition: opacity 0.15s;
+      stroke: var(--tm-ink-dim);
+      stroke-width: 0.7;
+      opacity: 0.22;
+      transition: opacity 0.2s, stroke 0.2s;
     }
 
     .tlinks line {
@@ -642,45 +741,46 @@ const breakdown = (c: Record<Status, number>) =>
       touch-action: none;   // lets a drag start on a node without scrolling the page
       transition: opacity 0.15s;
 
+      // Solid nodes, a thin surface ring instead of a heavy outline.
       circle {
-        fill: var(--tm-topic-fill);
-        stroke: var(--tm-accent);
-        stroke-width: 1.4;
-        transition: stroke-width 0.15s, fill 0.15s;
+        fill: color-mix(in srgb, var(--gc, var(--tm-accent)) 78%, var(--tm-surface));
+        stroke: var(--tm-surface);
+        stroke-width: 1.5;
+        transition: stroke 0.2s, fill 0.2s, filter 0.2s;
       }
 
-      &:focus-visible circle { stroke-width: 2.6; }
+      &:focus-visible circle { stroke: var(--tm-ink); stroke-width: 2; }
 
       &.selected circle {
-        fill: color-mix(in srgb, var(--tm-accent) 38%, var(--tm-surface));
-        stroke-width: 2.4;
+        fill: var(--gc, var(--tm-accent));
+        stroke: var(--tm-ink);
+        stroke-width: 2;
       }
 
       &.out { opacity: 0.35; }
     }
 
-    .topic-count {
-      font-family: 'Space Mono', 'Courier New', monospace;
-      font-size: 9.5px;
-      font-weight: 700;
-      fill: var(--tm-ink);
-      text-anchor: middle;
-      pointer-events: none;
-    }
 
     .topic-label {
       font-family: 'Space Grotesk', sans-serif;
       font-size: 10.5px;
       font-weight: 600;
-      fill: var(--tm-ink);
+      fill: color-mix(in srgb, var(--tm-ink) 75%, var(--tm-surface));
       text-anchor: middle;
       pointer-events: none;
-      transition: opacity 0.15s;
+      transition: opacity 0.2s, fill 0.2s;
       // Halo keeps labels legible where edges pass behind them.
       paint-order: stroke;
       stroke: var(--tm-surface);
-      stroke-width: 3px;
+      stroke-width: 4px;
       stroke-linejoin: round;
+
+      .topic-n {
+        font-family: 'Space Mono', 'Courier New', monospace;
+        font-size: 9px;
+        font-weight: 700;
+        fill: var(--gc, var(--tm-accent));
+      }
     }
 
     .paper {
@@ -692,27 +792,31 @@ const breakdown = (c: Record<Status, number>) =>
       .hit { fill: transparent; }
 
       .dot {
-        fill: var(--tm-ink);
+        fill: color-mix(in srgb, var(--tm-ink-dim) 85%, var(--tm-surface));
+        transition: fill 0.2s;
         stroke: var(--tm-surface);   // 1px surface ring separates touching dots
         stroke-width: 1;
       }
 
+      &.s-reading .dot { fill: var(--tm-ink); }
+
       &.s-to-read .dot {
         fill: var(--tm-surface);
         stroke: var(--tm-ink-dim);
-        stroke-width: 1.4;
+        stroke-width: 1.2;
+        stroke-dasharray: 1.8 1.4;
       }
 
       .pulse {
         fill: none;
         stroke: var(--tm-accent);
-        stroke-width: 1.6;
+        stroke-width: 1.1;
         transform-box: fill-box;
         transform-origin: center;
         animation: tm-pulse 2.2s ease-out infinite;
       }
 
-      &.on .dot,
+      &.on .dot { fill: var(--tm-ink); }
       &:focus-visible .dot { stroke: var(--tm-accent); stroke-width: 2; }
     }
 
@@ -726,12 +830,14 @@ const breakdown = (c: Record<Status, number>) =>
 
     // Focus mode: set while a topic or paper is hovered/focused or a topic is selected.
     &.is-focus {
-      .edges line:not(.on)  { opacity: 0.05; }
-      .edges line.on        { opacity: 0.9; stroke-width: 1.4; }
+      .edges line:not(.on)  { opacity: 0.04; }
+      .edges line.on        { opacity: 0.85; stroke: var(--gc, var(--tm-accent)); stroke-width: 1.1; }
+      .edges line.near:not(.on) { opacity: 0.35; stroke: var(--gc, var(--tm-accent)); }
       .tlinks line:not(.on) { opacity: 0.06; }
       .tlinks line.on       { opacity: 0.6; }
       .topic:not(.on)       { opacity: 0.3; }
-      .topic.on circle      { stroke-width: 2.2; }
+      .topic.on circle      { fill: var(--gc, var(--tm-accent)); filter: drop-shadow(0 0 4px color-mix(in srgb, var(--gc, var(--tm-accent)) 60%, transparent)); }
+      .topic-label.on       { fill: var(--tm-ink); }
       .paper:not(.on)       { opacity: 0.15; }
       .topic-label:not(.on) { opacity: 0.3; }
       .topic.near:not(.on),
@@ -741,7 +847,7 @@ const breakdown = (c: Record<Status, number>) =>
 
   @keyframes tm-pulse {
     0%   { transform: scale(1);   opacity: 0.9; }
-    100% { transform: scale(2.4); opacity: 0;   }
+    100% { transform: scale(1.9); opacity: 0;   }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -831,7 +937,9 @@ const breakdown = (c: Record<Status, number>) =>
         node: {
           id: `t:${id}`, kind: 'topic',
           r: +(el.querySelector('circle')?.getAttribute('r') ?? 10),
-          label: label?.textContent ?? '',
+          group: el.dataset.group,
+          // Same text as the build-time layout used ("Alignment 17").
+          label: `${el.dataset.label ?? ''} ${label?.querySelector('.topic-n')?.textContent ?? ''}`,
           ...parsePos(el),
         },
         papers: [], edges: [], links: [],
@@ -916,6 +1024,12 @@ const breakdown = (c: Record<Status, number>) =>
           if (t.bar) next.add(t.bar);
           t.edges.forEach((el) => next.add(el));
           t.papers.forEach((p) => shown.has(p) && next.add(p.el));
+          // Half-light the other topics its entries cover: where interests overlap.
+          for (const p of t.papers) {
+            if (!shown.has(p)) continue;
+            p.topics.forEach((id) => id !== t.id && addTopic(topicById.get(id), near));
+            p.edges.forEach(({ el, topic }) => topic !== t.id && near.add(el));
+          }
           // Overview: its overlap lines, and (half-lit) the topics they lead to.
           t.links.forEach(({ el, other }) => { next.add(el); addTopic(topicById.get(other), near); });
         }
@@ -991,8 +1105,8 @@ const breakdown = (c: Record<Status, number>) =>
       tip!.style.top = `${Math.max(0, top - tip!.offsetHeight - 4)}px`;
     }
 
-    const STATUS_SUFFIX = / \((read|reading now|to read)\)$/;
-    const titleOf = (p: Paper) => (p.el.querySelector('title')?.textContent ?? '').replace(STATUS_SUFFIX, '');
+    const titleOf = (p: Paper) => p.el.dataset.title ?? '';
+    const nameOf = (id: string) => topicById.get(id)?.el.dataset.label ?? id;
 
     // Overview papers ship without circles; add them the first time one is shown.
     const SVG_NS = 'http://www.w3.org/2000/svg';
@@ -1018,12 +1132,15 @@ const breakdown = (c: Record<Status, number>) =>
         p.el.querySelector('.dot')!.getBoundingClientRect(),
         titleOf(p),
         p.el.dataset.meta!,
-        p.topics.map((id) => topicById.get(id)!.node.label).join(' + '),
+        p.topics.map(nameOf).join(' + '),
+        'Click to open',
       );
     }
 
     function showTopicTip(t: Topic) {
-      placeTip(t.el.querySelector('circle')!.getBoundingClientRect(), t.node.label!, t.el.dataset.tip!);
+      const meta = [t.el.dataset.tip!];
+      if (t.el.dataset.note) meta.push(t.el.dataset.note);
+      placeTip(t.el.querySelector('circle')!.getBoundingClientRect(), nameOf(t.id), ...meta);
     }
 
     function selectTopic(id: string) {
@@ -1179,6 +1296,23 @@ const breakdown = (c: Record<Status, number>) =>
       buildSim([], PAPER_R);
     }
 
+    // ── Reset layout (offered once something has been dragged) ─────────────
+    const resetBtn = root.querySelector<HTMLButtonElement>('.tm-reset')!;
+    const home = new Map([...nodeOwner.values()].map((o) => [o.node.id, { x: o.node.x, y: o.node.y }]));
+    resetBtn.addEventListener('click', () => {
+      sim.stop();
+      unpinTopics();
+      for (const n of topicList.map((t) => t.node).concat(detail ? [...paperBySlug.values()].map((p) => p.node) : [])) {
+        const h = home.get(n.id)!;
+        n.x = h.x; n.y = h.y;
+        n.vx = n.vy = 0;
+        n.fx = n.fy = null;
+      }
+      render();
+      if (!detail && selected) showPapersFor(selected);
+      resetBtn.hidden = true;
+    });
+
     function toSvg(e: PointerEvent) {
       const p = new DOMPoint(e.clientX, e.clientY).matrixTransform(svg!.getScreenCTM()!.inverse());
       return {
@@ -1209,6 +1343,7 @@ const breakdown = (c: Record<Status, number>) =>
         hover = null;
         paint();
         dragging = true;
+        resetBtn.hidden = false;
         svg.classList.add('is-dragging');
         sim.alphaTarget(0.3).restart();
       }

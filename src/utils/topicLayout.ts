@@ -20,8 +20,8 @@ import {
   forceY,
 } from 'd3-force';
 
-/** Fixed viewBox size. Roughly the map's on-screen size in px (340px column). */
-export const FRAME = { w: 310, h: 240 } as const;
+/** Fixed viewBox size. Roughly the map's on-screen size in px (380px column). */
+export const FRAME = { w: 350, h: 290 } as const;
 export const VIEWBOX = `${-FRAME.w / 2} ${-FRAME.h / 2} ${FRAME.w} ${FRAME.h}`;
 const EDGE = 3;   // inner margin of the frame
 
@@ -36,6 +36,8 @@ export interface LayoutNode {
   y: number;
   /** Topic label (topics only) — the layout keeps papers out of it. */
   label?: string;
+  /** Colour group (topics only) — same-group topics are drawn together. */
+  group?: string;
   fx?: number | null;
   fy?: number | null;
   vx?: number;
@@ -125,7 +127,7 @@ function forceAvoidLabels(nodes: LayoutNode[], paperR: number) {
 function forceTopicLabels(nodes: LayoutNode[]) {
   const topics = nodes.filter((n) => n.kind === 'topic');
   const box = (t: LayoutNode) => {
-    const b = labelBox(t, 2);
+    const b = labelBox(t, 5);   // a few px of air between neighbours
     return { left: Math.min(b.left, t.x - t.r), right: Math.max(b.right, t.x + t.r), top: t.y - t.r, bottom: b.bottom };
   };
   return () => {
@@ -155,6 +157,42 @@ function forceTopicLabels(nodes: LayoutNode[]) {
   };
 }
 
+/**
+ * After the simulation: forces settle on a compromise, so a label can still
+ * overlap a neighbouring circle or label (and a dot can sit on a label).
+ * Repeat just the hard constraints until nothing overlaps.
+ */
+export function resolveOverlaps(nodes: LayoutNode[], paperR = PAPER_R, iterations = 300) {
+  const labels = forceTopicLabels(nodes);
+  const dots = forceAvoidLabels(nodes, paperR);
+  for (let i = 0; i < iterations; i++) {
+    labels();
+    nodes.forEach(clampToFrame);
+    dots();
+    nodes.forEach(clampToFrame);
+  }
+}
+
+// Pulls each topic gently toward the centroid of its colour group, so the
+// colours read as clusters. Weak: shared papers still decide the details.
+function forceGroups(nodes: LayoutNode[], strength = 0.03) {
+  const topics = nodes.filter((n) => n.kind === 'topic' && n.group);
+  return (alpha: number) => {
+    const sum = new Map<string, { x: number; y: number; n: number }>();
+    for (const t of topics) {
+      const s = sum.get(t.group!) ?? { x: 0, y: 0, n: 0 };
+      s.x += t.x; s.y += t.y; s.n++;
+      sum.set(t.group!, s);
+    }
+    for (const t of topics) {
+      const s = sum.get(t.group!)!;
+      if (s.n < 2 || t.fx != null) continue;
+      t.vx! += (s.x / s.n - t.x) * strength * alpha;
+      t.vy! += (s.y / s.n - t.y) * strength * alpha;
+    }
+  };
+}
+
 export interface SimOptions {
   /** Radius of paper dots (smaller when many are shown at once). */
   paperR?: number;
@@ -169,6 +207,7 @@ export function createSimulation(nodes: LayoutNode[], links: LayoutLinks, opts: 
   const maxShared = Math.max(1, ...topicLinks.map((l) => l.n));
 
   return forceSimulation<LayoutNode>(nodes)
+    .force('groups', forceGroups(nodes))
     .force('avoidLabels', forceAvoidLabels(nodes, paperR))
     .force('topicLabels', forceTopicLabels(nodes))
     // Single-topic papers are held tight to their topic; bridging papers are

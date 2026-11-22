@@ -114,3 +114,19 @@ export function topicIdsForTags(tags: string[]): string[] {
   const ids = new Set(tags.map((t) => tagToTopic[t]).filter(Boolean));
   return topics.map((t) => t.id).filter((id) => ids.has(id));
 }
+
+/**
+ * Topics with fewer entries than this are folded into one "Other" topic on the
+ * map (and the list's "Other" filter), so tiny topics don't take as much room
+ * as big ones.
+ */
+export const MIN_TOPIC_ENTRIES = 4;
+export const OTHER_TOPIC = { id: 'other', label: 'Other' } as const;
+
+/** Ids of topics too small to stand on their own, given every entry's tags. */
+export function minorTopicIds(tagLists: string[][]): Set<string> {
+  const counts = new Map<string, number>();
+  for (const tags of tagLists)
+    for (const id of topicIdsForTags(tags)) counts.set(id, (counts.get(id) ?? 0) + 1);
+  return new Set([...counts].filter(([, n]) => n < MIN_TOPIC_ENTRIES).map(([id]) => id));
+}

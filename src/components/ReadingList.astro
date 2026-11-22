@@ -13,9 +13,10 @@
  */
 import { getCollection } from 'astro:content';
 import ReadingItem from './ReadingItem.astro';
-import { topics, topicIdsForTags } from '../data/topics';
+import { topics, topicIdsForTags, minorTopicIds } from '../data/topics';
 
 const allPapers = await getCollection('papers', ({ data }) => !data.draft);
+const minor = minorTopicIds(allPapers.map((p) => p.data.tags));
 type Paper = (typeof allPapers)[number];
 
 // Every order ends in a title comparison so ties never depend on file order.
@@ -57,8 +58,8 @@ const groupedChips = (topicChips as ChipTopic[]).some((t) => t.group);
 
 const sections = [
   { id: 'reading', title: 'Currently Reading', count: current.length },
-  { id: 'to-read', title: 'Reading Queue',     count: queue.length },
   { id: 'read',    title: 'Read',              count: read.length },
+  { id: 'to-read', title: 'Reading Queue',     count: queue.length },
 ];
 ---
 
@@ -142,15 +143,15 @@ const sections = [
           {s.title} <span class="list-count">{s.count}</span>
         </h3>
         <ol class="paper-list">
-          {s.id === 'reading' && current.map((p) => <ReadingItem paper={p} />)}
-          {s.id === 'to-read' && queue.map((p) => <ReadingItem paper={p} />)}
+          {s.id === 'reading' && current.map((p) => <ReadingItem paper={p} minor={minor} />)}
+          {s.id === 'to-read' && queue.map((p) => <ReadingItem paper={p} minor={minor} />)}
           {s.id === 'read' && readGroups.map((g) => (
             <>
               <li class="group-head" aria-hidden="true">
                 <span>{g.label}</span>
                 <span class="group-count">{g.papers.length}</span>
               </li>
-              {g.papers.map((p) => <ReadingItem paper={p} />)}
+              {g.papers.map((p) => <ReadingItem paper={p} minor={minor} />)}
             </>
           ))}
         </ol>

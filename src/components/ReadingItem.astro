@@ -16,14 +16,16 @@
  * arrow keys move between tags (wired in ReadingList).
  */
 import type { CollectionEntry } from 'astro:content';
-import { topicIdsForTags } from '../data/topics';
+import { topicIdsForTags, OTHER_TOPIC } from '../data/topics';
 import { url } from '../utils/url';
 
 interface Props {
   paper: CollectionEntry<'papers'>;
+  /** Topics folded into "Other" on the topic map (see minorTopicIds). */
+  minor?: Set<string>;
 }
 
-const { paper } = Astro.props;
+const { paper, minor } = Astro.props;
 const d = paper.data;
 
 const AUTHORS_SHOWN = 3;
@@ -38,7 +40,11 @@ const authors = d.authors.slice(0, AUTHORS_SHOWN).join(', ') + (truncated ? ' et
   data-slug={paper.slug}
   data-status={d.status}
   data-type={d.type}
-  data-topics={topicIdsForTags(d.tags).join(' ')}
+  data-topics={(() => {
+    // Entries in a minor topic also match the map's "Other" filter.
+    const ids = topicIdsForTags(d.tags);
+    return (minor && ids.some((id) => minor.has(id)) ? [...ids, OTHER_TOPIC.id] : ids).join(' ');
+  })()}
   data-tags={d.tags.join(' ')}
   data-year={d.year}
 >
