@@ -101,7 +101,8 @@ section {
   padding-bottom: 4%;
   overflow: hidden;
 
-  h2 {
+  // .section-title: a page's <h1> drawn in the same style as section <h2>s.
+  h2, .section-title {
     padding: 0.5em;
     margin-bottom: 1.5em;
     font-family: 'Space Grotesk', sans-serif;
@@ -134,7 +135,8 @@ section {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  section h2::after {
+  section h2::after,
+  section .section-title::after {
     animation: none;
     width: 55px;
     transform: translateX(-50%);
@@ -205,8 +207,20 @@ section {
   }
 
   h1 { font-size: 2rem; }
-  h2 { font-size: 1.5rem; }
   h3 { font-size: 1.25rem; }
+
+  // Override the big centred, uppercase, underlined `section h2` style:
+  // inside notes, h2s are subheadings.
+  h2 {
+    font-size: 1.35rem;
+    text-align: left;
+    text-transform: none;
+    letter-spacing: 0;
+    padding: 0;
+    margin: 2.2rem 0 0.6rem;
+
+    &::after { display: none; }
+  }
 
   p { margin: 1em 0; }
 

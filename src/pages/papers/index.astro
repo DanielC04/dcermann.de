@@ -19,7 +19,7 @@ import TopicMap from '../../components/TopicMap.astro';
       -->
       <div class="page-layout">
         <div class="area-intro page-intro">
-          <h2>Reading List</h2>
+          <h1 class="section-title">Reading List</h1>
           <p class="page-desc">
             Papers and books I'm reading or have read. Entries marked <span class="note-mark">✦</span> have reading notes.
           </p>
@@ -97,11 +97,12 @@ import TopicMap from '../../components/TopicMap.astro';
   .page-intro {
     margin-bottom: 1.5rem;
 
-    :global(h2) {
+    :global(.section-title) {
       text-align: left;
+      margin-top: 0;
     }
 
-    :global(h2::after) {
+    :global(.section-title::after) {
       left: 0;
       transform: none;
     }

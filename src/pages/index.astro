@@ -13,6 +13,9 @@ import profilePhoto from '../assets/images/myProfile.png';
 // src/pages/_projects.astro back to projects.astro) to restore.
 const showProjects = false;
 
+// The summary's "(see my reading list)" becomes a link.
+const [summaryBefore, summaryAfter = ''] = siteInfo.description.split('reading list');
+
 // Only show spoken languages in sidebar
 const cvSkills = skillCategories.filter((c) =>
   c.name.toLowerCase().includes('languages i speak'),
@@ -21,13 +24,23 @@ const cvSkills = skillCategories.filter((c) =>
 
 <BaseLayout
   title="Daniel Cermann"
-  description="Daniel Cermann — software engineer focused on AI safety. CV, projects, and AI safety reading list."
+  devicons={showProjects}
+  description="Daniel Cermann — software engineer focused on AI safety, studying IT-Systems Engineering at HPI. CV and AI safety reading list."
 >
   <div class="cv-page">
 
     <!-- ── Header ──────────────────────────────────────────────────────── -->
     <header class="cv-header">
       <div class="cv-identity">
+        <!-- Mobile only: the sidebar (and its photo) sits below the CV there. -->
+        <Image
+          src={profilePhoto}
+          alt=""
+          width={64}
+          height={64}
+          loading="eager"
+          class="cv-header-photo"
+        />
         <h1 class="cv-name">{siteInfo.name}</h1>
         <p class="cv-role">AI Safety · Software Engineer · IT-Systems Engineering @ HPI</p>
       </div>
@@ -70,13 +83,15 @@ const cvSkills = skillCategories.filter((c) =>
           />
         </div>
 
-        <nav aria-label="Quick navigation">
-          <h3 class="sidebar-heading">Navigate</h3>
-          <ul class="sidebar-nav">
-            {showProjects && <li><a href={url('/projects')}>Projects</a></li>}
-            <li><a href={url('/papers')}>Reading list</a></li>
-          </ul>
-        </nav>
+        {showProjects && (
+          <nav aria-label="Quick navigation">
+            <h3 class="sidebar-heading">Navigate</h3>
+            <ul class="sidebar-nav">
+              <li><a href={url('/projects')}>Projects</a></li>
+              <li><a href={url('/papers')}>Reading list</a></li>
+            </ul>
+          </nav>
+        )}
 
         {cvSkills.map((cat) => (
           <div class="skill-group">
@@ -114,7 +129,9 @@ const cvSkills = skillCategories.filter((c) =>
       <!-- Main -->
       <main class="cv-main">
         <!-- Summary -->
-        <p class="cv-summary">{siteInfo.description}</p>
+        <p class="cv-summary">
+          {summaryBefore}<a href={url('/papers')}>reading list</a>{summaryAfter}
+        </p>
 
         <!-- Experience -->
         <section class="cv-section">
@@ -176,6 +193,19 @@ const cvSkills = skillCategories.filter((c) =>
     flex-wrap: wrap;
     gap: 1.25rem;
     border-bottom: 1px solid color-mix(in srgb, var(--text-color) 12%, transparent);
+  }
+
+  :global(.cv-header-photo) {
+    display: none;
+
+    @media (max-width: 768px) {
+      display: block;
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 0.75rem;
+    }
   }
 
   .cv-name {
@@ -275,6 +305,8 @@ const cvSkills = skillCategories.filter((c) =>
   .sidebar-photo {
     margin-bottom: 1.5rem;
 
+    @media (max-width: 768px) { display: none; }
+
     img {
       width: 90px;
       height: 90px;
@@ -294,8 +326,11 @@ const cvSkills = skillCategories.filter((c) =>
     padding-bottom: 0.4rem;
     border-bottom: 1px solid color-mix(in srgb, var(--text-color-dim) 12%, transparent);
 
-    &:first-of-type { margin-top: 0; }
   }
+
+  // Each heading sits in its own wrapper, so :first-of-type matched all of
+  // them; only the sidebar's first block should drop its top margin.
+  .cv-sidebar > :nth-child(2) .sidebar-heading { margin-top: 0; }
 
   .sidebar-nav {
     list-style: none;
@@ -365,6 +400,12 @@ const cvSkills = skillCategories.filter((c) =>
     padding-top: 0.25rem;
   }
 
+  .cv-summary a {
+    color: var(--contrast-color);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
   .cv-summary {
     font-size: 0.95rem;
     line-height: 1.75;
@@ -392,6 +433,11 @@ const cvSkills = skillCategories.filter((c) =>
     display: block;
     position: static;
     text-align: left;
+
+    // The global `section h2` underline is absolutely positioned; with
+    // position: static here it attached to a random ancestor and floated
+    // over the page.
+    &::after { display: none; }
     letter-spacing: 3px;
   }
 

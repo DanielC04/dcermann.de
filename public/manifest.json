@@ -1,15 +1,15 @@
 {
-  "short_name": "Dcermann.de",
-  "name": "The personal website of Daniel Cermann",
+  "short_name": "dcermann.de",
+  "name": "Daniel Cermann",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "src": "dc-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
     }
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "theme_color": "#111318",
+  "background_color": "#111318"
 }
