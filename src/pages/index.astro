@@ -9,6 +9,10 @@ import { projects } from '../data/projects';
 import { url } from '../utils/url';
 import profilePhoto from '../assets/images/myProfile.png';
 
+// Projects are outdated — hidden for now. Flip to true (and rename
+// src/pages/_projects.astro back to projects.astro) to restore.
+const showProjects = false;
+
 // Only show spoken languages in sidebar
 const cvSkills = skillCategories.filter((c) =>
   c.name.toLowerCase().includes('languages i speak'),
@@ -69,7 +73,7 @@ const cvSkills = skillCategories.filter((c) =>
         <nav aria-label="Quick navigation">
           <h3 class="sidebar-heading">Navigate</h3>
           <ul class="sidebar-nav">
-            <li><a href={url('/projects')}>Projects</a></li>
+            {showProjects && <li><a href={url('/projects')}>Projects</a></li>}
             <li><a href={url('/papers')}>Reading list</a></li>
           </ul>
         </nav>
@@ -119,7 +123,7 @@ const cvSkills = skillCategories.filter((c) =>
         </section>
 
         <!-- Projects -->
-        <section class="cv-section">
+        {showProjects && <section class="cv-section">
           <h2 class="cv-section-heading">Projects</h2>
           <div class="project-list">
             {projects.map((p) => (
@@ -147,7 +151,7 @@ const cvSkills = skillCategories.filter((c) =>
             ))}
           </div>
           <a class="see-all" href={url('/projects')}>See all projects →</a>
-        </section>
+        </section>}
 
       </main>
     </div>
