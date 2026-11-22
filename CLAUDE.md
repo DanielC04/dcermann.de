@@ -14,7 +14,7 @@ npm run preview  # Preview the production build locally
 
 **Astro 5** · TypeScript · SCSS (via `sass`) · fully static output (`output: 'static'`).
 
-No React. No SSR. No i18n framework. Interactive elements (theme toggle, skill bars, contact form, Matrix Rain) are implemented with vanilla JS in Astro `<script>` blocks (processed by Vite, supports imports and TypeScript).
+No React. No SSR. No i18n framework. Interactive elements (theme toggle, reading list filters, topic map, reading activity) are implemented with vanilla JS in Astro `<script>` blocks (processed by Vite, supports imports and TypeScript).
 
 ## Project structure
 
@@ -24,15 +24,13 @@ src/
     config.ts              # Astro content collection schema (papers)
   data/                    # Typed TypeScript data — projects, skills, experience, site info
   layouts/
-    BaseLayout.astro       # HTML shell: fonts, global SCSS, Header, Footer, scroll-reveal
+    BaseLayout.astro       # HTML shell: meta/Open Graph tags, fonts, global SCSS, Header, Footer, scroll-reveal
   components/
     Header.astro           # Sticky top nav, theme toggle, hamburger
     Footer.astro           # Social links
-    MatrixRain.astro       # Canvas rain animation (about page banner)
-    ProjectCard.astro      # Card used on /projects
-    SkillCategory.astro    # Proficiency bars, animated on scroll
-    TimelineItem.astro     # Single experience entry
-    ContactForm.astro      # EmailJS contact form (vanilla JS)
+    CVEntry.astro          # One experience entry on the home page
+    ProjectCard.astro      # Card used on the (hidden) projects page
+    ReadingActivity.astro  # Weekly reading heatmap on /papers; hover box with clickable titles
     ReadingList.astro      # Reading list: search, status/type/topic/tag filters, sort, URL state
     ReadingItem.astro      # One reading-list entry (filter data on data-* attributes)
     TopicMap.astro         # Topic network + interest bars on /papers; draggable, linked to ReadingList via DOM events
@@ -41,20 +39,25 @@ src/
     papers/
       index.astro          # Reading list page
       [slug].astro         # Paper detail/notes page (only for papers with a body)
-    projects.astro         # Project grid
-    about.astro            # About / Skills / Experience / Contact
+    _projects.astro        # Project grid — hidden for now (`_` = not routed); see below
   styles/
     global.scss            # Theme vars, base styles, section h2, scroll-reveal, prose
   utils/
     topicLayout.ts         # d3-force layout shared by TopicMap's build pass and live drag
     url.ts                 # url() helper — prefixes paths with BASE_URL for GitHub Pages
+  assets/images/           # Optimised by astro:assets: profile photo, logos/, projects/
 public/
-  dc-logo.svg
-  images/
-    myProfile.png
-    projects/              # Project screenshots
-    logos/                 # Company/institution logos for timeline
+  dc-logo.svg              # Favicon + manifest icon
+  cv_daniel_cermann.pdf
 ```
+
+Image paths in `src/data/*.ts` (`/images/logos/…`, `/images/projects/…`) are mapped to
+`src/assets/images/…` by the components via `import.meta.glob`; there is no
+`public/images/` copy.
+
+**Projects are hidden** (outdated). To restore: set `showProjects = true` in
+`src/pages/index.astro`, uncomment the Projects entry in `Header.astro`, and rename
+`src/pages/_projects.astro` back to `projects.astro`.
 
 ## Data layer
 
@@ -62,11 +65,11 @@ All site content lives in `src/data/` as plain TypeScript files with exported ty
 
 | File | Export | Used in |
 |------|--------|---------|
-| `site.ts` | `siteInfo` | Header, Footer, About, Home |
-| `projects.ts` | `projects: Project[]` | `/projects` |
-| `skills.ts` | `skillCategories: SkillCategory[]` | `/about` |
-| `experience.ts` | `experiences: ExperienceItem[]` | `/about` |
-| `topics.ts` | `topics`, `topicGroups`, `tagToTopic`, `knownTags`, `statusWeight` | `/papers` (TopicMap, ReadingList chips) |
+| `site.ts` | `siteInfo` | Header, Footer, Home |
+| `projects.ts` | `projects: Project[]` | Home + projects page (both hidden) |
+| `skills.ts` | `skillCategories: SkillCategory[]` | Home sidebar (spoken languages only) |
+| `experience.ts` | `experiences: ExperienceItem[]` | Home |
+| `topics.ts` | `topics`, `topicGroups`, `tagToTopic`, `knownTags`, `statusWeight`, `minorTopicIds` | `/papers` (TopicMap, ReadingList chips) |
 
 Papers are **generated from Obsidian notes** (Notes vault, `reading_sync/main.py sync`).
 Files with `source: "obsidian"` are owned by that sync: edit the vault note, not the file,
@@ -82,23 +85,12 @@ were added; they are excluded from the reading-activity heatmap and streaks.
 `/papers` layout: one grid, page order intro → ReadingActivity → ReadingList → TopicMap
 (desktop: list left, activity + sticky map right). TopicMap draws every paper as a dot
 up to `DETAIL_LIMIT` (75) entries, above that a topic overview that reveals a topic's
-papers on selection.
+papers on selection. Topics with fewer than `MIN_TOPIC_ENTRIES` (4) entries are folded
+into one "Other" topic on the map, which also works as a list filter (`?topic=other`).
 
 ## Theming
 
 Color theme is toggled via `data-theme` attribute on `<body>` (values: `"dark"` | `"light"`). CSS custom properties (`--background-color`, `--text-color`, `--contrast-color`, `--background-color-1/2`) are defined in `src/styles/global.scss`. The active theme is persisted in `localStorage` under the key `"theme"` and read by an `is:inline` script in `BaseLayout.astro` to prevent flash.
-
-## Contact form (EmailJS)
-
-Credentials are loaded from environment variables (defined in a `.env` file, which is gitignored):
-
-```
-PUBLIC_EMAILJS_KEY=...
-PUBLIC_EMAILJS_SERVICE=...
-PUBLIC_EMAILJS_TEMPLATE=...
-```
-
-See `.env.example` for the template. The same variables are passed as GitHub Actions secrets in the CI workflow so EmailJS credentials are baked into the production build.
 
 ## Base path / GitHub Pages sub-path
 
@@ -127,6 +119,5 @@ on GitHub Pages.
 
 **One-time repo setup required:**
 - Go to *Settings → Pages* and set Source to **GitHub Actions**
-- Add `PUBLIC_EMAILJS_KEY`, `PUBLIC_EMAILJS_SERVICE`, `PUBLIC_EMAILJS_TEMPLATE` as repository secrets (*Settings → Secrets → Actions*)
 
 The workflow uses the built-in `GITHUB_TOKEN` for Pages deployment — no additional credentials needed.

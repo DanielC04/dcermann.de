@@ -10,7 +10,6 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@emailjs/browser": "^4.4.1",
     "astro": "^5.0.0",
     "d3-force": "^3.0.0",
     "sass": "^1.63.4"

@@ -38,10 +38,7 @@ jobs:
       - name: Build with Astro
         run: npm run build
         env:
-          BASE_PATH:               ${{ steps.pages.outputs.base_path }}
-          PUBLIC_EMAILJS_KEY:      ${{ secrets.PUBLIC_EMAILJS_KEY }}
-          PUBLIC_EMAILJS_SERVICE:  ${{ secrets.PUBLIC_EMAILJS_SERVICE }}
-          PUBLIC_EMAILJS_TEMPLATE: ${{ secrets.PUBLIC_EMAILJS_TEMPLATE }}
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
