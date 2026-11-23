@@ -4,6 +4,7 @@ authors: ["Patrick LaVictoire", "Benja Fallenstein", "Eliezer Yudkowsky", "Mihal
 year: 2014
 url: "https://cdn.aaai.org/ocs/ws/ws1249/8833-38015-1-PB.pdf"
 tags: ["multi-agent-systems"]
-status: "reading"
+status: "read"
+dateRead: 2026-11-19
 source: "obsidian"
 ---
