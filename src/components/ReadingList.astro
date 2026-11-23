@@ -13,7 +13,7 @@
  */
 import { getCollection } from 'astro:content';
 import ReadingItem from './ReadingItem.astro';
-import { topics, topicIdsForTags, minorTopicIds } from '../data/topics';
+import { topics, topicGroups, topicIdsForTags, minorTopicIds } from '../data/topics';
 
 const allPapers = await getCollection('papers', ({ data }) => !data.draft);
 const minor = minorTopicIds(allPapers.map((p) => p.data.tags));
@@ -49,7 +49,7 @@ const topicChips = topics.filter((t) => usedTopics.has(t.id));
 type ChipTopic = (typeof topics)[number] & { group?: string };
 const chipGroups: { label: string; topics: ChipTopic[] }[] = [];
 for (const t of topicChips as ChipTopic[]) {
-  const label = t.group ?? 'Other';
+  const label = t.group ? topicGroups[t.group] ?? t.group : 'Other';
   const g = chipGroups.find((x) => x.label === label);
   if (g) g.topics.push(t);
   else chipGroups.push({ label, topics: [t] });
@@ -183,6 +183,7 @@ const sections = [
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid color-mix(in srgb, var(--text-color-dim) 20%, transparent);
+    scroll-margin-top: 76px;   // clear the sticky site header when scrolled to
 
     &[hidden] { display: none; }
   }
@@ -247,6 +248,8 @@ const sections = [
       font-size: 0.78rem;
       padding: 0.3rem 0.65rem;
       color: var(--text-color-dim);
+
+      @media (pointer: coarse) { padding: 0.5rem 0.7rem; }
       background: none;
       border: 0;
       cursor: pointer;
@@ -316,6 +319,35 @@ const sections = [
     color: var(--text-color-dim);
   }
 
+  // Phones: one horizontally scrolling row per group instead of ~6 wrapped
+  // rows, so the list starts within the first screen. (After the base rules
+  // above so these win.)
+  @media (max-width: 600px) {
+    .rl-topics:not(.rl-topics-grouped),
+    .rl-topic-group {
+      flex-wrap: nowrap;
+      align-items: center;
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin-right: -1.5rem;          // run to the screen edge…
+      padding-right: 1.5rem;          // …and keep the last chip clear of it
+      -webkit-mask-image: linear-gradient(to right, #000 85%, transparent);
+              mask-image: linear-gradient(to right, #000 85%, transparent);
+
+      &::-webkit-scrollbar { display: none; }
+    }
+
+    .rl-topic-group-label {
+      min-width: 0;
+      flex-shrink: 0;
+      position: sticky;
+      left: 0;
+      padding-right: 0.4rem;
+      background: var(--background-color);
+      z-index: 1;
+    }
+  }
+
   .chip {
     font: inherit;
     font-size: 0.78rem;
@@ -326,6 +358,10 @@ const sections = [
     padding: 0.2em 0.75em;
     cursor: pointer;
     transition: border-color 0.15s, color 0.15s, background 0.15s, opacity 0.15s;
+
+    // Touch screens: a tappable size.
+    @media (pointer: coarse) { padding: 0.45em 0.9em; }
+    @media (max-width: 600px) { flex-shrink: 0; white-space: nowrap; }
 
     &:hover {
       border-color: var(--contrast-color);
@@ -375,6 +411,10 @@ const sections = [
   // ── Sections ──────────────────────────────────────────────────────────
   .list-section {
     margin-bottom: 2.75rem;
+    // These are <section>s: undo the global section padding/overflow, which
+    // added ~150px of empty space above every list.
+    padding: 0;
+    overflow: visible;
 
     &[hidden] { display: none; }
   }
@@ -851,8 +891,10 @@ const sections = [
     document.addEventListener('topicmap:select', (e) => {
       const { topic } = (e as CustomEvent).detail;
       set({ topic: state.topic === topic ? '' : topic });
-      // If the list's top has scrolled out of view, bring the filters back.
-      if (toolbar.getBoundingClientRect().top < 0) {
+      // Bring the filters into view if they're off screen: scrolled past
+      // (desktop), or still below the topic map (mobile).
+      const top = toolbar.getBoundingClientRect().top;
+      if (top < 0 || top > window.innerHeight * 0.6) {
         toolbar.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
     });

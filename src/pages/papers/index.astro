@@ -14,8 +14,9 @@ import TopicMap from '../../components/TopicMap.astro';
 
       <!--
         One grid, four areas. DOM order is the mobile reading and tab order:
-        intro → activity → list → topic map. On desktop the activity and the
-        (sticky) topic map sit in a right column beside the list.
+        intro → activity → topic map → list (the overview first, then the
+        entries). On desktop the activity and the (sticky) topic map sit in a
+        right column beside the list.
       -->
       <div class="page-layout">
         <div class="area-intro page-intro">
@@ -29,13 +30,13 @@ import TopicMap from '../../components/TopicMap.astro';
           <ReadingActivity />
         </aside>
 
-        <div class="area-list">
-          <ReadingList />
-        </div>
-
         <aside class="area-map" aria-label="Topic map">
           <TopicMap />
         </aside>
+
+        <div class="area-list">
+          <ReadingList />
+        </div>
       </div>
 
     </div>
@@ -88,8 +89,11 @@ import TopicMap from '../../components/TopicMap.astro';
     .area-map      { grid-area: map; align-self: stretch; }
   }
 
-  // On mobile the grid gap does the spacing.
+  // On mobile the grid gap does the spacing, and the page starts closer to
+  // the header (the global section padding is sized for desktop).
   @media (max-width: 768px) {
+    #papers { padding-top: 1.75rem; }
+    .page-layout { row-gap: 1.25rem; }
     .area-intro { margin-bottom: 0; }
     .area-activity :global(.activity-widget) { margin-bottom: 0; }
   }
@@ -100,6 +104,8 @@ import TopicMap from '../../components/TopicMap.astro';
     :global(.section-title) {
       text-align: left;
       margin-top: 0;
+      margin-bottom: 0.9em;
+      padding-left: 0;   // line up with the description below
     }
 
     :global(.section-title::after) {

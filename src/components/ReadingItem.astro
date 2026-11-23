@@ -80,11 +80,15 @@ const authors = d.authors.slice(0, AUTHORS_SHOWN).join(', ') + (truncated ? ' et
     content-visibility: auto;
     contain-intrinsic-size: auto 7rem;
 
+    // Inline flow, not flex: badges (Book, ✦, ↻) follow the title's last
+    // word instead of wrapping onto a line of their own.
     .paper-main {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      gap: 0.25rem 0.6rem;
+      display: block;
+
+      > :not(.paper-title) {
+        margin-left: 0.5rem;
+        white-space: nowrap;
+      }
     }
 
     .paper-title {
@@ -156,6 +160,9 @@ const authors = d.authors.slice(0, AUTHORS_SHOWN).join(', ') + (truncated ? ' et
       padding: 0.05em 0.6em;
       cursor: pointer;
       transition: border-color 0.15s, color 0.15s, background 0.15s;
+
+      // Touch screens: a tappable size (was ~17px tall).
+      @media (pointer: coarse) { padding: 0.3em 0.75em; }
 
       &:hover {
         border-color: var(--contrast-color);

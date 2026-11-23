@@ -33,6 +33,14 @@ for (const paper of readPapers) {
   });
 }
 
+// Every exact read date (not just the heatmap window), as UTC day numbers,
+// so streaks aren't cut off at the edge of the grid.
+const readDays = [...new Set(
+  readPapers
+    .filter((p) => !p.data.dateReadApprox)
+    .map((p) => Math.floor(p.data.dateRead!.getTime() / 86_400_000)),
+)].sort((a, b) => a - b);
+
 const totalRead = readPapers.length;
 
 const CELL    = 9;   // px
@@ -46,7 +54,7 @@ const LABEL_W = 22;  // px
     <span class="widget-stats">
       <span class="stat">{totalRead} read</span>
       <span class="sep">·</span>
-      <span class="stat" id="ra-streak"></span>
+      <span class="stat" id="ra-streak" title="Weeks in a row with at least one read; an empty current week counts while the last read was within 7 days"></span>
       <span class="sep">·</span>
       <span class="stat" id="ra-best"></span>
     </span>
@@ -67,7 +75,7 @@ const LABEL_W = 22;  // px
   </div>
 </div>
 
-<script define:vars={{ dateEntries, WEEKS, CELL, GAP, LABEL_W }}>
+<script define:vars={{ dateEntries, readDays, WEEKS, CELL, GAP, LABEL_W }}>
 (function () {
   const step  = CELL + GAP;
 
@@ -82,9 +90,42 @@ const LABEL_W = 22;  // px
     return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
   }
 
-  // Build 26-week grid aligned to Monday
+  // ── Streaks ────────────────────────────────────────────────────────────
+  // Counted in calendar weeks (Mon–Sun) with at least one read, over every
+  // exact read date. One exception: an empty current week doesn't break the
+  // streak while I've read in the last 7 days (today included), so it no
+  // longer drops to 0 every Monday morning.
+  const DAY = 86400000;
+  const todayN = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate()) / DAY;
+  const weekOf = (d) => Math.floor((d + 3) / 7);   // day 0 (1 Jan 1970) was a Thursday
+  const past = readDays.filter((d) => d <= todayN);
+  const readWeeks = new Set(past.map(weekOf));
+
+  let longestStreak = 0, run = 0, prevWeek = null;
+  for (const w of [...readWeeks].sort((a, b) => a - b)) {
+    run = prevWeek !== null && w === prevWeek + 1 ? run + 1 : 1;
+    longestStreak = Math.max(longestStreak, run);
+    prevWeek = w;
+  }
+
+  const lastRead = past.length ? past[past.length - 1] : null;
+  const thisWeek = weekOf(todayN);
+  const alive = readWeeks.has(thisWeek) || (lastRead !== null && todayN - lastRead < 7);
+  let currentStreak = 0;
+  if (alive) {
+    for (let w = readWeeks.has(thisWeek) ? thisWeek : thisWeek - 1; readWeeks.has(w); w--) currentStreak++;
+  }
+
+  document.getElementById('ra-streak').textContent = `${currentStreak}w streak`;
+  document.getElementById('ra-best').textContent    = `best ${longestStreak}w`;
+
+  // ── Grid: as many weeks as fit (up to WEEKS), aligned to Monday ─────────
+  const gridInner = document.getElementById('ra-grid');
+  const fit = Math.floor((gridInner.parentElement.clientWidth - LABEL_W) / step);
+  const shownWeeks = Math.max(8, Math.min(WEEKS, (fit || WEEKS) - 1));   // -1: a partial week can add a column
+
   const gridStart = new Date(today);
-  gridStart.setDate(gridStart.getDate() - WEEKS * 7 + 1);
+  gridStart.setDate(gridStart.getDate() - shownWeeks * 7 + 1);
   const startDow = (gridStart.getDay() + 6) % 7; // 0=Mon … 6=Sun
   gridStart.setDate(gridStart.getDate() - startDow);
 
@@ -100,27 +141,6 @@ const LABEL_W = 22;  // px
   // Group into week columns (oldest first)
   const weeks = [];
   for (let i = 0; i < days.length; i += 7) weeks.push(days.slice(i, i + 7));
-
-  const weekHasRead = weeks.map(w => w.some(d => d.count > 0));
-
-  const todayWeekIdx = weeks.findLastIndex(w =>
-    w.some(d => d.date <= today && d.date >= new Date(today.getTime() - 6 * 86400000))
-  );
-
-  let currentStreak = 0;
-  for (let i = todayWeekIdx; i >= 0; i--) {
-    if (weekHasRead[i]) currentStreak++;
-    else break;
-  }
-
-  let longestStreak = 0, run = 0;
-  for (const has of weekHasRead) {
-    if (has) { run++; longestStreak = Math.max(longestStreak, run); }
-    else run = 0;
-  }
-
-  document.getElementById('ra-streak').textContent = `${currentStreak}w streak`;
-  document.getElementById('ra-best').textContent    = `best ${longestStreak}w`;
 
   // Reverse so today is on the left
   weeks.reverse();
@@ -139,7 +159,6 @@ const LABEL_W = 22;  // px
   });
 
   // Build DOM
-  const gridInner = document.getElementById('ra-grid');
   gridInner.style.width = `${LABEL_W + weeks.length * step}px`;
   gridInner.style.display = 'inline-block';
   gridInner.style.paddingBottom = '2px';
